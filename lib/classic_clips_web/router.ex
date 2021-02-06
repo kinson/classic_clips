@@ -18,6 +18,13 @@ defmodule ClassicClipsWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+
+    live "/clips", ClipLive.Index, :index
+    live "/clips/new", ClipLive.Index, :new
+    live "/clips/:id/edit", ClipLive.Index, :edit
+
+    live "/clips/:id", ClipLive.Show, :show
+    live "/clips/:id/show/edit", ClipLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

@@ -1,5 +1,3 @@
-<h1>Listing Clips</h1>
-
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, ClassicClipsWeb.ClipLive.FormComponent,
     id: @clip.id || :new,
@@ -9,31 +7,87 @@
     return_to: Routes.clip_index_path(@socket, :index) %>
 <% end %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Video ext</th>
-      <th>Start time</th>
-      <th>Title</th>
+<div class="timeline-container">
+  <div class="clip-box">
+    <div class="clip-container">
+      <div class="tas-container">
+        <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
+        <p class="tas-time">0:27</p>
+        <img class="tas-image" src="https://img.youtube.com/vi/3tOpXbKyuQU/mqdefault.jpg" />
+      </div>
+      <div class="leigh-container">
+        <div class="icon">
+          <div class="arrow"></div>
+        </div>
+        <p class="leigh-score">111</p>
+        <div class="leigh-label-container"><p>LEIGH STORY</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="clip-box">
+    <div class="clip-container">
+      <div class="tas-container">
+        <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
+        <p class="tas-time">0:27</p>
+        <img class="tas-image" src="https://img.youtube.com/vi/3tOpXbKyuQU/mqdefault.jpg" />
+      </div>
+      <div class="leigh-container">
+        <div class="icon">
+          <div class="arrow"></div>
+        </div>
+        <p class="leigh-score">111</p>
+        <div class="leigh-label-container"><p>LEIGH STORY</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="clip-box">
+    <div class="clip-container">
+      <div class="tas-container">
+        <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
+        <p class="tas-time">0:27</p>
+        <img class="tas-image" src="https://img.youtube.com/vi/3tOpXbKyuQU/mqdefault.jpg" />
+      </div>
+      <div class="leigh-container">
+        <div class="icon">
+          <div class="arrow"></div>
+        </div>
+        <p class="leigh-score">111</p>
+        <div class="leigh-label-container"><p>LEIGH STORY</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="clip-box">
+    <div class="clip-container">
+      <div class="tas-container">
+        <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
+        <p class="tas-time">0:27</p>
+        <img class="tas-image" src="https://img.youtube.com/vi/3tOpXbKyuQU/mqdefault.jpg" />
+      </div>
+      <div class="leigh-container">
+        <div class="icon">
+          <div class="arrow"></div>
+        </div>
+        <p class="leigh-score">111</p>
+        <div class="leigh-label-container"><p>LEIGH STORY</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="clip-box">
+    <div class="clip-container">
+      <div class="tas-container">
+        <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
+        <p class="tas-time">0:27</p>
+        <img class="tas-image" src="https://img.youtube.com/vi/3tOpXbKyuQU/mqdefault.jpg" />
+      </div>
+      <div class="leigh-container">
+        <div class="icon">
+          <div class="arrow"></div>
+        </div>
+        <p class="leigh-score">111</p>
+        <div class="leigh-label-container"><p>LEIGH STORY</p></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="clips">
-    <%= for clip <- @clips do %>
-      <tr id="clip-<%= clip.id %>">
-        <td><%= clip.video_ext_id %></td>
-        <td><%= clip.start_time %></td>
-        <td><%= clip.title %></td>
-
-        <td>
-          <span><%= live_redirect "Show", to: Routes.clip_show_path(@socket, :show, clip) %></span>
-          <span><%= live_patch "Edit", to: Routes.clip_index_path(@socket, :edit, clip) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: clip.id, data: [confirm: "Are you sure?"] %></span>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<span><%= live_patch "New Clip", to: Routes.clip_index_path(@socket, :new) %></span>
+<%# <span><%= live_patch "New Clip", to: Routes.clip_index_path(@socket, :new)</span> %>
