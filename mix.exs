@@ -33,6 +33,7 @@ defmodule ClassicClips.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:elixir_auth_google, "~> 1.3.0"},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},

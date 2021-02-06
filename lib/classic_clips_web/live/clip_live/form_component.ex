@@ -41,7 +41,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
-    case Timeline.create_clip(clip_params) do
+    case Timeline.create_clip(clip_params, socket.assigns.user) do
       {:ok, _clip} ->
         {:noreply,
          socket

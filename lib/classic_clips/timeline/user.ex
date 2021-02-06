@@ -2,6 +2,9 @@ defmodule ClassicClips.Timeline.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias ClassicClips.Timeline.User
+  alias ClassicClips.Repo
+
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
     field :active, :boolean, default: false
@@ -12,10 +15,16 @@ defmodule ClassicClips.Timeline.User do
     timestamps()
   end
 
+  def create_user(attrs) do
+    changeset(%User{}, attrs)
+    |> Repo.insert(returning: true)
+  end
+
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :active])
-    |> validate_required([:username, :email, :active])
+    |> cast(attrs, [:username, :email, :active, :google_id])
+    |> put_change(:google_id, attrs.sub)
+    |> validate_required([:email])
   end
 end

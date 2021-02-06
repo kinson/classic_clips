@@ -4,8 +4,8 @@ defmodule ClassicClips.Repo.Migrations.CreateUsers do
   def change do
     create table(:users, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :username, :string, null: false
-      add :email, :string
+      add :username, :string
+      add :email, :string, null: false
       add :google_id, :string
       add :active, :boolean, default: true, null: false
 

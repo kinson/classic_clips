@@ -1,12 +1,24 @@
 defmodule ClassicClipsWeb.ClipLive.Index do
   use ClassicClipsWeb, :live_view
 
-  alias ClassicClips.Timeline
-  alias ClassicClips.Timeline.Clip
+  alias ClassicClips.{Repo, Timeline}
+  alias ClassicClips.Timeline.{Clip, User}
+
+  @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :clips, list_clips())}
+  def mount(_params, session, socket) do
+    user = get_or_create_user(session)
+
+    modified_socket =
+      socket
+      |> assign(:user, user)
+      |> assign(:clips, list_clips())
+      |> assign(:gooogle_auth_url, generate_oauth_url())
+
+    IO.inspect modified_socket.assigns
+
+    {:ok, modified_socket}
   end
 
   @impl true
@@ -42,5 +54,24 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   defp list_clips do
     Timeline.list_clips()
+  end
+
+  defp generate_oauth_url do
+    client_id = System.get_env("GOOGLE_CLIENT_ID")
+    scope = System.get_env("GOOGLE_SCOPE") || "profile email"
+
+    redirect_uri = "http://localhost:4000/auth/google/callback"
+    "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+  end
+
+  defp get_or_create_user(%{"profile" => profile}) do
+    case Repo.get_by(User, email: profile.email) do
+      nil -> User.create_user(profile)
+      %User{} = user -> user
+    end
+  end
+
+  defp get_or_create_user(_) do
+    nil
   end
 end

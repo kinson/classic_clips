@@ -35,3 +35,6 @@ npm-debug.log
 
 # ignore db
 tmp/
+
+# env
+.env

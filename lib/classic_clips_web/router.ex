@@ -17,6 +17,8 @@ defmodule ClassicClipsWeb.Router do
   scope "/", ClassicClipsWeb do
     pipe_through :browser
 
+    get "/auth/google/callback", GoogleAuthController, :index
+
     live "/", PageLive, :index
 
     live "/clips", ClipLive.Index, :index

@@ -18,6 +18,8 @@
   <%= number_input f, :clip_length %>
   <%= error_tag f, :clip_length %>
 
+  <%= hidden_input f, :user_id, value: @user.id %>
+
 
   <%= submit "Save", phx_disable_with: "Saving..." %>
 </form>
