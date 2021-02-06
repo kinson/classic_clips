@@ -1,0 +1,39 @@
+<h1>Listing Clips</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, ClassicClipsWeb.ClipLive.FormComponent,
+    id: @clip.id || :new,
+    title: @page_title,
+    action: @live_action,
+    clip: @clip,
+    return_to: Routes.clip_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Video ext</th>
+      <th>Start time</th>
+      <th>Title</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="clips">
+    <%= for clip <- @clips do %>
+      <tr id="clip-<%= clip.id %>">
+        <td><%= clip.video_ext_id %></td>
+        <td><%= clip.start_time %></td>
+        <td><%= clip.title %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.clip_show_path(@socket, :show, clip) %></span>
+          <span><%= live_patch "Edit", to: Routes.clip_index_path(@socket, :edit, clip) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: clip.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Clip", to: Routes.clip_index_path(@socket, :new) %></span>

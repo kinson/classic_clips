@@ -1,0 +1,32 @@
+<h1>Show Clip</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, ClassicClipsWeb.ClipLive.FormComponent,
+    id: @clip.id,
+    title: @page_title,
+    action: @live_action,
+    clip: @clip,
+    return_to: Routes.clip_show_path(@socket, :show, @clip) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Video ext:</strong>
+    <%= @clip.video_ext_id %>
+  </li>
+
+  <li>
+    <strong>Start time:</strong>
+    <%= @clip.start_time %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @clip.title %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.clip_show_path(@socket, :edit, @clip), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.clip_index_path(@socket, :index) %></span>

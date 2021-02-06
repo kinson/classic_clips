@@ -1,0 +1,22 @@
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "clip-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= label f, :video_ext_id %>
+  <%= text_input f, :video_ext_id %>
+  <%= error_tag f, :video_ext_id %>
+
+  <%= label f, :start_time %>
+  <%= number_input f, :start_time %>
+  <%= error_tag f, :start_time %>
+
+  <%= label f, :title %>
+  <%= text_input f, :title %>
+  <%= error_tag f, :title %>
+
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>
