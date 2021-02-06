@@ -6,17 +6,18 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
-  <%= label f, :video_ext_id %>
+  <%= label f, :title, "Title" %>
+  <%= text_input f, :title %>
+  <%= error_tag f, :title %>
+
+  <%= label f, :video_ext_id, "Youtube Url" %>
   <%= text_input f, :video_ext_id %>
   <%= error_tag f, :video_ext_id %>
 
-  <%= label f, :start_time %>
-  <%= number_input f, :start_time %>
-  <%= error_tag f, :start_time %>
+  <%= label f, :clip_length, "How Long Is the Clip (In Seconds)?" %>
+  <%= number_input f, :clip_length %>
+  <%= error_tag f, :clip_length %>
 
-  <%= label f, :title %>
-  <%= text_input f, :title %>
-  <%= error_tag f, :title %>
 
   <%= submit "Save", phx_disable_with: "Saving..." %>
 </form>

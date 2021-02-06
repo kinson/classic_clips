@@ -7,8 +7,19 @@
     return_to: Routes.clip_index_path(@socket, :index) %>
 <% end %>
 
+<div class="skeets-container">
+  <div class="skeets-button">
+    <%= live_patch "submit a new clip", to: Routes.clip_index_path(@socket, :new) %>
+  </div>
+</div>
+
 <div class="timeline-container">
-  <div class="clip-box">
+
+  <%= for clip <- @clips do %>
+    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip %>
+  <% end %>
+
+  <%# <div class="clip-box">
     <div class="clip-container">
       <div class="tas-container">
         <p class="tas-text">THE TIME LEIGH WORE HALF A SHIRT AT THE US OPEN AND MET LEBRON JAMES</p>
@@ -87,7 +98,7 @@
         <div class="leigh-label-container"><p>LEIGH STORY</p></div>
       </div>
     </div>
-  </div>
+  </div> %>
 </div>
 
 <%# <span><%= live_patch "New Clip", to: Routes.clip_index_path(@socket, :new)</span> %>

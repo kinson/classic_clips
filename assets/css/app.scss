@@ -23,7 +23,7 @@
 .phx-modal {
   opacity: 1!important;
   position: fixed;
-  z-index: 1;
+  z-index: 5;
   left: 0;
   top: 0;
   width: 100%;
@@ -101,7 +101,6 @@
 .clip-box {
   width: 33rem;
   margin: 1.5rem 1rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,13 +110,13 @@
   width: 95%;
   background-color: #efefef;
   box-shadow: 1px 1px 2px #888;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
 
   &:hover {
     transform: scale(1.05);
 
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
   }
 }
 
@@ -140,6 +139,10 @@
   margin: 1rem 1.5rem;
   z-index: 3;
   text-align: center;
+
+  &:active, &:hover {
+    color:rgb(218, 255, 79);
+  }
 }
 
 .tas-time {
@@ -232,4 +235,92 @@
     font-weight: 500;
     margin: 0.2rem 0.6rem;
   }
+}
+
+header {
+  margin: 0 auto;
+  width: 100%;
+  background: rgb(96, 0, 170);
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 2rem;
+  font-weight: 700;
+
+  & div.title {
+    max-width: 110rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  & p.classic,p.clips {
+    font-size: 4.5em;
+    margin: 1rem 1rem 0 1rem;
+
+    &.classic {
+      margin-left: 4rem;
+      color:rgb(233, 52, 215);
+    }
+
+    &.clips {
+      color:rgb(218, 255, 79);
+    }
+  }
+
+  & div.auth {
+    display: flex;
+    flex-direction: column;
+    margin: 0 4rem 0 auto;
+
+    & div.signup {
+      background-color: rgb(218, 255, 79);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 0.5rem;
+      cursor: pointer;
+  
+      & p {
+        color: #222;
+        font-size: 1.1em;
+        font-weight: 500;
+        margin: 0.2rem 0.6rem;
+      }
+    }
+
+    & p.signin {
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 1.1em;
+      margin: 1rem 0 0 0;
+      color: #fff;
+    }
+  } 
+}
+
+.skeets-container {
+  display: flex;
+  width: 100%;
+  max-width: 110rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.skeets-button {
+  background-color: red;
+  border-radius: 0.5rem;
+  margin: 0.5rem 3rem 0.5rem 2rem;
+  box-shadow: 1px 1px 2px #888;
+
+  & a {
+    color: black;
+    font-size: 1.15em;
+    font-weight: 500;
+    margin: 0.25rem 0.95rem;
+    display: inline-block;
+  }
+}
+
+#clip-form {
+  z-index: 5;
 }
