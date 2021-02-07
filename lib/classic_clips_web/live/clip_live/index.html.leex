@@ -9,9 +9,15 @@
 <% end %>
 
 <div class="skeets-container">
-  <div class="skeets-button">
-    <%= live_patch "submit a new clip", to: Routes.clip_index_path(@socket, :new) %>
-  </div>
+    <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new) %>
+
+  <p class="sort-by"> sort by: </p>
+  <select>
+   <option>NEW</option>
+   <option>top today</option>
+   <option>best of the week</option>
+   <option>goat</option>
+  </select>
 </div>
 
 <div class="timeline-container">

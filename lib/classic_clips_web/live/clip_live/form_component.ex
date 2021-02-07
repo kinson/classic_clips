@@ -41,10 +41,12 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
+    IO.inspect(clip_params)
     with {:ok, video_data} <- get_clip_data(clip_params),
          true <- is_no_dunks_video?(video_data),
          thumbnail_url <- get_thumbnail_url(video_data),
-         {:ok, _clip} <- Timeline.create_clip(clip_params, socket.assigns.user) do
+         new_clip_params <- Map.merge(clip_params, %{"yt_thumbnail_url" => thumbnail_url}),
+         {:ok, _clip} <- Timeline.create_clip(new_clip_params) do
 
       {:noreply,
        socket
@@ -60,7 +62,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
     end
   end
 
-  defp get_clip_data(%{"video_ext_id" => clip_url}) do
+  defp get_clip_data(%{"yt_video_url" => clip_url}) do
     base_url = "https://www.youtube.com/oembed?url="
     full_url = base_url <> clip_url <> "?format=json"
 

@@ -49,9 +49,9 @@ defmodule ClassicClips.Timeline do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_clip(attrs \\ %{}, %ClassicClips.Timeline.User{id: user_id}) do
+  def create_clip(attrs \\ %{}) do
     %Clip{}
-    |> Clip.changeset(attrs, user_id)
+    |> Clip.changeset(attrs)
     |> Repo.insert()
   end
 

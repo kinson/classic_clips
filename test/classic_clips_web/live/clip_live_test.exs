@@ -5,9 +5,9 @@ defmodule ClassicClipsWeb.ClipLiveTest do
 
   alias ClassicClips.Timeline
 
-  @create_attrs %{clip_length: 42, title: "some title", video_ext_id: "some video_ext_id"}
-  @update_attrs %{clip_length: 43, title: "some updated title", video_ext_id: "some updated video_ext_id"}
-  @invalid_attrs %{clip_length: nil, title: nil, video_ext_id: nil}
+  @create_attrs %{clip_length: 42, title: "some title", yt_video_url: "some yt_video_url"}
+  @update_attrs %{clip_length: 43, title: "some updated title", yt_video_url: "some updated yt_video_url"}
+  @invalid_attrs %{clip_length: nil, title: nil, yt_video_url: nil}
 
   defp fixture(:clip) do
     {:ok, clip} = Timeline.create_clip(@create_attrs)

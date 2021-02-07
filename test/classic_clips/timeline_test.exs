@@ -6,9 +6,9 @@ defmodule ClassicClips.TimelineTest do
   describe "clips" do
     alias ClassicClips.Timeline.Clip
 
-    @valid_attrs %{clip_length: 42, title: "some title", video_ext_id: "some video_ext_id"}
-    @update_attrs %{clip_length: 43, title: "some updated title", video_ext_id: "some updated video_ext_id"}
-    @invalid_attrs %{clip_length: nil, title: nil, video_ext_id: nil}
+    @valid_attrs %{clip_length: 42, title: "some title", yt_video_url: "some yt_video_url"}
+    @update_attrs %{clip_length: 43, title: "some updated title", yt_video_url: "some updated yt_video_url"}
+    @invalid_attrs %{clip_length: nil, title: nil, yt_video_url: nil}
 
     def clip_fixture(attrs \\ %{}) do
       {:ok, clip} =
@@ -33,7 +33,7 @@ defmodule ClassicClips.TimelineTest do
       assert {:ok, %Clip{} = clip} = Timeline.create_clip(@valid_attrs)
       assert clip.clip_length == 42
       assert clip.title == "some title"
-      assert clip.video_ext_id == "some video_ext_id"
+      assert clip.yt_video_url == "some yt_video_url"
     end
 
     test "create_clip/1 with invalid data returns error changeset" do
@@ -45,7 +45,7 @@ defmodule ClassicClips.TimelineTest do
       assert {:ok, %Clip{} = clip} = Timeline.update_clip(clip, @update_attrs)
       assert clip.clip_length == 43
       assert clip.title == "some updated title"
-      assert clip.video_ext_id == "some updated video_ext_id"
+      assert clip.yt_video_url == "some updated yt_video_url"
     end
 
     test "update_clip/2 with invalid data returns error changeset" do
