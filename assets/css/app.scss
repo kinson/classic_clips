@@ -173,24 +173,36 @@
   font-weight: 600;
   color: #222;
   position: relative;
-  margin: 0 0 0 0.5rem;
+  margin: 0 0 0 1rem;
+}
+
+div.leigh-score-voted.icon {
+  background-color: rgb(96, 0, 170);
+  cursor: auto;
+  opacity: 0.7;
+
+  & div.arrow, & div.arrow::after, & div.arrow::before {
+    background-color: #fff;
+  }
 }
 
 .icon {
   position: relative;
-  width: 40px;
-  height: 3rem;
+  width: 3.25rem;
+  height: 3.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  border-radius: 0.5rem;
+  margin-left: 1rem;
 }
 
 .arrow {
   position: absolute;
   width: 5px;
-  height: 80%;
+  height: 70%;
   background-color: rgb(233, 100, 215);
 
   transition: all 0.1s ease-in;

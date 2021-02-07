@@ -17,7 +17,7 @@
   </form>
 </div>
 
-<div id="clipss" class="timeline-container" phx-update="prepend">
+<div id="clipss" class="timeline-container" phx-update="replace">
   <%= for clip <- @clips do %>
     <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
   <% end %>

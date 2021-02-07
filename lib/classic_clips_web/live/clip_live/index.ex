@@ -19,7 +19,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       |> assign(:votes, get_user_votes(user))
       |> assign(:gooogle_auth_url, generate_oauth_url())
 
-    {:ok, modified_socket, temporary_assigns: [clips: []]}
+    {:ok, modified_socket}
   end
 
   @impl true
@@ -61,13 +61,31 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:noreply, assign(socket, :clips, list_top_clips(sort_timeframe))}
   end
 
-  @impl true
-  def handle_info({:clip_created, clip}, socket) do
-    {:noreply, update(socket, :clips, fn clips -> [clip | clips] end)}
+  def handle_event(
+        "inc_votes",
+        %{"clip" => clip_id},
+        %{assigns: %{votes: votes, user: user}} = socket
+      ) do
+    case Timeline.can_vote?(clip_id, votes, user) do
+      true ->
+        {:noreply, socket}
+
+      false ->
+        {:ok, vote} = ClassicClips.Timeline.inc_votes(clip_id, user)
+        {:noreply, assign(socket, :votes, [vote | votes])}
+    end
   end
 
+  @impl true
+  # def handle_info({:clip_created, clip}, socket) do
+  #   {:noreply, update(socket, :clips, fn clips -> clips end)}
+  # end
+
   def handle_info({:clip_updated, clip}, socket) do
-    {:noreply, update(socket, :clips, fn clips -> [clip | clips] end)}
+    {:noreply,
+     update(socket, :clips, fn clips ->
+       Enum.map(clips, &if(&1.id == clip.id, do: clip, else: &1))
+     end)}
   end
 
   defp list_top_clips do

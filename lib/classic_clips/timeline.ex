@@ -122,7 +122,7 @@ defmodule ClassicClips.Timeline do
     |> Repo.update()
   end
 
-  def inc_votes(%Clip{id: clip_id}, %User{id: user_id}) do
+  def inc_votes(clip_id, %User{id: user_id}) do
     {:ok, clip} =
       from(c in Clip, where: c.id == ^clip_id, select: c)
       |> Repo.update_all(inc: [vote_count: 1])
@@ -374,5 +374,20 @@ defmodule ClassicClips.Timeline do
   defp broadcast({:ok, clip}, event) do
     Phoenix.PubSub.broadcast(ClassicClips.PubSub, "clips", {event, clip})
     {:ok, clip}
+  end
+
+  def get_vote_class(clip_id, votes, user) do
+    case can_vote?(clip_id, votes, user) do
+      true -> "leigh-score-voted"
+      false -> "leigh-score-not-voted"
+    end
+  end
+
+  def can_vote?(clip_id, votes, user) do
+    has_voted_already?(clip_id, votes) and not is_nil(user)
+  end
+
+  defp has_voted_already?(clip_id, votes) do
+    Enum.any?(votes, fn vote -> vote.clip_id == clip_id end)
   end
 end

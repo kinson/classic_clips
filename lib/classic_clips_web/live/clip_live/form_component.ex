@@ -58,6 +58,8 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
       false ->
         {:noreply, assign(socket, form_error: "can only be a NoDunks video")}
+
+      {:error, _} -> {:noreply, socket}
     end
   end
 
