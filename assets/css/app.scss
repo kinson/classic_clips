@@ -39,6 +39,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+  max-width: 60rem;
 }
 
 .phx-modal-close {
@@ -125,6 +126,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .tas-image {
@@ -162,6 +164,7 @@
   align-items: center;
   height: 6rem;
   position: relative;
+  overflow: hidden;
 }
 
 .leigh-score {
@@ -280,7 +283,7 @@ header {
       border-radius: 0.5rem;
       cursor: pointer;
   
-      & p {
+      & a {
         color: #222;
         font-size: 1.1em;
         font-weight: 500;
@@ -321,6 +324,52 @@ header {
   }
 }
 
+.username {
+  margin: 0 3rem 0 auto;
+  color: #fff;
+  font-weight: 300;
+  & span {
+    text-decoration: underline;
+  }
+}
+
 #clip-form {
   z-index: 5;
+  margin: 0 auto 0 auto;
+
+  & .input-group {
+    width: 80%;
+    max-width: 40rem;
+    margin: 0 auto 1rem auto;
+  }
+
+  & button.submit {
+    display: block;
+    margin: 0 auto;
+
+    color:rgb(218, 255, 79);
+    background-color: rgb(96, 0, 170);
+    font-size: 1.0em;
+    letter-spacing: 0.2rem;
+  }
+}
+
+.login-for-jd {
+  width: 80%;
+  max-width: 40rem;
+  margin: 0 auto 2rem auto;
+  color: red;
+  line-height: 1.6em;
+  font-size: 1.05em;
+}
+
+.phx-modal-close {
+  line-height: 0.69em;
+  font-size: 2.1em;
+}
+
+h2.modal-header {
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
 }

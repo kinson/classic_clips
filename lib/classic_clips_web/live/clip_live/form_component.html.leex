@@ -1,4 +1,8 @@
-<h2><%= @title %></h2>
+<h2 class="modal-header">Craft a New Classic Clip</h2>
+
+<%= if is_nil(@user) do %>
+  <p class="login-for-jd"> Signup or login to share a classic clip with tbj / starters / free agents / no dunks crew &amp; their fans.</p>
+<% end %>
 
 <%= f = form_for @changeset, "#",
   id: "clip-form",
@@ -6,20 +10,27 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
-  <%= label f, :title, "Title" %>
-  <%= text_input f, :title %>
-  <%= error_tag f, :title %>
+  <div class="input-group">
+    <%= label f, :title, "Title" %>
+    <%= text_input f, :title, placeholder: "Leigh's story about old eight toes" %>
+    <%= error_tag f, :title %>
+  </div>
 
-  <%= label f, :video_ext_id, "Youtube Url" %>
-  <%= text_input f, :video_ext_id %>
-  <%= error_tag f, :video_ext_id %>
+  <div class="input-group">
+    <%= label f, :video_ext_id, "Youtube URL With Timestamp" %>
+    <%= text_input f, :video_ext_id, placeholder: "https://youtu.be/HnGKUWiIvvE?t=3197" %>
+    <%= error_tag f, :video_ext_id %>
+  </div>
 
-  <%= label f, :clip_length, "How Long Is the Clip (In Seconds)?" %>
-  <%= number_input f, :clip_length %>
-  <%= error_tag f, :clip_length %>
+  <div class="input-group">
+    <%= label f, :clip_length, "How Long Is the Clip (In Seconds)?" %>
+    <%= number_input f, :clip_length, placeholder: "Optional" %>
+    <%= error_tag f, :clip_length %>
+  </div>
 
-  <%= hidden_input f, :user_id, value: @user.id %>
+  <%= if @user do %>
+    <%= hidden_input f, :user_id, value: @user.id %>
+  <% end %>
 
-
-  <%= submit "Save", phx_disable_with: "Saving..." %>
+  <%= submit "SAVE", phx_disable_with: "Saving...", class: "submit", disabled: is_nil(@user) %>
 </form>

@@ -15,14 +15,17 @@ defmodule ClassicClips.Timeline.Clip do
 
   @doc false
   def changeset(clip, attrs, user_id) do
+    IO.inspect clip
+    IO.inspect attrs
+    IO.inspect user_id
     clip
     |> cast(attrs, [:video_ext_id, :clip_length, :title, :user_id])
-    |> validate_required([:video_ext_id, :clip_length, :title, :user_id])
+    |> validate_required([:video_ext_id, :title, :user_id])
   end
 
   def changeset(clip, attrs) do
     clip
     |> cast(attrs, [:video_ext_id, :clip_length, :title, :user_id])
-    |> validate_required([:video_ext_id, :clip_length, :title, :user_id])
+    |> validate_required([:video_ext_id, :title, :user_id])
   end
 end

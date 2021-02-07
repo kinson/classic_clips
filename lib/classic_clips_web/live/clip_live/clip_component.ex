@@ -15,7 +15,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
             <div class="arrow"></div>
           </div>
           <p class="leigh-score">111</p>
-          <div class="leigh-label-container"><p>@nodoubtaboutit</p></div>
+          <div class="leigh-label-container"><p><%= @clip.user.username || @clip.user.email %></p></div>
         </div>
       </div>
     </div>

@@ -8,15 +8,13 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    user = get_or_create_user(session)
+    {:ok, user} = get_or_create_user(session)
 
     modified_socket =
       socket
       |> assign(:user, user)
       |> assign(:clips, list_clips())
       |> assign(:gooogle_auth_url, generate_oauth_url())
-
-    IO.inspect modified_socket.assigns
 
     {:ok, modified_socket}
   end
@@ -67,7 +65,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   defp get_or_create_user(%{"profile" => profile}) do
     case Repo.get_by(User, email: profile.email) do
       nil -> User.create_user(profile)
-      %User{} = user -> user
+      %User{} = user -> {:ok, user}
     end
   end
 

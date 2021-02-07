@@ -18,7 +18,7 @@ defmodule ClassicClips.Timeline do
 
   """
   def list_clips do
-    Repo.all(Clip)
+    Repo.all(Clip) |> Repo.preload(:user)
   end
 
   @doc """
@@ -49,9 +49,9 @@ defmodule ClassicClips.Timeline do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_clip(attrs \\ %{}, %ClassicClips.Timeline.User{} = user) do
+  def create_clip(attrs \\ %{}, %ClassicClips.Timeline.User{id: user_id}) do
     %Clip{}
-    |> Clip.changeset(attrs, user)
+    |> Clip.changeset(attrs, user_id)
     |> Repo.insert()
   end
 
