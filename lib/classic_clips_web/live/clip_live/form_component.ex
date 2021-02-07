@@ -41,16 +41,46 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
-    case Timeline.create_clip(clip_params, socket.assigns.user) do
-      {:ok, _clip} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Clip created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+    with {:ok, video_data} <- get_clip_data(clip_params),
+         true <- is_no_dunks_video?(video_data),
+         thumbnail_url <- get_thumbnail_url(video_data),
+         {:ok, _clip} <- Timeline.create_clip(clip_params, socket.assigns.user) do
 
+      {:noreply,
+       socket
+       |> put_flash(:info, "Clip created successfully")
+       |> push_redirect(to: socket.assigns.return_to)}
+    else
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect changeset
+        IO.inspect(changeset)
         {:noreply, assign(socket, changeset: changeset)}
+
+      false ->
+        {:noreply, assign(socket, form_error: "can only be a NoDunks video")}
     end
   end
+
+  defp get_clip_data(%{"video_ext_id" => clip_url}) do
+    base_url = "https://www.youtube.com/oembed?url="
+    full_url = base_url <> clip_url <> "?format=json"
+
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(full_url)
+
+    Jason.decode(body) |> IO.inspect()
+  end
+
+  defp is_no_dunks_video?(%{"author_name" => "NoDunks Inc"}), do: true
+
+  defp is_no_dunks_video?(%{
+         "author_url" => "https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g"
+       }),
+       do: true
+
+  defp is_no_dunks_video?(_), do: false
+
+  defp get_thumbnail_url(%{"thumbnail_url" => thumbnail_url}) do
+    String.replace(thumbnail_url, "hqdefault.jpg", "mqdefault.jpg")
+  end
+
+  defp get_thumbnail_url(_), do: ""
 end
