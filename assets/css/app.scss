@@ -16,6 +16,7 @@
 .phx-disconnected{
   cursor: wait;
 }
+
 .phx-disconnected *{
   pointer-events: none;
 }
@@ -321,6 +322,10 @@ header {
     display: block;
     text-decoration: underline;
     line-height: 1.5em;
+  }
+
+  & form {
+    margin: 0;
   }
 
   & select {

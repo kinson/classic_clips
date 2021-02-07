@@ -8,15 +8,18 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
+    if connected?(socket), do: Timeline.subscribe()
+
     {:ok, user} = get_or_create_user(session)
 
     modified_socket =
       socket
       |> assign(:user, user)
-      |> assign(:clips, list_clips())
+      |> assign(:clips, list_top_clips())
+      |> assign(:votes, get_user_votes(user))
       |> assign(:gooogle_auth_url, generate_oauth_url())
 
-    {:ok, modified_socket}
+    {:ok, modified_socket, temporary_assigns: [clips: []]}
   end
 
   @impl true
@@ -47,11 +50,36 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     clip = Timeline.get_clip!(id)
     {:ok, _} = Timeline.delete_clip(clip)
 
-    {:noreply, assign(socket, :clips, list_clips())}
+    {:noreply, assign(socket, :clips, list_top_clips())}
   end
 
-  defp list_clips do
-    Timeline.list_clips()
+  def handle_event("change_sort", %{"sort" => %{"timeframe" => "new"}}, socket) do
+    {:noreply, assign(socket, :clips, list_new_clips())}
+  end
+
+  def handle_event("change_sort", %{"sort" => %{"timeframe" => sort_timeframe}}, socket) do
+    {:noreply, assign(socket, :clips, list_top_clips(sort_timeframe))}
+  end
+
+  @impl true
+  def handle_info({:clip_created, clip}, socket) do
+    {:noreply, update(socket, :clips, fn clips -> [clip | clips] end)}
+  end
+
+  def handle_info({:clip_updated, clip}, socket) do
+    {:noreply, update(socket, :clips, fn clips -> [clip | clips] end)}
+  end
+
+  defp list_top_clips do
+    list_top_clips("today")
+  end
+
+  defp list_top_clips(timeframe) do
+    Timeline.list_top_clips_by_date(timeframe)
+  end
+
+  defp list_new_clips() do
+    Timeline.list_newest_clips()
   end
 
   defp generate_oauth_url do
@@ -70,6 +98,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp get_or_create_user(_) do
-    nil
+    {:ok, nil}
+  end
+
+  defp get_user_votes(nil), do: []
+
+  defp get_user_votes(%User{} = user) do
+    Timeline.list_votes_for_user(user)
   end
 end

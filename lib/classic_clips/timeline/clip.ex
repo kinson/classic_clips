@@ -8,6 +8,7 @@ defmodule ClassicClips.Timeline.Clip do
     field :title, :string
     field :yt_video_url, :string
     field :yt_thumbnail_url, :string
+    field :vote_count, :integer
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
 

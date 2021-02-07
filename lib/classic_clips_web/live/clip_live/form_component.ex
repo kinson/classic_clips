@@ -41,7 +41,6 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
-    IO.inspect(clip_params)
     with {:ok, video_data} <- get_clip_data(clip_params),
          true <- is_no_dunks_video?(video_data),
          thumbnail_url <- get_thumbnail_url(video_data),
@@ -68,7 +67,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
     {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(full_url)
 
-    Jason.decode(body) |> IO.inspect()
+    Jason.decode(body)
   end
 
   defp is_no_dunks_video?(%{"author_name" => "NoDunks Inc"}), do: true

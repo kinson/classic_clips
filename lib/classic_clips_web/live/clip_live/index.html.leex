@@ -11,17 +11,14 @@
 <div class="skeets-container">
     <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new) %>
 
-  <p class="sort-by"> sort by: </p>
-  <select>
-   <option>NEW</option>
-   <option>top today</option>
-   <option>best of the week</option>
-   <option>goat</option>
-  </select>
+  <p class="sort-by">viewing:</p>
+  <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort" %>
+    <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: "today" %>
+  </form>
 </div>
 
-<div class="timeline-container">
+<div id="clipss" class="timeline-container" phx-update="prepend">
   <%= for clip <- @clips do %>
-    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip %>
+    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
   <% end %>
 </div>

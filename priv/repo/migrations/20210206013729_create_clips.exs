@@ -7,6 +7,7 @@ defmodule ClassicClips.Repo.Migrations.CreateClips do
       add :title, :string, null: false
       add :yt_video_url, :string, null: false
       add :yt_thumbnail_url, :string, null: false
+      add :vote_count, :integer, default: 0, null: false
       add :clip_length, :integer
 
       timestamps(type: :utc_datetime)

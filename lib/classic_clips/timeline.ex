@@ -6,7 +6,7 @@ defmodule ClassicClips.Timeline do
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
-  alias ClassicClips.Timeline.Clip
+  alias ClassicClips.Timeline.{Clip, Vote, User}
 
   @doc """
   Returns the list of clips.
@@ -19,6 +19,55 @@ defmodule ClassicClips.Timeline do
   """
   def list_clips do
     Repo.all(Clip) |> Repo.preload(:user)
+  end
+
+  def list_newest_clips() do
+    from(c in Clip,
+      select: c,
+      order_by: [desc: c.inserted_at]
+    )
+    |> Repo.all()
+    |> Repo.preload(:user)
+  end
+
+  @day_in_seconds 60 * 60 * 24
+
+  def list_top_clips_by_date("today") do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * @day_in_seconds, :second)
+    |> list_top_clips()
+  end
+
+  def list_top_clips_by_date("week") do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * 7 * @day_in_seconds, :second)
+    |> list_top_clips()
+  end
+
+  def list_top_clips_by_date("goat") do
+    # This could be a problem 10 years from now...good problem tho
+    DateTime.utc_now()
+    |> DateTime.add(-1 * 365 * 10 * @day_in_seconds, :second)
+    |> list_top_clips()
+  end
+
+  @doc """
+  Returns the list of clips for a timeframe.
+
+  ## Examples
+
+      iex> list_clips()
+      [%Clip{}, ...]
+
+  """
+  def list_top_clips(lower_date_bound) do
+    from(c in Clip,
+      select: c,
+      where: c.inserted_at > ^lower_date_bound,
+      order_by: [desc: c.vote_count]
+    )
+    |> Repo.all()
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -71,6 +120,24 @@ defmodule ClassicClips.Timeline do
     clip
     |> Clip.changeset(attrs)
     |> Repo.update()
+  end
+
+  def inc_votes(%Clip{id: clip_id}, %User{id: user_id}) do
+    {:ok, clip} =
+      from(c in Clip, where: c.id == ^clip_id, select: c)
+      |> Repo.update_all(inc: [vote_count: 1])
+      |> case do
+        {1, [clip]} -> {:ok, Repo.preload(clip, :user)}
+        error -> error
+      end
+
+    {:ok, vote} =
+      Vote.changeset(%Vote{}, %{clip_id: clip_id, user_id: user_id, up: true})
+      |> Repo.insert(returning: true)
+
+    broadcast({:ok, clip}, :clip_updated)
+
+    {:ok, vote}
   end
 
   @doc """
@@ -213,6 +280,10 @@ defmodule ClassicClips.Timeline do
     Repo.all(Vote)
   end
 
+  def list_votes_for_user(%User{id: id}) do
+    from(v in Vote, where: v.user_id == ^id, select: v) |> Repo.all()
+  end
+
   @doc """
   Gets a single vote.
 
@@ -292,5 +363,16 @@ defmodule ClassicClips.Timeline do
   """
   def change_vote(%Vote{} = vote, attrs \\ %{}) do
     Vote.changeset(vote, attrs)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clips")
+  end
+
+  defp broadcast({:error, _reason} = error), do: error
+
+  defp broadcast({:ok, clip}, event) do
+    Phoenix.PubSub.broadcast(ClassicClips.PubSub, "clips", {event, clip})
+    {:ok, clip}
   end
 end
