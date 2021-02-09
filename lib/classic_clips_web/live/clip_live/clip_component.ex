@@ -14,7 +14,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
     <div class="clip-box">
       <div class="clip-container">
         <div class="tas-container">
-          <%= link @clip.title |> String.upcase(), to: @clip.yt_thumbnail_url, class: "tas-text", target: "_blank" %>
+          <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
           <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
         </div>

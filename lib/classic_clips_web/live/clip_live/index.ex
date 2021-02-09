@@ -66,11 +66,11 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       ) do
     case Timeline.can_vote?(clip_id, votes, user) do
       true ->
-        {:noreply, socket}
-
-      false ->
         {:ok, vote} = ClassicClips.Timeline.inc_votes(clip_id, user)
         {:noreply, assign(socket, :votes, [vote | votes])}
+
+      false ->
+        {:noreply, socket}
     end
   end
 
@@ -91,15 +91,15 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp list_top_clips(timeframe) do
-    Timeline.list_top_clips_by_date(timeframe)
+    Timeline.list_top_clips_by_date(timeframe, [limit: 12, offset: 0])
   end
 
   defp list_new_clips() do
-    Timeline.list_newest_clips()
+    Timeline.list_newest_clips([limit: 12, offset: 0])
   end
 
   defp generate_oauth_url do
-    %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "80")}
+    %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "4000")}
     |> ElixirAuthGoogle.generate_oauth_url()
   end
 

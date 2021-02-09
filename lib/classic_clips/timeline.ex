@@ -21,10 +21,12 @@ defmodule ClassicClips.Timeline do
     Repo.all(Clip) |> Repo.preload(:user)
   end
 
-  def list_newest_clips() do
+  def list_newest_clips([limit: limit, offset: offset]) do
     from(c in Clip,
       select: c,
-      order_by: [desc: c.inserted_at]
+      order_by: [desc: c.inserted_at],
+      limit: ^limit,
+      offset: ^offset
     )
     |> Repo.all()
     |> Repo.preload(:user)
@@ -32,23 +34,23 @@ defmodule ClassicClips.Timeline do
 
   @day_in_seconds 60 * 60 * 24
 
-  def list_top_clips_by_date("today") do
+  def list_top_clips_by_date("today", opts) do
     DateTime.utc_now()
     |> DateTime.add(-1 * @day_in_seconds, :second)
-    |> list_top_clips()
+    |> list_top_clips(opts)
   end
 
-  def list_top_clips_by_date("week") do
+  def list_top_clips_by_date("week", opts) do
     DateTime.utc_now()
     |> DateTime.add(-1 * 7 * @day_in_seconds, :second)
-    |> list_top_clips()
+    |> list_top_clips(opts)
   end
 
-  def list_top_clips_by_date("goat") do
+  def list_top_clips_by_date("goat", opts) do
     # This could be a problem 10 years from now...good problem tho
     DateTime.utc_now()
     |> DateTime.add(-1 * 365 * 10 * @day_in_seconds, :second)
-    |> list_top_clips()
+    |> list_top_clips(opts)
   end
 
   @doc """
@@ -60,10 +62,12 @@ defmodule ClassicClips.Timeline do
       [%Clip{}, ...]
 
   """
-  def list_top_clips(lower_date_bound) do
+  def list_top_clips(lower_date_bound, [limit: limit, offset: offset]) do
     from(c in Clip,
       select: c,
       where: c.inserted_at > ^lower_date_bound,
+      limit: ^limit,
+      offset: ^offset,
       order_by: [desc: c.vote_count]
     )
     |> Repo.all()
@@ -376,15 +380,17 @@ defmodule ClassicClips.Timeline do
     {:ok, clip}
   end
 
+  def get_vote_class(_, _, user) when is_nil(user), do: "leigh-score-not-logged-in"
+
   def get_vote_class(clip_id, votes, user) do
     case can_vote?(clip_id, votes, user) do
-      true -> "leigh-score-voted"
-      false -> "leigh-score-not-voted"
+      true -> "leigh-score-not-voted"
+      false -> "leigh-score-voted"
     end
   end
 
   def can_vote?(clip_id, votes, user) do
-    has_voted_already?(clip_id, votes) and not is_nil(user)
+    not is_nil(user) and not has_voted_already?(clip_id, votes)
   end
 
   defp has_voted_already?(clip_id, votes) do

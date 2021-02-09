@@ -186,6 +186,15 @@ div.leigh-score-voted.icon {
   }
 }
 
+div.leigh-score-not-logged-in.icon {
+  background-color: transparent;
+  cursor: auto;
+
+  & div.arrow, & div.arrow::after, & div.arrow::before {
+    background-color: #888;
+  }
+}
+
 .icon {
   position: relative;
   width: 3.25rem;
@@ -228,12 +237,12 @@ div.leigh-score-voted.icon {
 }
 
 .arrow::after {
-  left: -0.37rem;
+  left: -0.4rem;
   transform: rotate(45deg);
 }
 
 .arrow::before {
-  left: 0.37rem;
+  left: 0.4rem;
   transform: rotate(-45deg);
 }
 
