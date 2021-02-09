@@ -9,11 +9,16 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     if connected?(socket), do: Timeline.subscribe()
 
     {:ok, user} = get_or_create_user(session)
+    pagination = %{limit: 12, offset: 0}
+    category = "today"
+    {clips, pagination} = list_top_clips(category, pagination)
 
     modified_socket =
       socket
       |> assign(:user, user)
-      |> assign(:clips, list_top_clips())
+      |> assign(:clips, clips)
+      |> assign(:category, category)
+      |> assign(:pagination, pagination)
       |> assign(:votes, get_user_votes(user))
       |> assign(:gooogle_auth_url, generate_oauth_url())
 
@@ -48,15 +53,29 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     clip = Timeline.get_clip!(id)
     {:ok, _} = Timeline.delete_clip(clip)
 
-    {:noreply, assign(socket, :clips, list_top_clips())}
+    {:noreply, assign(socket, :clips, list_top_clips(socket.assigns.pagination))}
   end
 
   def handle_event("change_sort", %{"sort" => %{"timeframe" => "new"}}, socket) do
-    {:noreply, assign(socket, :clips, list_new_clips())}
+    {clips, pagination} = list_new_clips(socket.assigns.pagination)
+
+    modified_socket =
+      assign(socket, :clips, clips)
+      |> assign(:pagination, pagination)
+      |> assign(:category, "new")
+
+    {:noreply, modified_socket}
   end
 
   def handle_event("change_sort", %{"sort" => %{"timeframe" => sort_timeframe}}, socket) do
-    {:noreply, assign(socket, :clips, list_top_clips(sort_timeframe))}
+    {clips, pagination} = list_top_clips(sort_timeframe, socket.assigns.pagination)
+
+    modified_socket =
+      assign(socket, :clips, clips)
+      |> assign(:pagination, pagination)
+      |> assign(:category, sort_timeframe)
+
+    {:noreply, modified_socket}
   end
 
   def handle_event(
@@ -74,6 +93,104 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     end
   end
 
+  def handle_event(
+        "inc_page",
+        _,
+        %{assigns: %{pagination: %{current_page: current_page, total_pages: total_pages}}} =
+          socket
+      )
+      when current_page >= total_pages,
+      do: {:noreply, socket}
+
+  def handle_event(
+        "inc_page",
+        _,
+        %{
+          assigns: %{
+            category: "new",
+            pagination:
+              %{
+                offset: offset,
+                limit: limit,
+                current_page: current_page,
+                total_pages: total_pages
+              } = pagination
+          }
+        } = socket
+      ) do
+    if current_page >= total_pages, do: {:noreply, socket}
+    {clips, pagination} = list_new_clips(%{pagination | offset: offset + limit})
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
+  def handle_event(
+        "inc_page",
+        _,
+        %{
+          assigns: %{
+            category: category,
+            pagination:
+              %{
+                offset: offset,
+                limit: limit,
+                current_page: current_page,
+                total_pages: total_pages
+              } = pagination
+          }
+        } = socket
+      ) do
+    if current_page >= total_pages, do: {:noreply, socket}
+    {clips, pagination} = list_top_clips(category, %{pagination | offset: offset + limit})
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
+  def handle_event("dec_page", _, %{assigns: %{pagination: %{current_page: 1}}} = socket),
+    do: {:noreply, socket}
+
+  def handle_event(
+        "dec_page",
+        _,
+        %{
+          assigns: %{
+            category: "new",
+            pagination:
+              %{
+                offset: offset,
+                limit: limit
+              } = pagination
+          }
+        } = socket
+      ) do
+    {clips, pagination} = list_new_clips(%{pagination | offset: offset - limit})
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
+  def handle_event(
+        "dec_page",
+        _,
+        %{
+          assigns: %{
+            category: category,
+            pagination:
+              %{
+                offset: offset,
+                limit: limit
+              } = pagination
+          }
+        } = socket
+      ) do
+    {clips, pagination} = list_top_clips(category, %{pagination | offset: offset - limit})
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
   @impl true
   # def handle_info({:clip_created, clip}, socket) do
   #   {:noreply, update(socket, :clips, fn clips -> clips end)}
@@ -86,16 +203,20 @@ defmodule ClassicClipsWeb.ClipLive.Index do
      end)}
   end
 
-  defp list_top_clips do
-    list_top_clips("today")
+  defp list_top_clips(pagination) do
+    list_top_clips("today", pagination)
   end
 
-  defp list_top_clips(timeframe) do
-    Timeline.list_top_clips_by_date(timeframe, [limit: 12, offset: 0])
+  defp list_top_clips(timeframe, %{offset: offset, limit: limit} = pagination) do
+    {:ok, clips, count} = Timeline.list_top_clips_by_date(timeframe, pagination)
+
+    {clips, get_pagination_info(count, offset, limit)}
   end
 
-  defp list_new_clips() do
-    Timeline.list_newest_clips([limit: 12, offset: 0])
+  defp list_new_clips(%{limit: limit, offset: offset} = pagination) do
+    {:ok, clips, count} = Timeline.list_newest_clips(pagination)
+
+    {clips, get_pagination_info(count, offset, limit)}
   end
 
   defp generate_oauth_url do
@@ -118,5 +239,18 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   defp get_user_votes(%User{} = user) do
     Timeline.list_votes_for_user(user)
+  end
+
+  defp get_pagination_info(count, offset, limit) do
+    current_page = floor(offset / limit + 1)
+    total_pages = ceil(count / limit)
+
+    %{
+      current_page: current_page,
+      total_pages: total_pages,
+      limit: limit,
+      offset: offset,
+      count: count
+    }
   end
 end

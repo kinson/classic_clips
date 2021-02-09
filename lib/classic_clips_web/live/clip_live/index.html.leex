@@ -22,3 +22,9 @@
     <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
   <% end %>
 </div>
+
+<div class="pagination">
+  <div class="page-arrow left" phx-click="dec_page"></div>
+  <p class="pagination-text"><%= Access.get(@pagination, :current_page) %> / <%= Access.get(@pagination, :total_pages) %></p>
+  <div class="page-arrow right" phx-click="inc_page"></div>
+</div>

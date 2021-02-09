@@ -21,15 +21,24 @@ defmodule ClassicClips.Timeline do
     Repo.all(Clip) |> Repo.preload(:user)
   end
 
-  def list_newest_clips([limit: limit, offset: offset]) do
-    from(c in Clip,
-      select: c,
-      order_by: [desc: c.inserted_at],
-      limit: ^limit,
-      offset: ^offset
-    )
-    |> Repo.all()
-    |> Repo.preload(:user)
+  def list_newest_clips(%{limit: limit, offset: offset}) do
+    clips =
+      from(c in Clip,
+        select: c,
+        order_by: [desc: c.inserted_at],
+        limit: ^limit,
+        offset: ^offset
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
+
+    count =
+      from(c in Clip,
+        select: count(c.id)
+      )
+      |> Repo.one()
+
+      {:ok, clips, count}
   end
 
   @day_in_seconds 60 * 60 * 24
@@ -62,16 +71,26 @@ defmodule ClassicClips.Timeline do
       [%Clip{}, ...]
 
   """
-  def list_top_clips(lower_date_bound, [limit: limit, offset: offset]) do
-    from(c in Clip,
-      select: c,
-      where: c.inserted_at > ^lower_date_bound,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: [desc: c.vote_count]
-    )
-    |> Repo.all()
-    |> Repo.preload(:user)
+  def list_top_clips(lower_date_bound, %{limit: limit, offset: offset}) do
+    clips =
+      from(c in Clip,
+        select: c,
+        where: c.inserted_at > ^lower_date_bound,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: c.vote_count]
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
+
+    count =
+      from(c in Clip,
+        select: count(c.id),
+        where: c.inserted_at > ^lower_date_bound
+      )
+      |> Repo.one()
+
+    {:ok, clips, count}
   end
 
   @doc """

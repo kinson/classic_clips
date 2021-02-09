@@ -37,6 +37,6 @@ clips = Enum.map(titles, fn title ->
     inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
     updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   }
-end) |> IO.inspect()
+end)
 
 ClassicClips.Repo.insert_all(ClassicClips.Timeline.Clip, clips)

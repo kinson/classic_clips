@@ -13,16 +13,16 @@
   transition: opacity 1s ease-out;
 }
 
-.phx-disconnected{
+.phx-disconnected {
   cursor: wait;
 }
 
-.phx-disconnected *{
+.phx-disconnected * {
   pointer-events: none;
 }
 
 .phx-modal {
-  opacity: 1!important;
+  opacity: 1 !important;
   position: fixed;
   z-index: 5;
   left: 0;
@@ -30,8 +30,8 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .phx-modal-content {
@@ -56,7 +56,6 @@
   text-decoration: none;
   cursor: pointer;
 }
-
 
 /* Alerts and form errors */
 .alert {
@@ -109,16 +108,16 @@
 }
 
 .clip-container {
-  width: 95%;
+  width: 96%;
   background-color: #efefef;
   box-shadow: 1px 1px 2px #888;
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
   position: relative;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
   }
 }
 
@@ -143,8 +142,9 @@
   z-index: 3;
   text-align: center;
 
-  &:active, &:hover {
-    color:rgb(218, 255, 79);
+  &:active,
+  &:hover {
+    color: rgb(218, 255, 79);
   }
 }
 
@@ -181,7 +181,9 @@ div.leigh-score-voted.icon {
   cursor: auto;
   opacity: 0.7;
 
-  & div.arrow, & div.arrow::after, & div.arrow::before {
+  & div.arrow,
+  & div.arrow::after,
+  & div.arrow::before {
     background-color: #fff;
   }
 }
@@ -190,7 +192,9 @@ div.leigh-score-not-logged-in.icon {
   background-color: transparent;
   cursor: auto;
 
-  & div.arrow, & div.arrow::after, & div.arrow::before {
+  & div.arrow,
+  & div.arrow::after,
+  & div.arrow::before {
     background-color: #888;
   }
 }
@@ -219,15 +223,17 @@ div.leigh-score-not-logged-in.icon {
     transition: all 0.1s ease-in;
     background-color: rgb(233, 52, 215);
 
-    &::after, &::before {
+    &::after,
+    &::before {
       transition: all 0.1s ease-in;
       background-color: rgb(233, 52, 215);
     }
   }
 }
 
-.arrow::after, .arrow::before {
-  content: '';
+.arrow::after,
+.arrow::before {
+  content: "";
   position: absolute;
   width: 5px;
   height: 65%;
@@ -278,17 +284,18 @@ header {
     margin: 0 auto;
   }
 
-  & p.classic,p.clips {
+  & p.classic,
+  p.clips {
     font-size: 4.5em;
     margin: 1rem 1rem 0 1rem;
 
     &.classic {
       margin-left: 4rem;
-      color:rgb(233, 52, 215);
+      color: rgb(233, 52, 215);
     }
 
     &.clips {
-      color:rgb(218, 255, 79);
+      color: rgb(218, 255, 79);
     }
   }
 
@@ -304,7 +311,7 @@ header {
       align-items: center;
       border-radius: 0.5rem;
       cursor: pointer;
-  
+
       & a {
         color: #222;
         font-size: 1.1em;
@@ -320,7 +327,7 @@ header {
       margin: 1rem 0 0 0;
       color: #fff;
     }
-  } 
+  }
 }
 
 .skeets-container {
@@ -329,7 +336,7 @@ header {
   max-width: 110rem;
   flex-direction: row;
   align-items: center;
-  height: 4.20rem;
+  height: 4.2rem;
 
   border-radius: 0.5rem;
   background-color: rgb(218, 255, 79);
@@ -395,9 +402,9 @@ header {
     display: block;
     margin: 0 auto;
 
-    color:rgb(218, 255, 79);
+    color: rgb(218, 255, 79);
     background-color: rgb(96, 0, 170);
-    font-size: 1.0em;
+    font-size: 1em;
     letter-spacing: 0.2rem;
   }
 }
@@ -420,4 +427,40 @@ h2.modal-header {
   font-weight: 500;
   text-transform: uppercase;
   text-align: center;
+}
+
+div.pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto;
+
+  & div {
+    margin: 0.55rem;
+    width: 0;
+    height: 0;
+    cursor: pointer;
+  }
+
+  & div.left {
+    border-top: 1.5rem solid transparent;
+    border-bottom: 1.5rem solid transparent;
+
+    border-right: 2.25rem solid rgb(233, 52, 215);
+  }
+
+  & div.right {
+    border-top: 1.5rem solid transparent;
+    border-bottom: 1.5rem solid transparent;
+
+    border-left: 2.25rem solid rgb(233, 52, 215);
+  }
+
+  p.pagination-text {
+    margin: 0 1rem;
+    font-size: 1.4em;
+    font-weight: 500;
+    letter-spacing: 0.1rem;
+  }
 }
