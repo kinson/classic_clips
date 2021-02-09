@@ -282,12 +282,20 @@ header {
     flex-direction: row;
     align-items: center;
     margin: 0 auto;
+
+    @media (max-width: 40rem) {
+      flex-wrap: wrap;
+    }
   }
 
   & p.classic,
   p.clips {
     font-size: 4.5em;
     margin: 1rem 1rem 0 1rem;
+
+    @media (max-width: 40rem) {
+      font-size: 2em;
+    }
 
     &.classic {
       margin-left: 4rem;
@@ -304,6 +312,11 @@ header {
     flex-direction: column;
     margin: 0 4rem 0 auto;
 
+    @media (max-width: 40rem) {
+      flex-direction: row;
+      margin: 1rem auto;
+    }
+
     & div.signup {
       background-color: rgb(218, 255, 79);
       display: flex;
@@ -312,11 +325,19 @@ header {
       border-radius: 0.5rem;
       cursor: pointer;
 
+      @media (max-width: 40rem) {
+        margin: 0.5rem 1rem;
+      }
+
       & a {
         color: #222;
         font-size: 1.1em;
         font-weight: 500;
         margin: 0.2rem 0.6rem;
+        
+        @media (max-width: 40rem) {
+          margin: 0 0.5rem;
+        }
       }
     }
 
@@ -326,6 +347,10 @@ header {
       font-size: 1.1em;
       margin: 1rem 0 0 0;
       color: #fff;
+
+      @media (max-width: 40rem) {
+        margin: 0 1rem;
+      }
     }
   }
 }
@@ -342,6 +367,13 @@ header {
   background-color: rgb(218, 255, 79);
   box-shadow: 1px 2px 2px #777;
 
+  @media (max-width: 40rem) {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 10rem;
+    padding: 1rem 0;
+  }
+
   & a {
     color: #333;
     font-size: 1.15em;
@@ -350,6 +382,11 @@ header {
     display: block;
     text-decoration: underline;
     line-height: 1.5em;
+    @media (max-width: 40rem) {
+      width: 100%;
+      text-align: center;
+      margin: 0;
+    }
   }
 
   & form {
@@ -369,6 +406,10 @@ header {
     color: rgb(233, 52, 215);
     font-size: 1em;
     font-weight: 500;
+
+    @media (max-width: 40rem) {
+      margin: 0 0 0 0.5rem;
+    }
   }
 
   & p.sort-by {
@@ -376,6 +417,10 @@ header {
     font-size: 1em;
     font-weight: 500;
     color: #333;
+    
+    @media (max-width: 40rem) {
+      margin: 0 0.5rem 0 0;
+    }
   }
 }
 
