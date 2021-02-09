@@ -4,8 +4,6 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   alias ClassicClips.{Repo, Timeline}
   alias ClassicClips.Timeline.{Clip, User}
 
-  @google_auth_url "https://accounts.google.com/o/oauth2/v2/auth?response_type=code"
-
   @impl true
   def mount(_params, session, socket) do
     if connected?(socket), do: Timeline.subscribe()
@@ -101,11 +99,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp generate_oauth_url do
-    client_id = System.get_env("GOOGLE_CLIENT_ID")
-    scope = System.get_env("GOOGLE_SCOPE") || "profile email"
-
-    redirect_uri = "http://localhost:4000/auth/google/callback"
-    "#{@google_auth_url}&client_id=#{client_id}&scope=#{scope}&redirect_uri=#{redirect_uri}"
+    %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "80")}
+    |> ElixirAuthGoogle.generate_oauth_url()
   end
 
   defp get_or_create_user(%{"profile" => profile}) do
