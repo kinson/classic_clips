@@ -38,7 +38,7 @@ defmodule ClassicClips.Timeline do
       )
       |> Repo.one()
 
-      {:ok, clips, count}
+    {:ok, clips, count}
   end
 
   @day_in_seconds 60 * 60 * 24
@@ -392,10 +392,29 @@ defmodule ClassicClips.Timeline do
     Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clips")
   end
 
+  def subscribe(clips) do
+    Enum.map(clips, &(&1.id))
+    |> Enum.each(fn clip_id ->
+      Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clip:#{clip_id}")
+    end)
+  end
+
+  def resubscribe(unsub_list, sub_list) do
+    Enum.map(sub_list, &(&1.id))
+    |> Enum.each(fn clip_id ->
+      Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clip:#{clip_id}")
+    end)
+
+    Enum.map(unsub_list, &(&1.id))
+    |> Enum.each(fn clip_id ->
+      Phoenix.PubSub.unsubscribe(ClassicClips.PubSub, "clip:#{clip_id}")
+    end)
+  end
+
   defp broadcast({:error, _reason} = error), do: error
 
   defp broadcast({:ok, clip}, event) do
-    Phoenix.PubSub.broadcast(ClassicClips.PubSub, "clips", {event, clip})
+    Phoenix.PubSub.broadcast(ClassicClips.PubSub, "clip:#{clip.id}", {event, clip})
     {:ok, clip}
   end
 

@@ -6,12 +6,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    if connected?(socket), do: Timeline.subscribe()
-
     {:ok, user} = get_or_create_user(session)
     pagination = %{limit: 12, offset: 0}
     category = "today"
     {clips, pagination} = list_top_clips(category, pagination)
+
+    if connected?(socket), do: Timeline.subscribe(clips)
 
     modified_socket =
       socket
@@ -108,6 +108,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         %{
           assigns: %{
             category: "new",
+            clips: old_clips,
             pagination:
               %{
                 offset: offset,
@@ -121,6 +122,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     if current_page >= total_pages, do: {:noreply, socket}
     {clips, pagination} = list_new_clips(%{pagination | offset: offset + limit})
 
+    update_subscriptions(socket, old_clips, clips)
+
     modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
     {:noreply, modifed_socket}
   end
@@ -131,6 +134,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         %{
           assigns: %{
             category: category,
+            clips: old_clips,
             pagination:
               %{
                 offset: offset,
@@ -143,6 +147,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       ) do
     if current_page >= total_pages, do: {:noreply, socket}
     {clips, pagination} = list_top_clips(category, %{pagination | offset: offset + limit})
+
+    update_subscriptions(socket, old_clips, clips)
 
     modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
     {:noreply, modifed_socket}
@@ -157,6 +163,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         %{
           assigns: %{
             category: "new",
+            clips: old_clips,
             pagination:
               %{
                 offset: offset,
@@ -166,6 +173,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         } = socket
       ) do
     {clips, pagination} = list_new_clips(%{pagination | offset: offset - limit})
+
+    update_subscriptions(socket, old_clips, clips)
 
     modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
     {:noreply, modifed_socket}
@@ -177,6 +186,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         %{
           assigns: %{
             category: category,
+            clips: old_clips,
             pagination:
               %{
                 offset: offset,
@@ -186,6 +196,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         } = socket
       ) do
     {clips, pagination} = list_top_clips(category, %{pagination | offset: offset - limit})
+
+    update_subscriptions(socket, old_clips, clips)
 
     modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
     {:noreply, modifed_socket}
@@ -252,5 +264,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       offset: offset,
       count: count
     }
+  end
+
+  defp update_subscriptions(socket, old_clips, new_clips) do
+    unsub_list = Enum.filter(old_clips, &(not Enum.member?(new_clips, &1)))
+    sub_list = Enum.filter(new_clips, &(not Enum.member?(old_clips, &1)))
+
+    if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
   end
 end
