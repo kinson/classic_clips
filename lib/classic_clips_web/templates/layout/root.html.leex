@@ -23,7 +23,7 @@
             <p class="signin">or, login</p>
           </div>
         <% else %>
-          <p class="username"> Hello,<br /><span><%= @user.email %></span></p>
+          <p class="username"> Hello,<br /><a href="/user"><%= @user.email %></a></p>
         <% end %>
       </div>
 

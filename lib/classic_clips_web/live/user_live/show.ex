@@ -8,8 +8,20 @@ defmodule ClassicClipsWeb.UserLive.Show do
   @impl true
   def mount(_params, session, socket) do
     {:ok, user} = get_or_create_user(session)
+    changeset = Timeline.change_user(user)
 
-    {:ok, assign(socket, :user, user) |> assign(:gooogle_auth_url, generate_oauth_url())}
+    pagination = %{limit: 12, offset: 0}
+    {clips, pagination} = list_user_clips(user.id, pagination)
+
+    modifed_socket =
+      assign(socket, :user, user)
+      |> assign(:gooogle_auth_url, generate_oauth_url())
+      |> assign(:pagination, pagination)
+      |> assign(:clips, clips)
+      |> assign(:show_edit, false)
+      |> assign(:changeset, changeset)
+
+    {:ok, modifed_socket}
   end
 
   @impl true
@@ -22,6 +34,34 @@ defmodule ClassicClipsWeb.UserLive.Show do
 
   def handle_params(_params, _url, socket) do
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("validate", %{"user" => user_params}, socket) do
+    changeset =
+      socket.assigns.user
+      |> Timeline.change_user(user_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, :changeset, changeset)}
+  end
+
+  def handle_event("save", %{"user" => user_params}, socket) do
+    case Timeline.update_user(socket.assigns.user, user_params) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Username updated successfully")
+         |> assign(:show_edit, false)
+         |> assign(:user, user)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, :changeset, changeset)}
+    end
+  end
+
+  def handle_event("show-edit", _value, socket) do
+    {:noreply, assign(socket, :show_edit, true)}
   end
 
   defp page_title(:show), do: "Show Clip"
@@ -41,5 +81,37 @@ defmodule ClassicClipsWeb.UserLive.Show do
   defp generate_oauth_url do
     %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "4000")}
     |> ElixirAuthGoogle.generate_oauth_url()
+  end
+
+  defp list_user_clips(user_id, %{offset: offset, limit: limit} = pagination) do
+    {:ok, clips, count} = Timeline.list_user_clips(user_id, pagination)
+
+    {clips, get_pagination_info(count, offset, limit)}
+  end
+
+  defp get_pagination_info(count, offset, limit) do
+    current_page = floor(offset / limit + 1)
+    total_pages = ceil(count / limit)
+
+    %{
+      current_page: current_page,
+      total_pages: total_pages,
+      limit: limit,
+      offset: offset,
+      count: count
+    }
+  end
+
+  defp get_email(user) do
+    email = user.email
+    max_length = 20
+
+    case String.length(email) > max_length do
+      true ->
+        "#{String.slice(email, 0, max_length) |> String.trim_trailing()}..."
+
+      false ->
+        email
+    end
   end
 end

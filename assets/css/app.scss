@@ -271,7 +271,7 @@ div.leigh-score-not-logged-in.icon {
 header {
   margin: 0 auto;
   width: 100%;
-  background: rgb(96, 0, 170);
+  background: #6000aa;
   border-bottom: 1px solid #eaeaea;
   margin-bottom: 2rem;
   font-weight: 700;
@@ -295,6 +295,7 @@ header {
 
     @media (max-width: 40rem) {
       font-size: 2em;
+      margin: 1rem 0.5rem 0 0.5rem;
     }
 
     &.classic {
@@ -334,7 +335,7 @@ header {
         font-size: 1.1em;
         font-weight: 500;
         margin: 0.2rem 0.6rem;
-        
+
         @media (max-width: 40rem) {
           margin: 0 0.5rem;
         }
@@ -417,19 +418,24 @@ header {
     font-size: 1em;
     font-weight: 500;
     color: #333;
-    
+
     @media (max-width: 40rem) {
       margin: 0 0.5rem 0 0;
     }
   }
 }
 
-.username {
+p.username {
   margin: 0 3rem 0 auto;
   color: #fff;
   font-weight: 300;
-  & span {
+  & a {
     text-decoration: underline;
+    color: #fff;
+  }
+
+  @media (max-width: 40rem) {
+    margin: 0 auto 1rem auto;
   }
 }
 
@@ -507,5 +513,133 @@ div.pagination {
     font-size: 1.4em;
     font-weight: 500;
     letter-spacing: 0.1rem;
+  }
+}
+
+div.profile-container {
+  & div.profile-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media (max-width: 40rem) {
+      flex-direction: column;
+    }
+
+    & div.google-profile {
+      border-radius: 3.75rem;
+      box-shadow: 1px 2px 4px #555;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 8rem;
+
+      & img {
+        width: 4rem;
+        margin: 0 1rem 0 2.5rem;
+      }
+
+      & div.info-container {
+        margin: 0 2.5rem 0 1rem;
+        & p {
+          margin: 0.2rem;
+          font-weight: 500;
+        }
+
+        & p:first-child {
+          color: #777;
+          font-weight: auto;
+        }
+      }
+    }
+
+    & div.username-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 auto;
+      height: 11rem;
+
+      @media (max-width: 40rem) {
+        margin-top: 1rem;
+      }
+
+      & img {
+        max-width: 3rem;
+      }
+
+      & p.big-username {
+        font-size: 3em;
+        font-weight: 600;
+        color: #222;
+        margin: 0 1rem;
+        vertical-align: bottom;
+        color: rgb(233, 52, 215);
+        opacity: 0.7;
+
+        @media (max-width: 40rem) {
+          font-size: 2em;
+          line-height: 1.1em;
+        }
+
+        & span {
+          color: #333;
+          margin-right: 0.65rem;
+        }
+      }
+
+      p.edit {
+        text-decoration: underline;
+        color: #555;
+        font-size: 0.95em;
+        margin: 1.5rem 1rem 0 0.5rem;
+        cursor: pointer;
+
+        @media (max-width: 40rem) {
+          margin: 0 1rem;
+        }
+      }
+    }
+
+    & form {
+      height: 11rem;
+      margin: 0 auto;
+      width: 50%;
+      max-width: 35rem;
+
+      @media (max-width: 40rem) {
+        margin: 2rem 0 0 0;
+        width: 90%;
+      }
+
+      & span.invalid-feedback {
+        margin: -1rem 0 0.5rem 0;
+      }
+
+      & button {
+        width: 100%;
+        background-color: rgb(96, 0, 170);
+      }
+    }
+  }
+
+  & div.user-clips-area {
+    margin: 2rem 0;
+
+    @media (max-width: 40rem) {
+      margin: 2rem auto;
+    }
+
+    & h2 {
+      margin: 1rem 0;
+    }
+
+    div#user-clips {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
   }
 }

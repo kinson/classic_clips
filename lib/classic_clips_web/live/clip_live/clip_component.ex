@@ -23,7 +23,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
             <div class="arrow"></div>
           </div>
           <p class="leigh-score"><%= @clip.vote_count %></p>
-          <div class="leigh-label-container"><p><%= @clip.user.username || @clip.user.email %></p></div>
+          <div class="leigh-label-container"><p><%= get_username(@clip) %></p></div>
         </div>
       </div>
     </div>
@@ -45,6 +45,19 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
       |> format_time_text()
 
     "#{minutes}:#{seconds}"
+  end
+
+  defp get_username(clip) do
+    username = clip.user.username || clip.user.email
+    max_length = 16
+
+    case String.length(username) > max_length do
+      true ->
+        "#{String.slice(username, 0, max_length) |> String.trim_trailing()}..."
+
+      false ->
+        username
+    end
   end
 
   defp format_time_text(seconds) when seconds < 10, do: "0#{seconds}"

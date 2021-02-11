@@ -9,6 +9,6 @@ defmodule ClassicClipsWeb.GoogleAuthController do
     {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
 
     put_session(conn, :profile, profile)
-    |> redirect(to: "/clips")
+    |> redirect(to: "/")
   end
 end

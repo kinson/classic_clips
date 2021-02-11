@@ -24,7 +24,8 @@ defmodule ClassicClips.Timeline.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:username, :email, :active, :google_id])
-    |> put_change(:google_id, attrs.sub)
+    |> put_change(:google_id, user.google_id || attrs.sub)
     |> validate_required([:email])
+    |> unsafe_validate_unique(:username, Repo, message: "Username is already taken")
   end
 end

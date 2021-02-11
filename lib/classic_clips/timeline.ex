@@ -25,7 +25,7 @@ defmodule ClassicClips.Timeline do
     clips =
       from(c in Clip,
         select: c,
-        order_by: [desc: c.inserted_at],
+        order_by: [desc: c.inserted_at, desc: c.id],
         limit: ^limit,
         offset: ^offset
       )
@@ -78,7 +78,7 @@ defmodule ClassicClips.Timeline do
         where: c.inserted_at > ^lower_date_bound,
         limit: ^limit,
         offset: ^offset,
-        order_by: [desc: c.vote_count]
+        order_by: [desc: c.vote_count, desc: c.id]
       )
       |> Repo.all()
       |> Repo.preload(:user)
@@ -87,6 +87,28 @@ defmodule ClassicClips.Timeline do
       from(c in Clip,
         select: count(c.id),
         where: c.inserted_at > ^lower_date_bound
+      )
+      |> Repo.one()
+
+    {:ok, clips, count}
+  end
+
+  def list_user_clips(user_id, %{limit: limit, offset: offset}) do
+    clips =
+      from(c in Clip,
+        select: c,
+        where: c.user_id == ^user_id,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: c.vote_count, desc: c.id]
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
+
+    count =
+      from(c in Clip,
+        select: count(c.id),
+        where: c.user_id == ^user_id
       )
       |> Repo.one()
 
@@ -256,7 +278,7 @@ defmodule ClassicClips.Timeline do
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update(returning: true)
   end
 
   @doc """
