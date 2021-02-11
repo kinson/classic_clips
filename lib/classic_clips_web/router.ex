@@ -19,14 +19,16 @@ defmodule ClassicClipsWeb.Router do
 
     get "/auth/google/callback", GoogleAuthController, :index
 
-    live "/", PageLive, :index
+    # live "/", PageLive, :index
 
-    live "/clips", ClipLive.Index, :index
+    live "/", ClipLive.Index, :index
     live "/clips/new", ClipLive.Index, :new
     live "/clips/:id/edit", ClipLive.Index, :edit
 
     live "/clips/:id", ClipLive.Show, :show
     live "/clips/:id/show/edit", ClipLive.Show, :edit
+
+    live "/user", UserLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
