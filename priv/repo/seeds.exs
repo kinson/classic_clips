@@ -18,13 +18,15 @@ titles = [
   "JD is somehow still awake after 4 podcasts in one day"
 ]
 
-user = %ClassicClips.Timeline.User{
-  username: "mattyo",
-  email: "mattyo@gmail.com",
-  active: true,
-  google_id: "googleid"
-}
-|> ClassicClips.Repo.insert!(returning: true)
+# user = %ClassicClips.Timeline.User{
+#   username: "mattyo",
+#   email: "mattyo@gmail.com",
+#   active: true,
+#   google_id: "googleid"
+# }
+# |> ClassicClips.Repo.insert!(returning: true)
+
+user = ClassicClips.Repo.get_by(ClassicClips.Timeline.User, email: "swilkinsonhunter@gmail.com")
 
 clips = Enum.map(titles, fn title ->
   %{

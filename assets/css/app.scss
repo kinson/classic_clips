@@ -288,8 +288,8 @@ header {
     }
   }
 
-  & p.classic,
-  p.clips {
+  & a.classic,
+  a.clips {
     font-size: 4.5em;
     margin: 1rem 1rem 0 1rem;
 
@@ -342,7 +342,7 @@ header {
       }
     }
 
-    & p.signin {
+    & a.signin {
       cursor: pointer;
       text-decoration: underline;
       font-size: 1.1em;
@@ -624,7 +624,7 @@ div.profile-container {
   }
 
   & div.user-clips-area {
-    margin: 2rem 0;
+    margin: 2rem 0 4rem 0;
 
     @media (max-width: 40rem) {
       margin: 2rem auto;

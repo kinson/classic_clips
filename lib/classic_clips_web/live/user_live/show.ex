@@ -64,6 +64,67 @@ defmodule ClassicClipsWeb.UserLive.Show do
     {:noreply, assign(socket, :show_edit, true)}
   end
 
+  def handle_event(
+        "inc_page",
+        _,
+        %{assigns: %{pagination: %{current_page: current_page, total_pages: total_pages}}} =
+          socket
+      )
+      when current_page >= total_pages,
+      do: {:noreply, socket}
+
+  def handle_event(
+        "inc_page",
+        _,
+        %{
+          assigns: %{
+            clips: old_clips,
+            user: user,
+            pagination:
+              %{
+                offset: offset,
+                limit: limit,
+                current_page: current_page,
+                total_pages: total_pages
+              } = pagination
+          }
+        } = socket
+      ) do
+    if current_page >= total_pages, do: {:noreply, socket}
+    {clips, pagination} = list_user_clips(user.id, %{pagination | offset: offset + limit})
+
+    update_subscriptions(socket, old_clips, clips)
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
+  def handle_event("dec_page", _, %{assigns: %{pagination: %{current_page: 1}}} = socket),
+    do: {:noreply, socket}
+
+  def handle_event(
+        "dec_page",
+        _,
+        %{
+          assigns: %{
+            clips: old_clips,
+            user: user,
+            pagination:
+              %{
+                offset: offset,
+                limit: limit
+              } = pagination
+          }
+        } = socket
+      ) do
+    {clips, pagination} = list_user_clips(user.id, %{pagination | offset: offset - limit})
+
+    update_subscriptions(socket, old_clips, clips)
+
+    modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
+    {:noreply, modifed_socket}
+  end
+
   defp page_title(:show), do: "Show Clip"
   defp page_title(:edit), do: "Edit Clip"
 
@@ -113,5 +174,12 @@ defmodule ClassicClipsWeb.UserLive.Show do
       false ->
         email
     end
+  end
+
+  defp update_subscriptions(socket, old_clips, new_clips) do
+    unsub_list = Enum.filter(old_clips, &(not Enum.member?(new_clips, &1)))
+    sub_list = Enum.filter(new_clips, &(not Enum.member?(old_clips, &1)))
+
+    if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
   end
 end
