@@ -13,11 +13,14 @@ defmodule ClassicClipsWeb.UserLive.Show do
     pagination = %{limit: 12, offset: 0}
     {clips, pagination} = list_user_clips(user.id, pagination)
 
+    if connected?(socket), do: Timeline.subscribe(clips)
+
     modifed_socket =
       assign(socket, :user, user)
       |> assign(:gooogle_auth_url, generate_oauth_url())
       |> assign(:pagination, pagination)
       |> assign(:clips, clips)
+      |> assign(:votes, get_user_votes(user))
       |> assign(:show_edit, false)
       |> assign(:changeset, changeset)
 
@@ -62,6 +65,21 @@ defmodule ClassicClipsWeb.UserLive.Show do
 
   def handle_event("show-edit", _value, socket) do
     {:noreply, assign(socket, :show_edit, true)}
+  end
+
+  def handle_event(
+        "inc_votes",
+        %{"clip" => clip_id},
+        %{assigns: %{votes: votes, user: user}} = socket
+      ) do
+    case Timeline.can_vote?(clip_id, votes, user) do
+      true ->
+        {:ok, vote} = ClassicClips.Timeline.inc_votes(clip_id, user)
+        {:noreply, assign(socket, :votes, [vote | votes])}
+
+      false ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event(
@@ -125,6 +143,14 @@ defmodule ClassicClipsWeb.UserLive.Show do
     {:noreply, modifed_socket}
   end
 
+  @impl true
+  def handle_info({:clip_updated, clip}, socket) do
+    {:noreply,
+     update(socket, :clips, fn clips ->
+       Enum.map(clips, &if(&1.id == clip.id, do: clip, else: &1))
+     end)}
+  end
+
   defp page_title(:show), do: "Show Clip"
   defp page_title(:edit), do: "Edit Clip"
 
@@ -181,5 +207,11 @@ defmodule ClassicClipsWeb.UserLive.Show do
     sub_list = Enum.filter(new_clips, &(not Enum.member?(old_clips, &1)))
 
     if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
+  end
+
+  defp get_user_votes(nil), do: []
+
+  defp get_user_votes(%User{} = user) do
+    Timeline.list_votes_for_user(user)
   end
 end

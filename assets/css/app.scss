@@ -99,6 +99,16 @@
   align-items: center;
 }
 
+div.empty-clips {
+  margin: 4rem auto;
+
+  & p {
+    font-size: 1.03em;
+    color: #777;
+    text-align: center;
+  }
+}
+
 .clip-box {
   width: 33rem;
   margin: 1.5rem 1rem;

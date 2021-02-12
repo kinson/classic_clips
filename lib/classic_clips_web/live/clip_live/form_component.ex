@@ -41,35 +41,59 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
-    with {:ok, video_data} <- get_clip_data(clip_params),
-         true <- is_no_dunks_video?(video_data),
-         thumbnail_url <- get_thumbnail_url(video_data),
-         new_clip_params <- Map.merge(clip_params, %{"yt_thumbnail_url" => thumbnail_url}),
-         {:ok, _clip} <- Timeline.create_clip(new_clip_params) do
-
+    with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
+         {:ok, changeset} <- validate_yt_url(changeset),
+         {:ok, clip} <- ClassicClips.Repo.insert(changeset),
+         {:ok, _vote} = ClassicClips.Timeline.inc_votes(clip.id, socket.assigns.user) do
       {:noreply,
        socket
        |> put_flash(:info, "Clip created successfully")
        |> push_redirect(to: socket.assigns.return_to)}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         {:noreply, assign(socket, changeset: changeset)}
 
-      false ->
-        {:noreply, assign(socket, form_error: "can only be a NoDunks video")}
-
-      {:error, _} -> {:noreply, socket}
+      {:error, _} ->
+        {:noreply, socket}
     end
   end
 
-  defp get_clip_data(%{"yt_video_url" => clip_url}) do
-    base_url = "https://www.youtube.com/oembed?url="
-    full_url = base_url <> clip_url <> "?format=json"
+  @base_url_for_yt_data "https://www.youtube.com/oembed?url="
+  defp get_base_yt_reqeuest_url(clip_url) do
+    case String.contains?(clip_url, "?") do
+      true -> @base_url_for_yt_data <> clip_url <> "&format=json"
+      false -> @base_url_for_yt_data <> clip_url <> "?format=json"
+    end
+  end
 
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(full_url)
+  defp get_clip_data(%{yt_video_url: clip_url}) do
+    {:ok, %HTTPoison.Response{body: body}} = get_base_yt_reqeuest_url(clip_url) |> HTTPoison.get()
 
     Jason.decode(body)
+  end
+
+  defp validate_yt_url(%Ecto.Changeset{} = changeset) do
+    with {:ok, video_data} <- get_clip_data(changeset.changes),
+         true <- is_no_dunks_video?(video_data),
+         thumbnail_url <- get_thumbnail_url(video_data) do
+      {:ok, Ecto.Changeset.put_change(changeset, :yt_thumbnail_url, thumbnail_url)}
+    else
+      {:error, _error} ->
+        {:ok,
+         Ecto.Changeset.add_error(
+           changeset,
+           :yt_video_url,
+           "Must be a valid No Dunks YouTube video url."
+         )}
+
+      false ->
+        {:ok,
+         Ecto.Changeset.add_error(
+           changeset,
+           :yt_video_url,
+           "Must be a No Dunks YouTube video url."
+         )}
+    end
   end
 
   defp is_no_dunks_video?(%{"author_name" => "NoDunks Inc"}), do: true

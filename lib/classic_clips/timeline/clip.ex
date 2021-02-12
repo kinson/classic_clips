@@ -19,6 +19,11 @@ defmodule ClassicClips.Timeline.Clip do
   def changeset(clip, attrs) do
     clip
     |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id])
-    |> validate_required([:yt_video_url, :yt_thumbnail_url, :title, :user_id])
+    |> validate_required([:yt_video_url, :title, :user_id])
+    |> unique_constraint([:title, :user_id],
+      message: "Cannot create two clips with the same title"
+    )
+    |> validate_length(:title, min: 2, max: 72)
+    |> validate_number(:clip_length, greater_than: 0, less_than: 2000)
   end
 end

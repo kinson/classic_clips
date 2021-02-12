@@ -18,8 +18,14 @@
 </div>
 
 <div id="clipss" class="timeline-container" phx-update="replace">
-  <%= for clip <- @clips do %>
-    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
+  <%= if Enum.empty?(@clips) do %>
+    <div class="empty-clips">
+      <p>There are no clips to show, can you believe it?</p>
+    </div>
+  <% else %>
+    <%= for clip <- @clips do %>
+      <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
+    <% end %>
   <% end %>
 </div>
 

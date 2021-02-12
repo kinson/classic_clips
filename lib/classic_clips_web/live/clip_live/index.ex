@@ -15,6 +15,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     modified_socket =
       socket
+      |> assign(:page_title, "Classic Clips")
       |> assign(:user, user)
       |> assign(:clips, clips)
       |> assign(:category, category)
@@ -32,19 +33,16 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Clip")
     |> assign(:clip, Timeline.get_clip!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Clip")
     |> assign(:clip, %Clip{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Clips")
     |> assign(:clip, nil)
   end
 
