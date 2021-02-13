@@ -30,7 +30,10 @@
 
     </div>
     <div class="user-clips-area">
-        <h2>Your Clips</h2>
+        <div class="headers">
+            <h2 class="<%= if @clip_area_content == "your_clips", do: "selected" %>" phx-click="toggle_clips_content" phx-value-content="your_clips" >YOUR CLIPS</h2>
+            <h2 class="<%= if @clip_area_content == "saved_clips", do: "selected" %>" phx-click="toggle_clips_content" phx-value-content="saved_clips" >SAVED CLIPS</h2>
+        </div>
 
         <%= if Enum.empty?(@clips) do %>
             <div class="empty-clips">
@@ -39,7 +42,7 @@
         <% else %>
             <div id="user-clips">
                 <%= for clip <- @clips do %>
-                    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
+                    <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes, saves: @saves %>
                 <% end %>
             </div>
         <% end %>

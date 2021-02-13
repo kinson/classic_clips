@@ -191,4 +191,65 @@ defmodule ClassicClips.TimelineTest do
       assert %Ecto.Changeset{} = Timeline.change_vote(vote)
     end
   end
+
+  describe "saves" do
+    alias ClassicClips.Timeline.Save
+
+    @valid_attrs %{clip_id: "some clip_id", user_id: "some user_id"}
+    @update_attrs %{clip_id: "some updated clip_id", user_id: "some updated user_id"}
+    @invalid_attrs %{clip_id: nil, user_id: nil}
+
+    def save_fixture(attrs \\ %{}) do
+      {:ok, save} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Timeline.create_save()
+
+      save
+    end
+
+    test "list_saves/0 returns all saves" do
+      save = save_fixture()
+      assert Timeline.list_saves() == [save]
+    end
+
+    test "get_save!/1 returns the save with given id" do
+      save = save_fixture()
+      assert Timeline.get_save!(save.id) == save
+    end
+
+    test "create_save/1 with valid data creates a save" do
+      assert {:ok, %Save{} = save} = Timeline.create_save(@valid_attrs)
+      assert save.clip_id == "some clip_id"
+      assert save.user_id == "some user_id"
+    end
+
+    test "create_save/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Timeline.create_save(@invalid_attrs)
+    end
+
+    test "update_save/2 with valid data updates the save" do
+      save = save_fixture()
+      assert {:ok, %Save{} = save} = Timeline.update_save(save, @update_attrs)
+      assert save.clip_id == "some updated clip_id"
+      assert save.user_id == "some updated user_id"
+    end
+
+    test "update_save/2 with invalid data returns error changeset" do
+      save = save_fixture()
+      assert {:error, %Ecto.Changeset{}} = Timeline.update_save(save, @invalid_attrs)
+      assert save == Timeline.get_save!(save.id)
+    end
+
+    test "delete_save/1 deletes the save" do
+      save = save_fixture()
+      assert {:ok, %Save{}} = Timeline.delete_save(save)
+      assert_raise Ecto.NoResultsError, fn -> Timeline.get_save!(save.id) end
+    end
+
+    test "change_save/1 returns a save changeset" do
+      save = save_fixture()
+      assert %Ecto.Changeset{} = Timeline.change_save(save)
+    end
+  end
 end

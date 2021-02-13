@@ -10,8 +10,8 @@ defmodule ClassicClipsWeb.UserLive.Show do
     {:ok, user} = get_or_create_user(session)
     changeset = Timeline.change_user(user)
 
-    pagination = %{limit: 12, offset: 0}
-    {clips, pagination} = list_user_clips(user.id, pagination)
+    pagination = default_pagination()
+    {clips, pagination} = list_user_clips(user, pagination)
 
     if connected?(socket), do: Timeline.subscribe(clips)
 
@@ -21,6 +21,8 @@ defmodule ClassicClipsWeb.UserLive.Show do
       |> assign(:pagination, pagination)
       |> assign(:clips, clips)
       |> assign(:votes, get_user_votes(user))
+      |> assign(:saves, get_user_saves(user))
+      |> assign(:clip_area_content, "your_clips")
       |> assign(:show_edit, false)
       |> assign(:changeset, changeset)
 
@@ -109,7 +111,7 @@ defmodule ClassicClipsWeb.UserLive.Show do
         } = socket
       ) do
     if current_page >= total_pages, do: {:noreply, socket}
-    {clips, pagination} = list_user_clips(user.id, %{pagination | offset: offset + limit})
+    {clips, pagination} = list_user_clips(user, %{pagination | offset: offset + limit})
 
     update_subscriptions(socket, old_clips, clips)
 
@@ -135,12 +137,58 @@ defmodule ClassicClipsWeb.UserLive.Show do
           }
         } = socket
       ) do
-    {clips, pagination} = list_user_clips(user.id, %{pagination | offset: offset - limit})
+    {clips, pagination} = list_user_clips(user, %{pagination | offset: offset - limit})
 
     update_subscriptions(socket, old_clips, clips)
 
     modifed_socket = assign(socket, :clips, clips) |> assign(:pagination, pagination)
     {:noreply, modifed_socket}
+  end
+
+  def handle_event(
+        "save_clip",
+        %{"clip" => clip_id},
+        %{
+          assigns: %{
+            saves: saves,
+            user: user
+          }
+        } = socket
+      ) do
+    {:ok, new_saves} = update_saves(saves, clip_id, user.id)
+
+    {:noreply, assign(socket, :saves, new_saves)}
+  end
+
+  def handle_event(
+        "toggle_clips_content",
+        %{"content" => content},
+        %{assigns: %{clip_area_content: clip_area_content}} = socket
+      )
+      when content == clip_area_content do
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle_clips_content", %{"content" => "your_clips"}, socket) do
+    {clips, pagination} = list_user_clips(socket.assigns.user, default_pagination())
+
+    modified_socket =
+      assign(socket, :clips, clips)
+      |> assign(:pagination, pagination)
+      |> assign(:clip_area_content, "your_clips")
+
+    {:noreply, modified_socket}
+  end
+
+  def handle_event("toggle_clips_content", %{"content" => "saved_clips"}, socket) do
+    {clips, pagination} = list_user_saved_clips(socket.assigns.user, default_pagination())
+
+    modified_socket =
+      assign(socket, :clips, clips)
+      |> assign(:pagination, pagination)
+      |> assign(:clip_area_content, "saved_clips")
+
+    {:noreply, modified_socket}
   end
 
   @impl true
@@ -170,8 +218,14 @@ defmodule ClassicClipsWeb.UserLive.Show do
     |> ElixirAuthGoogle.generate_oauth_url()
   end
 
-  defp list_user_clips(user_id, %{offset: offset, limit: limit} = pagination) do
-    {:ok, clips, count} = Timeline.list_user_clips(user_id, pagination)
+  defp list_user_clips(%User{id: id}, %{offset: offset, limit: limit} = pagination) do
+    {:ok, clips, count} = Timeline.list_user_clips(id, pagination)
+
+    {clips, get_pagination_info(count, offset, limit)}
+  end
+
+  defp list_user_saved_clips(user, %{offset: offset, limit: limit} = pagination) do
+    {:ok, clips, count} = Timeline.list_saved_clips_for_user(user, pagination)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
@@ -209,9 +263,40 @@ defmodule ClassicClipsWeb.UserLive.Show do
     if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
   end
 
+  defp default_pagination() do
+    %{limit: 12, offset: 0}
+  end
+
   defp get_user_votes(nil), do: []
 
   defp get_user_votes(%User{} = user) do
     Timeline.list_votes_for_user(user)
+  end
+
+  defp get_user_saves(%User{} = user) do
+    Timeline.list_saves_for_user(user)
+  end
+
+  defp get_user_saves(nil), do: []
+
+  defp update_saves(saves, clip_id, user_id) do
+    case Enum.find(saves, &(clip_id == &1.clip_id)) do
+      nil -> add_save(saves, clip_id, user_id)
+      save -> remove_save(saves, save)
+    end
+  end
+
+  defp remove_save(saves, save) do
+    case Timeline.delete_save(save) do
+      {:ok, _} -> {:ok, Enum.filter(saves, &(&1.id != save.id))}
+      {:error, _} = error -> error
+    end
+  end
+
+  defp add_save(saves, clip_id, user_id) do
+    case Timeline.create_save(%{clip_id: clip_id, user_id: user_id}) do
+      {:ok, save} -> {:ok, [save | saves]}
+      {:error, _} = error -> error
+    end
   end
 end

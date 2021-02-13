@@ -139,6 +139,49 @@ div.empty-clips {
   overflow: hidden;
 }
 
+.save-button {
+  z-index: 4;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: #ffd1d1;
+  cursor: pointer;
+
+  &.saved,
+  &.saved:before,
+  &.saved:after {
+    background-color: red;
+  }
+}
+.save-button:before,
+.save-button:after {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  content: "";
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  background-color: #ffd1d1;
+  cursor: pointer;
+}
+.save-button:before {
+  bottom: 0px;
+  left: -6px;
+}
+.save-button:after {
+  top: -6px;
+  right: 0px;
+}
+
 .tas-image {
   filter: blur(1px) brightness(0.3);
 }
@@ -640,8 +683,24 @@ div.profile-container {
       margin: 2rem auto;
     }
 
-    & h2 {
+    & div.headers {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       margin: 1rem 0;
+
+      & h2 {
+        font-size: 0.9em;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        margin: 0 2rem;
+        padding: 0.5rem 1.5rem;
+        cursor: pointer;
+        
+        &.selected {
+          border-bottom: 3px solid rgb(96, 0, 170);
+        }
+      }
     }
 
     div#user-clips {

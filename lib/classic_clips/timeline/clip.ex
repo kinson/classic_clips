@@ -12,6 +12,8 @@ defmodule ClassicClips.Timeline.Clip do
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
 
+    has_many :saves, ClassicClips.Timeline.Save
+
     timestamps()
   end
 

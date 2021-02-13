@@ -24,7 +24,7 @@
     </div>
   <% else %>
     <%= for clip <- @clips do %>
-      <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes %>
+      <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: clip.id, clip: clip, user: @user, votes: @votes, saves: @saves %>
     <% end %>
   <% end %>
 </div>

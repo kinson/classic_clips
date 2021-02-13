@@ -2,6 +2,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
   use ClassicClipsWeb, :live_component
 
   alias ClassicClips.Timeline
+  alias ClassicClips.Timeline.Clip
 
   @impl true
   def mount(socket) do
@@ -14,6 +15,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
     <div class="clip-box">
       <div class="clip-container">
         <div class="tas-container">
+          <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
           <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
           <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
@@ -62,4 +64,11 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
 
   defp format_time_text(seconds) when seconds < 10, do: "0#{seconds}"
   defp format_time_text(seconds), do: "#{seconds}"
+
+  defp get_save_class(saves, %Clip{id: id}) do
+    case Enum.any?(saves, &(id == &1.clip_id)) do
+      true -> "saved"
+      false -> ""
+    end
+  end
 end

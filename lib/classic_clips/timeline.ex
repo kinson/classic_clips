@@ -115,6 +115,29 @@ defmodule ClassicClips.Timeline do
     {:ok, clips, count}
   end
 
+  def list_saved_clips_for_user(%User{id: id}, %{limit: limit, offset: offset}) do
+    clips = from(c in Clip,
+      join: s in assoc(c, :saves),
+      select: c,
+      where: s.user_id == ^id,
+      limit: ^limit,
+      offset: ^offset,
+      order_by: [desc: c.inserted_at, desc: c.id]
+    )
+    |> Repo.all()
+    |> Repo.preload(:user)
+
+    count =
+      from(c in Clip,
+        join: s in assoc(c, :saves),
+        select: count(c.id),
+        where: s.user_id == ^id
+      )
+      |> Repo.one()
+
+    {:ok, clips, count}
+  end
+
   @doc """
   Gets a single clip.
 
@@ -415,19 +438,19 @@ defmodule ClassicClips.Timeline do
   end
 
   def subscribe(clips) do
-    Enum.map(clips, &(&1.id))
+    Enum.map(clips, & &1.id)
     |> Enum.each(fn clip_id ->
       Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clip:#{clip_id}")
     end)
   end
 
   def resubscribe(unsub_list, sub_list) do
-    Enum.map(sub_list, &(&1.id))
+    Enum.map(sub_list, & &1.id)
     |> Enum.each(fn clip_id ->
       Phoenix.PubSub.subscribe(ClassicClips.PubSub, "clip:#{clip_id}")
     end)
 
-    Enum.map(unsub_list, &(&1.id))
+    Enum.map(unsub_list, & &1.id)
     |> Enum.each(fn clip_id ->
       Phoenix.PubSub.unsubscribe(ClassicClips.PubSub, "clip:#{clip_id}")
     end)
@@ -455,5 +478,110 @@ defmodule ClassicClips.Timeline do
 
   defp has_voted_already?(clip_id, votes) do
     Enum.any?(votes, fn vote -> vote.clip_id == clip_id end)
+  end
+
+  alias ClassicClips.Timeline.Save
+
+  @doc """
+  Returns the list of saves.
+
+  ## Examples
+
+      iex> list_saves()
+      [%Save{}, ...]
+
+  """
+  def list_saves do
+    Repo.all(Save)
+  end
+
+  def list_saves_for_user(%User{id: id}) do
+    from(
+      s in Save,
+      select: s,
+      where: s.user_id == ^id
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single save.
+
+  Raises `Ecto.NoResultsError` if the Save does not exist.
+
+  ## Examples
+
+      iex> get_save!(123)
+      %Save{}
+
+      iex> get_save!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_save!(id), do: Repo.get!(Save, id)
+
+  @doc """
+  Creates a save.
+
+  ## Examples
+
+      iex> create_save(%{field: value})
+      {:ok, %Save{}}
+
+      iex> create_save(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_save(attrs \\ %{}) do
+    %Save{}
+    |> Save.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a save.
+
+  ## Examples
+
+      iex> update_save(save, %{field: new_value})
+      {:ok, %Save{}}
+
+      iex> update_save(save, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_save(%Save{} = save, attrs) do
+    save
+    |> Save.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a save.
+
+  ## Examples
+
+      iex> delete_save(save)
+      {:ok, %Save{}}
+
+      iex> delete_save(save)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_save(%Save{} = save) do
+    Repo.delete(save)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking save changes.
+
+  ## Examples
+
+      iex> change_save(save)
+      %Ecto.Changeset{data: %Save{}}
+
+  """
+  def change_save(%Save{} = save, attrs \\ %{}) do
+    Save.changeset(save, attrs)
   end
 end

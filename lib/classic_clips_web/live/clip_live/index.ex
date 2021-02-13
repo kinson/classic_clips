@@ -21,6 +21,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       |> assign(:category, category)
       |> assign(:pagination, pagination)
       |> assign(:votes, get_user_votes(user))
+      |> assign(:saves, get_user_saves(user))
       |> assign(:gooogle_auth_url, generate_oauth_url())
 
     {:ok, modified_socket}
@@ -201,6 +202,15 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:noreply, modifed_socket}
   end
 
+  def handle_event("save_clip", %{"clip" => clip_id}, %{assigns: %{
+    saves: saves,
+    user: user
+  }} = socket) do
+    {:ok, new_saves} = update_saves(saves, clip_id, user.id)
+
+    {:noreply, assign(socket, :saves, new_saves)}
+  end
+
   @impl true
   # def handle_info({:clip_created, clip}, socket) do
   #   {:noreply, update(socket, :clips, fn clips -> clips end)}
@@ -251,6 +261,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     Timeline.list_votes_for_user(user)
   end
 
+  defp get_user_saves(%User{} = user) do
+    Timeline.list_saves_for_user(user)
+  end
+
+  defp get_user_saves(nil), do: []
+
   defp get_pagination_info(count, offset, limit) do
     current_page = floor(offset / limit + 1)
     total_pages = ceil(count / limit)
@@ -269,5 +285,26 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     sub_list = Enum.filter(new_clips, &(not Enum.member?(old_clips, &1)))
 
     if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
+  end
+
+  defp update_saves(saves, clip_id, user_id) do
+    case Enum.find(saves, &(clip_id == &1.clip_id)) do
+      nil -> add_save(saves, clip_id, user_id)
+      save -> remove_save(saves, save)
+    end
+  end
+
+  defp remove_save(saves, save) do
+    case Timeline.delete_save(save) do
+      {:ok, _} -> {:ok, Enum.filter(saves, &(&1.id != save.id))}
+      {:error, _} = error -> error
+    end
+  end
+
+  defp add_save(saves, clip_id, user_id) do
+    case Timeline.create_save(%{clip_id: clip_id, user_id: user_id}) do
+      {:ok, save} -> {:ok, [save | saves]}
+      {:error, _} = error -> error
+    end
   end
 end

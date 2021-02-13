@@ -9,7 +9,7 @@ defmodule ClassicClips.Repo.Migrations.CreateUsers do
       add :google_id, :string
       add :active, :boolean, default: true, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     alter table(:clips) do
