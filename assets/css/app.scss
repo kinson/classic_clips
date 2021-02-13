@@ -407,6 +407,22 @@ header {
       }
     }
   }
+
+  div#user-header-area {
+    p.username {
+      margin: 0 3rem 0 auto;
+      color: #fff;
+      font-weight: 300;
+      & a {
+        text-decoration: underline;
+        color: #fff;
+      }
+    
+      @media (max-width: 40rem) {
+        margin: 0 auto 1rem auto;
+      }
+    }
+  }
 }
 
 .skeets-container {
@@ -415,6 +431,7 @@ header {
   max-width: 110rem;
   flex-direction: row;
   align-items: center;
+  margin: 1rem 0 2rem 0;
 
   @media (max-width: 40rem) {
     flex-wrap: wrap;
@@ -461,7 +478,37 @@ header {
     align-items: center;
   }
 
-  & form {
+  div#search-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    margin: 0 2rem;
+
+    & i.fa-search {
+      color: #444;
+      opacity: 0.8;
+    }
+
+    & form.search-form {
+      margin: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      
+      & input {
+        border: none;
+        border-radius: 0;
+        padding: 0.25rem 0.25rem;
+        font-size: 1.05em;
+        height: auto;
+        margin: 0;
+      }
+  }
+  }
+
+  & form.sort-form {
     margin: 0;
   }
 
@@ -486,26 +533,12 @@ header {
   & p.sort-by {
     margin: 0 0.5rem 0 auto;
     font-size: 1em;
-    color: #555;
+    color: #444;
     opacity: 0.75;
 
     @media (max-width: 40rem) {
       margin: 0 0.5rem 0 0;
     }
-  }
-}
-
-p.username {
-  margin: 0 3rem 0 auto;
-  color: #fff;
-  font-weight: 300;
-  & a {
-    text-decoration: underline;
-    color: #fff;
-  }
-
-  @media (max-width: 40rem) {
-    margin: 0 auto 1rem auto;
   }
 }
 
@@ -675,11 +708,15 @@ div.profile-container {
       height: 11rem;
       margin: 0 auto;
       width: 50%;
-      max-width: 35rem;
+      max-width: 40rem;
 
       @media (max-width: 40rem) {
         margin: 2rem 0 0 0;
         width: 90%;
+      }
+
+      & input {
+        font-size: 1.05em;
       }
 
       & span.invalid-feedback {

@@ -116,22 +116,93 @@ defmodule ClassicClips.Timeline do
   end
 
   def list_saved_clips_for_user(%User{id: id}, %{limit: limit, offset: offset}) do
-    clips = from(c in Clip,
-      join: s in assoc(c, :saves),
-      select: c,
-      where: s.user_id == ^id,
-      limit: ^limit,
-      offset: ^offset,
-      order_by: [desc: c.inserted_at, desc: c.id]
-    )
-    |> Repo.all()
-    |> Repo.preload(:user)
+    clips =
+      from(c in Clip,
+        join: s in assoc(c, :saves),
+        select: c,
+        where: s.user_id == ^id,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: c.inserted_at, desc: c.id]
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
 
     count =
       from(c in Clip,
         join: s in assoc(c, :saves),
         select: count(c.id),
         where: s.user_id == ^id
+      )
+      |> Repo.one()
+
+    {:ok, clips, count}
+  end
+
+  def search_new_clips(search_term, %{limit: limit, offset: offset}) do
+    search = "%#{search_term}%"
+
+    clips =
+      from(c in Clip,
+        select: c,
+        limit: ^limit,
+        offset: ^offset,
+        where: ilike(c.title, ^search),
+        order_by: [desc: c.inserted_at, desc: c.id]
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
+
+    count =
+      from(c in Clip,
+        select: count(c.id),
+        where: ilike(c.title, ^search_term)
+      )
+      |> Repo.one()
+
+    {:ok, clips, count}
+  end
+
+  def search_top_clips_by_date(search_term, "today", opts) do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * @day_in_seconds, :second)
+    |> search_top_clips(search_term, opts)
+  end
+
+  def search_top_clips_by_date(search_term, "week", opts) do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * 7 * @day_in_seconds, :second)
+    |> search_top_clips(search_term, opts)
+  end
+
+  def search_top_clips_by_date(search_term, "goat", opts) do
+    # This could be a problem 10 years from now...good problem tho
+    DateTime.utc_now()
+    |> DateTime.add(-1 * 365 * 10 * @day_in_seconds, :second)
+    |> search_top_clips(search_term, opts)
+  end
+
+  defp search_top_clips(lower_date_bound, search_term, %{limit: limit, offset: offset}) do
+    search = "%#{search_term}%"
+
+    clips =
+      from(c in Clip,
+        select: c,
+        where: c.inserted_at > ^lower_date_bound,
+        where: ilike(c.title, ^search),
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: c.vote_count, desc: c.id]
+      )
+      |> Repo.all()
+      |> Repo.preload(:user)
+
+
+    count =
+      from(c in Clip,
+        select: count(c.id),
+        where: c.inserted_at > ^lower_date_bound,
+        where: ilike(c.title, ^search_term)
       )
       |> Repo.one()
 

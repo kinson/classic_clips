@@ -12,14 +12,16 @@
   <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>
 
   <div class="swimup-bar-loooking-good">
-    <i class="fas fa-search"></i>
-    <%= d = form_for :search, Routes.clip_index_path(@socket, :index), phx_change: "change_search" %>
-      <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
-    </form>
+    <div id="search-area">
+      <i class="fas fa-search"></i>
+      <%= d = form_for :search, Routes.clip_index_path(@socket, :index), phx_change: "change_search", class: "search-form" %>
+        <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
+      </form>
+    </div>
 
     <p class="sort-by">viewing:</p>
-    <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort" %>
-      <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: "today" %>
+    <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
+      <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
     </form>
 
   </div>
