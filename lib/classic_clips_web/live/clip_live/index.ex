@@ -77,6 +77,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:noreply, modified_socket}
   end
 
+  def handle_event("change_search", %{"search" => %{"term" => search_term}}, socket) do
+    IO.inspect search_term
+
+    {:noreply, socket}
+  end
+
   def handle_event(
         "inc_votes",
         %{"clip" => clip_id},
