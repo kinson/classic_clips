@@ -343,33 +343,50 @@ header {
     }
   }
 
-  & a.classic,
-  a.clips {
-    font-size: 5em;
-    margin: 1rem 1rem 0 1rem;
-    font-family: "Teko", sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+  & div.big-ass-name {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-left: 2rem;
 
     @media (max-width: 40rem) {
-      font-size: 3.14em;
-      line-height: 1em;
+      margin: 2rem auto 0.5rem auto;
     }
 
-    &.classic {
-      color: rgb(233, 52, 215);
-      margin: 1.5rem 0.75rem 0.5rem 2rem;
-
+    & a.classic,
+    a.clips {
+      font-size: 5em;
+      font-family: "Teko", sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+  
       @media (max-width: 40rem) {
-        margin-left: auto;
+        font-size: 3.14em;
+        line-height: 1em;
+      }
+  
+      &.classic {
+        color: rgb(233, 52, 215);
+        margin-right: 1rem;
+      }
+  
+      &.clips {
+        color: rgb(218, 255, 79);
+        margin-left: 1rem;
       }
     }
-
-    &.clips {
-      color: rgb(218, 255, 79);
-      margin: 1.5rem auto 0.5rem 0.75rem;
+  
+    & a.header-about {
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 600;
+      position: relative;
+      bottom: 0.2rem;
+      letter-spacing: 2px;
+      margin-left: 1rem;
     }
   }
+
 
   & div.auth {
     display: flex;
@@ -831,17 +848,64 @@ body {
 }
 
 footer {
-  margin: 0 auto;
-  margin-top: 5rem;
+  margin: 5rem auto;
   max-width: 110rem;
   width: 100%;
   border-top: 1px solid #999;
 
+  & div.footer-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+
+    & > a {
+      margin: 0 1.5rem;
+    }
+
+    & > a:first-child {
+      margin-left: 0;
+    }
+
+    & > a:last-child {
+      margin-right: 0;
+    }
+  }
+
   & p {
-    margin: 2rem auto;
+    margin: 1.5rem auto;
     font-size: 0.95em;
     font-weight: 300;
     text-align: center;
     color: #444;
+  }
+}
+
+div#about-page {
+  max-width: 80rem;
+  margin: 0 auto;
+
+  & > h2 {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  & p {
+    font-size: 1.25em;
+  }
+
+  & div.turn-up {
+    & > p {
+      margin: 0.13rem 0;
+    }
+
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 40rem) {
+    margin: 0 auto;
+    width: 80%;
   }
 }

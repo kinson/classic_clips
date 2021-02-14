@@ -15,8 +15,11 @@
   <body>
     <header>
       <div class="title">
-      <%= link "CLASSIC", to: "/", class: "classic" %>
-      <%= link "CLIPS", to: "/", class: "clips" %>
+        <div class="big-ass-name">
+          <%= link "CLASSIC", to: "/", class: "classic" %>
+          <%= link "CLIPS", to: "/", class: "clips" %>
+          <%= link "[?]", to: "/about", class: "header-about" %>
+        </div>
 
         <%= if is_nil(@user) do %>
           <div class="auth">
@@ -40,6 +43,11 @@
     <%= @inner_content %>
 
     <footer>
+      <div class="footer-links">
+        <%= link "About", to: "/about" %>
+        <a href="https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g">No Dunks Youtube</a>
+      </div>
+
       <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
     </footer>
   </body>

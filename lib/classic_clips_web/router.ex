@@ -18,6 +18,7 @@ defmodule ClassicClipsWeb.Router do
     pipe_through :browser
 
     get "/auth/google/callback", GoogleAuthController, :index
+    get "/about", AboutController, :index
 
     # live "/", PageLive, :index
 
