@@ -26,6 +26,8 @@ defmodule ClassicClips.Timeline.Clip do
       message: "Cannot create two clips with the same title"
     )
     |> validate_length(:title, min: 2, max: 72)
+    |> validate_format(:yt_video_url, ~r/(youtube.com|youtu.be).*t=[0-9]+/, message: "Must be a Youtube link with a timestamp")
+    # |> validate_format(:yt_video_url, ~r//, message: "Url must include a timestamp")
     |> validate_number(:clip_length, greater_than: 0, less_than: 2000)
   end
 end

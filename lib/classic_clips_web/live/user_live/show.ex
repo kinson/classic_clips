@@ -22,6 +22,7 @@ defmodule ClassicClipsWeb.UserLive.Show do
       |> assign(:clips, clips)
       |> assign(:votes, get_user_votes(user))
       |> assign(:saves, get_user_saves(user))
+      |> assign(:thumbs_up_total, get_user_thumbs_up(user))
       |> assign(:clip_area_content, "your_clips")
       |> assign(:show_edit, false)
       |> assign(:changeset, changeset)
@@ -278,6 +279,12 @@ defmodule ClassicClipsWeb.UserLive.Show do
   end
 
   defp get_user_saves(nil), do: []
+
+  defp get_user_thumbs_up(%User{} = user) do
+    Timeline.get_users_clips_vote_total(user)
+  end
+
+  defp get_user_thumbs_up(nil), do: 0
 
   defp update_saves(saves, clip_id, user_id) do
     case Enum.find(saves, &(clip_id == &1.clip_id)) do

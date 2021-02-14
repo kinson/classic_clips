@@ -7,6 +7,8 @@
     <%= csrf_meta_tag() %>
     <%= live_title_tag assigns[:page_title] || "Classic Clips" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Teko:wght@600&display=swap" rel="stylesheet">
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <script defer src="https://kit.fontawesome.com/52e2b7ce67.js" crossorigin="anonymous"></script>
   </head>
@@ -26,13 +28,19 @@
         <% else %>
           <div id="user-header-area">
             <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
-          <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
-          <p class="votes">20 VOTES</p>
-          </div>
+            <div class="user-info">
+              <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
+              <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
+            </div>
+        </div>
         <% end %>
       </div>
 
     </header>
     <%= @inner_content %>
+
+    <footer>
+      <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
+    </footer>
   </body>
 </html>

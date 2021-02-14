@@ -8,9 +8,14 @@
     return_to: Routes.clip_index_path(@socket, :index) %>
 <% end %>
 
+<%= if @show_signup_message do %>
+  <div class="show-signup-message" phx-click="hide_signup_message">
+    <p>Sign up or login to submit, vote, and save clips.</p>
+  </div>
+<% end %>
+
 <div class="skeets-container">
   <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>
-
   <div class="swimup-bar-loooking-good">
     <div id="search-area">
       <i class="fas fa-search"></i>
@@ -23,7 +28,6 @@
     <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
       <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
     </form>
-
   </div>
 </div>
 

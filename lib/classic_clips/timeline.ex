@@ -156,7 +156,7 @@ defmodule ClassicClips.Timeline do
     count =
       from(c in Clip,
         select: count(c.id),
-        where: ilike(c.title, ^search_term)
+        where: ilike(c.title, ^search)
       )
       |> Repo.one()
 
@@ -197,16 +197,23 @@ defmodule ClassicClips.Timeline do
       |> Repo.all()
       |> Repo.preload(:user)
 
-
     count =
       from(c in Clip,
         select: count(c.id),
         where: c.inserted_at > ^lower_date_bound,
-        where: ilike(c.title, ^search_term)
+        where: ilike(c.title, ^search)
       )
       |> Repo.one()
 
     {:ok, clips, count}
+  end
+
+  def get_users_clips_vote_total(%User{} = user) do
+    from(c in Clip,
+      select: sum(c.vote_count),
+      where: c.user_id == ^user.id
+    )
+    |> Repo.one()
   end
 
   @doc """

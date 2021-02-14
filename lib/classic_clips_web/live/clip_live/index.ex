@@ -16,12 +16,14 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     modified_socket =
       socket
       |> assign(:page_title, "Classic Clips")
+      |> assign(:show_signup_message, false)
       |> assign(:user, user)
       |> assign(:clips, clips)
       |> assign(:category, category)
       |> assign(:pagination, pagination)
       |> assign(:votes, get_user_votes(user))
       |> assign(:saves, get_user_saves(user))
+      |> assign(:thumbs_up_total, get_user_thumbs_up(user))
       |> assign(:gooogle_auth_url, generate_oauth_url())
 
     {:ok, modified_socket}
@@ -86,6 +88,14 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       |> assign(:pagination, pagination)
 
     {:noreply, modified_socket}
+  end
+
+  def handle_event(
+        "inc_votes",
+        _,
+        %{assigns: %{user: nil}} = socket
+      ) do
+    {:noreply, assign(socket, :show_signup_message, true)}
   end
 
   def handle_event(
@@ -213,6 +223,10 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:noreply, modifed_socket}
   end
 
+  def handle_event("save_clip", _, %{assigns: %{user: nil}} = socket) do
+    {:noreply, assign(socket, :show_signup_message, true)}
+  end
+
   def handle_event(
         "save_clip",
         %{"clip" => clip_id},
@@ -226,6 +240,10 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:ok, new_saves} = update_saves(saves, clip_id, user.id)
 
     {:noreply, assign(socket, :saves, new_saves)}
+  end
+
+  def handle_event("hide_signup_message", _, socket) do
+    {:noreply, assign(socket, :show_signup_message, false)}
   end
 
   @impl true
@@ -295,6 +313,15 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp get_user_saves(nil), do: []
+
+  defp get_user_thumbs_up(%User{} = user) do
+    Timeline.get_users_clips_vote_total(user)
+  end
+
+  defp get_user_thumbs_up(nil), do: 0
+
+  defp show_signup_message() do
+  end
 
   defp get_pagination_info(count, offset, limit) do
     current_page = floor(offset / limit + 1)

@@ -118,7 +118,7 @@ div.empty-clips {
 }
 
 .clip-container {
-  width: 96%;
+  width: 100%;
   background-color: #efefef;
   box-shadow: 1px 1px 2px #888;
   transition: all 0.1s ease;
@@ -137,6 +137,7 @@ div.empty-clips {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  min-height: 16rem;
 }
 
 .save-button {
@@ -188,7 +189,7 @@ div.empty-clips {
 
 .tas-text {
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.35em;
   position: absolute;
   margin: 1rem 1.5rem;
@@ -223,7 +224,7 @@ div.empty-clips {
 
 .leigh-score {
   font-size: 1.25em;
-  font-weight: 600;
+  font-weight: 700;
   color: #222;
   position: relative;
   margin: 0 0 0 1rem;
@@ -327,7 +328,6 @@ header {
   background: #6000aa;
   border-bottom: 1px solid #eaeaea;
   margin-bottom: 2rem;
-  font-weight: 700;
 
   & div.title {
     max-width: 110rem;
@@ -343,8 +343,11 @@ header {
 
   & a.classic,
   a.clips {
-    font-size: 4.5em;
+    font-size: 5em;
     margin: 1rem 1rem 0 1rem;
+    font-family: 'Teko', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.06em;
 
     @media (max-width: 40rem) {
       font-size: 2em;
@@ -409,29 +412,70 @@ header {
   }
 
   div#user-header-area {
-    p.username {
-      margin: 0 3rem 0 auto;
-      color: #fff;
-      font-weight: 300;
-      & a {
-        text-decoration: underline;
-        color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 4rem 0 auto;
+
+    & img {
+      width: 4rem;
+      border-radius: 2rem;
+      height: 4rem;
+      object-fit: cover;
+    }
+
+    & div.user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 1.5rem;
+
+      & p {
+        margin: 0;
       }
-    
-      @media (max-width: 40rem) {
-        margin: 0 auto 1rem auto;
+
+      & p.username {
+        font-weight: 300;
+        & a {
+          text-decoration: underline;
+          color: #fff;
+          font-size: 1.25em;
+        }
+      
+        @media (max-width: 40rem) {
+          margin: 0 auto 1rem auto;
+        }
+      }
+  
+      & p.votes {
+        color: #fff;
+        font-weight: 300;
+        font-size: 0.9em;
+        opacity: 0.75;
       }
     }
   }
 }
 
+div.show-signup-message {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  padding: 15px;
+  margin: 0 2rem 2rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  & p {
+    margin: 0;
+  }
+}
+
 .skeets-container {
   display: flex;
-  width: 100%;
-  max-width: 110rem;
   flex-direction: row;
   align-items: center;
-  margin: 1rem 0 2rem 0;
+  margin: 1rem 2rem 2rem 1rem;
 
   @media (max-width: 40rem) {
     flex-wrap: wrap;
@@ -453,10 +497,10 @@ header {
     display: block;
     text-decoration: underline;
     line-height: 2.5em;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.07em;
     font-size: 1em;
     font-weight: 500;
-    margin: 0 1rem;
+    margin: 0 1rem 0 0;
 
     @media (max-width: 40rem) {
       width: 100%;
@@ -468,7 +512,7 @@ header {
   & div.swimup-bar-loooking-good {
     height: 4.2rem;
     flex: 1;
-    margin: 0 2rem;
+    margin: 0 0 0 2rem;
 
     border-radius: 0.5rem;
     background-color: rgb(218, 255, 79);
@@ -673,7 +717,7 @@ div.profile-container {
 
       & p.big-username {
         font-size: 3em;
-        font-weight: 600;
+        font-weight: 700;
         color: #222;
         margin: 0 1rem;
         vertical-align: bottom;
@@ -744,7 +788,7 @@ div.profile-container {
       margin: 1rem 0;
 
       & h2 {
-        font-size: 0.9em;
+        font-size: 0.95em;
         font-weight: 500;
         letter-spacing: 0.14em;
         margin: 0 2rem;
@@ -764,5 +808,26 @@ div.profile-container {
       flex-wrap: wrap;
       align-items: center;
     }
+  }
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;;
+}
+
+footer {
+  margin: 0 auto;
+  margin-top: 5rem;
+  max-width: 110rem;
+  width: 100%;
+  border-top: 1px solid #999;
+
+
+  & p {
+    margin: 2rem auto;
+    font-size: 0.95em;
+    font-weight: 300;
+    text-align: center;
+    color: #444;
   }
 }
