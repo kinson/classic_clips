@@ -332,6 +332,7 @@ header {
 
   & div.title {
     max-width: 110rem;
+    padding: 0 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -356,9 +357,12 @@ header {
     }
 
     &.classic {
-      margin-left: 4rem;
       color: rgb(233, 52, 215);
-      margin: 1.5rem 0.75rem 0.5rem auto;
+      margin: 1.5rem 0.75rem 0.5rem 2rem;
+
+      @media (max-width: 40rem) {
+        margin-left: auto;
+      }
     }
 
     &.clips {
@@ -410,6 +414,7 @@ header {
 
       @media (max-width: 40rem) {
         margin: 0 1rem;
+        line-height: 2em;
       }
     }
   }
@@ -418,7 +423,7 @@ header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 0 4rem 0 auto;
+    margin: 0 2rem 0 auto;
 
     @media (max-width: 40rem) {
       margin: 0 auto 1rem auto;
@@ -534,7 +539,7 @@ div.show-signup-message {
     align-items: center;
     border-bottom: 1px solid #444;
     margin: 0 2rem;
-    
+
     @media (max-width: 40rem) {
       display: none;
     }
