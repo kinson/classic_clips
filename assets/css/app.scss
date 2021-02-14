@@ -223,9 +223,10 @@ div.empty-clips {
 }
 
 .leigh-score {
-  font-size: 1.25em;
-  font-weight: 700;
-  color: #222;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #444;
+  opacity: 0.8;
   position: relative;
   margin: 0 0 0 1rem;
 }
@@ -345,22 +346,24 @@ header {
   a.clips {
     font-size: 5em;
     margin: 1rem 1rem 0 1rem;
-    font-family: 'Teko', sans-serif;
+    font-family: "Teko", sans-serif;
     font-weight: 600;
     letter-spacing: 0.06em;
 
     @media (max-width: 40rem) {
-      font-size: 2em;
-      margin: 1rem 0.5rem 0 0.5rem;
+      font-size: 3.14em;
+      line-height: 1em;
     }
 
     &.classic {
       margin-left: 4rem;
       color: rgb(233, 52, 215);
+      margin: 1.5rem 0.75rem 0.5rem auto;
     }
 
     &.clips {
       color: rgb(218, 255, 79);
+      margin: 1.5rem auto 0.5rem 0.75rem;
     }
   }
 
@@ -417,6 +420,10 @@ header {
     align-items: center;
     margin: 0 4rem 0 auto;
 
+    @media (max-width: 40rem) {
+      margin: 0 auto 1rem auto;
+    }
+
     & img {
       width: 4rem;
       border-radius: 2rem;
@@ -441,12 +448,8 @@ header {
           color: #fff;
           font-size: 1.25em;
         }
-      
-        @media (max-width: 40rem) {
-          margin: 0 auto 1rem auto;
-        }
       }
-  
+
       & p.votes {
         color: #fff;
         font-weight: 300;
@@ -480,7 +483,7 @@ div.show-signup-message {
   @media (max-width: 40rem) {
     flex-wrap: wrap;
     justify-content: center;
-    height: 10rem;
+    height: 11rem;
     padding: 1rem 0;
   }
 
@@ -513,13 +516,16 @@ div.show-signup-message {
     height: 4.2rem;
     flex: 1;
     margin: 0 0 0 2rem;
-
     border-radius: 0.5rem;
     background-color: rgb(218, 255, 79);
     box-shadow: 1px 2px 2px #777;
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    @media (max-width: 40rem) {
+      margin: 1rem auto;
+    }
   }
 
   div#search-area {
@@ -528,6 +534,10 @@ div.show-signup-message {
     align-items: center;
     border-bottom: 1px solid #444;
     margin: 0 2rem;
+    
+    @media (max-width: 40rem) {
+      display: none;
+    }
 
     & i.fa-search {
       color: #444;
@@ -540,7 +550,7 @@ div.show-signup-message {
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      
+
       & input {
         border: none;
         border-radius: 0;
@@ -549,11 +559,11 @@ div.show-signup-message {
         height: auto;
         margin: 0;
       }
-  }
+    }
   }
 
   & form.sort-form {
-    margin: 0;
+    margin: 0 auto;
   }
 
   & select {
@@ -581,7 +591,7 @@ div.show-signup-message {
     opacity: 0.75;
 
     @media (max-width: 40rem) {
-      margin: 0 0.5rem 0 0;
+      margin: 0 auto;
     }
   }
 }
@@ -812,7 +822,7 @@ div.profile-container {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;;
+  font-family: "Open Sans", sans-serif;
 }
 
 footer {
@@ -821,7 +831,6 @@ footer {
   max-width: 110rem;
   width: 100%;
   border-top: 1px solid #999;
-
 
   & p {
     margin: 2rem auto;

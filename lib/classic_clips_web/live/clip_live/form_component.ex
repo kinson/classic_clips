@@ -43,8 +43,8 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   defp save_clip(socket, :new, clip_params) do
     with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
          {:ok, changeset} <- validate_yt_url(changeset),
-         {:ok, clip} <- ClassicClips.Repo.insert(changeset),
-         {:ok, _vote} = ClassicClips.Timeline.inc_votes(clip.id, socket.assigns.user) do
+         {:ok, clip} <- Timeline.insert_clip(changeset),
+         {:ok, _vote} = Timeline.inc_votes(clip.id, socket.assigns.user) do
       {:noreply,
        socket
        |> put_flash(:info, "Clip created successfully")

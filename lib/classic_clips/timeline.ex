@@ -250,6 +250,10 @@ defmodule ClassicClips.Timeline do
     |> Repo.insert()
   end
 
+  def insert_clip(%Ecto.Changeset{} = clip) do
+    Repo.insert(clip) |> broadcast(:clip_created)
+  end
+
   @doc """
   Updates a clip.
 
@@ -522,6 +526,14 @@ defmodule ClassicClips.Timeline do
     end)
   end
 
+  def subscribe_new() do
+    Phoenix.PubSub.subscribe(ClassicClips.PubSub, "new")
+  end
+
+  def unsubscribe_new() do
+    Phoenix.PubSub.unsubscribe(ClassicClips.PubSub, "new")
+  end
+
   def resubscribe(unsub_list, sub_list) do
     Enum.map(sub_list, & &1.id)
     |> Enum.each(fn clip_id ->
@@ -534,7 +546,12 @@ defmodule ClassicClips.Timeline do
     end)
   end
 
-  defp broadcast({:error, _reason} = error), do: error
+  defp broadcast({:error, _reason} = error, _), do: error
+
+  defp broadcast({:ok, clip}, :clip_created) do
+    Phoenix.PubSub.broadcast(ClassicClips.PubSub, "new", {:clip_created, clip})
+    {:ok, clip}
+  end
 
   defp broadcast({:ok, clip}, event) do
     Phoenix.PubSub.broadcast(ClassicClips.PubSub, "clip:#{clip.id}", {event, clip})

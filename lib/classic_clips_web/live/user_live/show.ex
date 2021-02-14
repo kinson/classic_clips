@@ -274,11 +274,11 @@ defmodule ClassicClipsWeb.UserLive.Show do
     Timeline.list_votes_for_user(user)
   end
 
+  defp get_user_saves(nil), do: []
+
   defp get_user_saves(%User{} = user) do
     Timeline.list_saves_for_user(user)
   end
-
-  defp get_user_saves(nil), do: []
 
   defp get_user_thumbs_up(%User{} = user) do
     Timeline.get_users_clips_vote_total(user)

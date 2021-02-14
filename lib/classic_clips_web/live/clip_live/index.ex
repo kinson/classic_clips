@@ -248,7 +248,9 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   @impl true
   def handle_info({:clip_created, clip}, socket) do
-    {:noreply, update(socket, :clips, fn clips -> clips end)}
+    old_clips = Enum.take(socket.assigns.clips, 11)
+
+    {:noreply, assign(socket, :clips, [clip | old_clips])}
   end
 
   def handle_info({:clip_updated, clip}, socket) do
@@ -342,6 +344,20 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
   end
+
+  defp subscribe_to_new_clips(%{assigns: %{category: "new"}}), do: :ok
+
+  defp subscribe_to_new_clips(socket) do
+    if connected?(socket), do: Timeline.subscribe_new()
+    :ok
+  end
+
+  defp unsubscribe_from_new_clips(%{assigns: %{category: "new"}} = socket) do
+    if connected?(socket), do: Timeline.unsubscribe_new()
+    :ok
+  end
+
+  defp unsubscribe_from_new_clips(_), do: :ok
 
   defp update_saves(saves, clip_id, user_id) do
     case Enum.find(saves, &(clip_id == &1.clip_id)) do
