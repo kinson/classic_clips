@@ -1,0 +1,32 @@
+<h1>Show Beef</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, ClassicClipsWeb.BeefLive.FormComponent,
+    id: @beef.id,
+    title: @page_title,
+    action: @live_action,
+    beef: @beef,
+    return_to: Routes.beef_show_path(@socket, :show, @beef) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Player:</strong>
+    <%= @beef.player %>
+  </li>
+
+  <li>
+    <strong>Date time:</strong>
+    <%= @beef.date_time %>
+  </li>
+
+  <li>
+    <strong>Beef count:</strong>
+    <%= @beef.beef_count %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.beef_show_path(@socket, :edit, @beef), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.beef_index_path(@socket, :index) %></span>

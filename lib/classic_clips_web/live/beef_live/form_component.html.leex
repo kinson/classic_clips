@@ -1,0 +1,22 @@
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "beef-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= label f, :player %>
+  <%= text_input f, :player %>
+  <%= error_tag f, :player %>
+
+  <%= label f, :date_time %>
+  <%= text_input f, :date_time %>
+  <%= error_tag f, :date_time %>
+
+  <%= label f, :beef_count %>
+  <%= number_input f, :beef_count %>
+  <%= error_tag f, :beef_count %>
+
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>
