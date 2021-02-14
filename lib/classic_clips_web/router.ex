@@ -24,12 +24,14 @@ defmodule ClassicClipsWeb.Router do
 
     live "/", ClipLive.Index, :index
     live "/clips/new", ClipLive.Index, :new
-    live "/clips/:id/edit", ClipLive.Index, :edit
+    # live "/clips/:id/edit", ClipLive.Index, :edit
 
-    live "/clips/:id", ClipLive.Show, :show
-    live "/clips/:id/show/edit", ClipLive.Show, :edit
+    # live "/clips/:id", ClipLive.Show, :show
+    # live "/clips/:id/show/edit", ClipLive.Show, :edit
 
     live "/user", UserLive.Show, :show
+
+    live "/beefs", BeefLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
