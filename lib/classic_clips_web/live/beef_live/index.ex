@@ -7,6 +7,8 @@ defmodule ClassicClipsWeb.BeefLive.Index do
   @impl true
   def mount(_params, _session, socket) do
 
+    BigBeef.get_test_game()
+
     modified_socket =
       socket
       |> assign(:beefs, list_beefs())

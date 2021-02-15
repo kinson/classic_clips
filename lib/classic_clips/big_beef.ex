@@ -101,4 +101,138 @@ defmodule ClassicClips.BigBeef do
   def change_beef(%Beef{} = beef, attrs \\ %{}) do
     Beef.changeset(beef, attrs)
   end
+
+  def get_games() do
+    alias ClassicClips.BigBeef.Services.Stats
+
+    Stats.games_or_someshit()
+    |> Enum.map(&Stats.get_boxscore_for_game/1)
+    |> Enum.map(fn game ->
+      %{home: home, away: away} = Stats.extract_team_stats(game)
+
+      Enum.concat(Stats.extract_team_stats(home), Stats.extract_team_stats(away))
+    end)
+  end
+
+  def get_test_game() do
+    alias ClassicClips.BigBeef.Services.Stats
+
+    game_id = "0022000413"
+
+    {:ok, game} = Stats.get_boxscore_for_game(game_id)
+
+    %{home: home, away: away, game_time: game_time} = Stats.extract_team_stats(game)
+
+    Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
+    |> Enum.map(&get_or_create_player(&1, game_time, game_id))
+  end
+
+  alias ClassicClips.BigBeef.Player
+
+  @doc """
+  Returns the list of players.
+
+  ## Examples
+
+      iex> list_players()
+      [%Player{}, ...]
+
+  """
+  def list_players do
+    Repo.all(Player)
+  end
+
+  @doc """
+  Gets a single player.
+
+  Raises `Ecto.NoResultsError` if the Player does not exist.
+
+  ## Examples
+
+      iex> get_player!(123)
+      %Player{}
+
+      iex> get_player!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_player!(id), do: Repo.get!(Player, id)
+
+  @doc """
+  Creates a player.
+
+  ## Examples
+
+      iex> create_player(%{field: value})
+      {:ok, %Player{}}
+
+      iex> create_player(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_player(attrs \\ %{}) do
+    %Player{}
+    |> Player.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a player.
+
+  ## Examples
+
+      iex> update_player(player, %{field: new_value})
+      {:ok, %Player{}}
+
+      iex> update_player(player, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_player(%Player{} = player, attrs) do
+    player
+    |> Player.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a player.
+
+  ## Examples
+
+      iex> delete_player(player)
+      {:ok, %Player{}}
+
+      iex> delete_player(player)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_player(%Player{} = player) do
+    Repo.delete(player)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking player changes.
+
+  ## Examples
+
+      iex> change_player(player)
+      %Ecto.Changeset{data: %Player{}}
+
+  """
+  def change_player(%Player{} = player, attrs \\ %{}) do
+    Player.changeset(player, attrs)
+  end
+
+  def get_or_create_player(%{ext_person_id: ext_person_id} = player_data, game_time, game_id) do
+    {:ok, player} =
+      case Repo.get_by(Player, ext_person_id: ext_person_id) do
+        nil -> create_player(player_data)
+        %Player{} = p -> {:ok, p}
+      end
+
+    beef_data =
+      Map.merge(player_data, %{player_id: player.id, game_time: game_time, ext_game_id: game_id})
+
+    create_beef(beef_data)
+  end
 end

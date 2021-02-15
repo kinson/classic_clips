@@ -14,7 +14,7 @@ defmodule ClassicClips.Timeline.Clip do
 
     has_many :saves, ClassicClips.Timeline.Save
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
