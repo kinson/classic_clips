@@ -8,7 +8,6 @@ defmodule ClassicClipsWeb.AboutController do
 
     {:ok, user} =
       Plug.Conn.get_session(conn, :profile)
-      |> IO.inspect()
       |> get_or_create_user()
 
     conn
