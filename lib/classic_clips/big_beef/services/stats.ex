@@ -13,8 +13,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
   end
 
   def get_boxscore_for_game(game_id) do
-    with {:ok, %HTTPoison.Response{body: body}} =
-           get_box_score_url(game_id) |> HTTPoison.get(),
+    with {:ok, %HTTPoison.Response{body: body}} = get_box_score_url(game_id) |> HTTPoison.get(),
          {:ok, _} = response <- Jason.decode(body) do
       response
     else
@@ -43,7 +42,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
 
   def extract_player_stats(%{name: name, players: players}) do
     Enum.filter(players, fn %{"statistics" => %{"reboundsTotal" => rebounds}} ->
-      rebounds >= 0
+      rebounds > 5
     end)
     |> Enum.map(fn player ->
       %{
@@ -69,14 +68,54 @@ defmodule ClassicClips.BigBeef.Services.Stats do
         "game" => %{
           "homeTeam" => %{"players" => home_players, "teamName" => home_team_name},
           "awayTeam" => %{"players" => away_players, "teamName" => away_team_name},
-          "period" => _period,
-          "gameClock" => _game_clock
+          "period" => period,
+          "gameClock" => game_clock,
+          "gameTimeUTC" => game_start_time,
+          "gameId" => game_id
         }
       }) do
     %{
       home: %{name: home_team_name, players: home_players},
       away: %{name: away_team_name, players: away_players},
-      game_time: 1140
+      game_time: parse_game_time(game_clock, period),
+      game_start_time: game_start_time,
+      game_id: game_id
     }
+  end
+
+  def parse_game_time(time, period) when period < 5 do
+    # PT03M14.00S
+    elapsed_period_time = get_seconds_left_in_period(time, 12)
+
+    ((period - 1) * 12 * 60 + elapsed_period_time)
+  end
+
+  def parse_game_time(time, period) do
+    elapsed_period_time = get_seconds_left_in_period(time, 5)
+
+    regulation_duration = 48 * 60
+
+    overtime_duration = (period - 5) * 5 * 60
+    regulation_duration + overtime_duration + elapsed_period_time
+  end
+
+  def get_seconds_left_in_period(time, minutes_in_period) do
+    minutes_left =
+      String.split(time, "M")
+      |> hd()
+      |> String.replace("PT", "")
+      |> String.to_integer()
+
+    seconds_left =
+      String.split(time, "M")
+      |> Enum.at(1)
+      |> String.split(".")
+      |> hd()
+      |> String.to_integer()
+
+    minutes_elapsed = minutes_in_period - 1 - minutes_left
+    seconds_elapsed = 60 - seconds_left
+
+    minutes_elapsed * 60 + seconds_elapsed
   end
 end

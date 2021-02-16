@@ -1,5 +1,5 @@
 <div id="beef-container">
-
+  <h1>BIG BEEF TRACKER<span id="blinky"></span></h1>
   <div id="beef-graph">
     <div class="graph-lines">
       <div class="beef-graph-line"></div>
@@ -15,6 +15,12 @@
     </div>
 
     <div id="beef-line"><p>BIG BEEF LINE</p></div>
+
+    <div id="regulation-end-line"><p>END OF REGULATION<p></div>
+
+    <%= for beef <- @beefs do %>
+      <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
+    <% end %>
   </div>
 
 </div>

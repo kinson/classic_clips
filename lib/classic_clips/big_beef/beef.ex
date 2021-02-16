@@ -5,6 +5,7 @@ defmodule ClassicClips.BigBeef.Beef do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "beefs" do
     field :beef_count, :integer
+    field :date_time, :utc_datetime
     field :ext_game_id, :string
     field :game_time, :integer
 
@@ -16,7 +17,7 @@ defmodule ClassicClips.BigBeef.Beef do
   @doc false
   def changeset(beef, attrs) do
     beef
-    |> cast(attrs, [:beef_count, :game_time, :ext_game_id, :player_id])
-    |> validate_required([:beef_count, :ext_game_id, :game_time, :player_id])
+    |> cast(attrs, [:date_time, :beef_count, :game_time, :ext_game_id, :player_id])
+    |> validate_required([:date_time, :beef_count, :ext_game_id, :game_time, :player_id])
   end
 end

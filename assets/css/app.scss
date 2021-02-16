@@ -327,8 +327,6 @@ header {
   margin: 0 auto;
   width: 100%;
   background: #6000aa;
-  border-bottom: 1px solid #eaeaea;
-  margin-bottom: 2rem;
 
   & div.title {
     max-width: 110rem;
@@ -499,7 +497,7 @@ div.show-signup-message {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 1rem 2rem 2rem 1rem;
+  margin: 3rem 2rem 2rem 1rem;
 
   @media (max-width: 40rem) {
     flex-wrap: wrap;
@@ -852,6 +850,24 @@ footer {
   width: 100%;
   border-top: 1px solid #999;
 
+  &.beef-footer {
+    background-color: #111;
+    max-width: initial;
+    margin: 0;
+    border: none;
+    color: #fff;
+
+    & div.footer-links {
+      margin: 0;
+    }
+
+    & p#disclaimer {
+      margin-bottom: 0;
+      color: #efefef;
+      padding-bottom: 2rem;
+    }
+  }
+
   & div.footer-links {
     display: flex;
     flex-direction: row;
@@ -912,16 +928,51 @@ div#about-page {
 div#beef-container {
   background-color: #111;
   width: 100%;
-  height: 80rem;
+  min-height: 80vh;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+
+  & h1 {
+    color: #fff;
+    font-size: 2em;
+    font-family: "Cutive Mono", monospace;
+    width: 80%;
+    max-width: 110rem;
+    margin: 4rem auto 4rem auto;
+  }
+
+  @keyframes blinker {
+    0% {
+      opacity: 0;
+    }
+
+    49% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  & span#blinky {
+    height: 1rem;
+    border-left: 2px solid #fff;
+    width: 1px;
+    margin-left: 1rem;
+    animation: blinker 1.1s linear infinite;
+  }
 
   & div#beef-graph {
-    position: absolute;
+    position: relative;
+
+    margin: 1rem auto;
 
     width: 80%;
+    max-width: 110rem;
     height: 50rem;
     border-bottom: 2px solid green;
     border-left: 2px solid green;
@@ -942,20 +993,77 @@ div#beef-container {
     }
 
     & div#beef-line {
-      position: relative;
+      position: absolute;
       width: 100%;
-      border-bottom: 3px solid green;
-      bottom: 75%;
+      border-top: 3px solid green;
+      top: 23.75%;
+      opacity: 0.75;
 
-      &>p {
-        font-size: 1.5em;
+      & > p {
+        font-size: 1.55em;
         text-transform: uppercase;
         color: #fff;
+        opacity: 0.75;
         margin: 0.25rem 1rem;
-        font-weight: 500;
+        font-family: "Cutive Mono", monospace;
+        line-height: initial;
       }
     }
 
+    & div#regulation-end-line {
+      position: absolute;
+      left: 80.2%;
+      top: 0px;
+      height: 100%;
+      border-left: 3px solid green;
+      padding: 0 0.5rem;
+      width: 3rem;
+      opacity: 0.5;
 
+      & p {
+        color: #fff;
+        font-size: 0.95em;
+        font-family: "Cutive Mono", monospace;
+      }
+    }
+
+    div.beef-point {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: red;
+      left: 50%;
+      top: 20%;
+      overflow: hidden;
+
+      transition: all 0.3s ease;
+
+      &:hover {
+        max-height: 20px;
+        overflow: visible;
+
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+      }
+
+      & div.beef-info {
+        position: relative;
+        z-index: 2;
+        margin: 1.5rem;
+        width: 20rem;
+        background-color: #222;
+        border: 1px solid green;
+        padding: 0.2rem 0;
+
+        & > p {
+          color: #fff;
+          margin: 0.25rem 0.5rem;
+          font-size: 0.99em;
+          text-transform: uppercase;
+        }
+      }
+    }
   }
 }

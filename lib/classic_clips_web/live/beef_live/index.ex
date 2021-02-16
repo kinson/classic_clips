@@ -6,20 +6,26 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-
-    BigBeef.get_test_game()
+    if connected?(socket), do: BigBeef.subscribe_new_beef()
 
     modified_socket =
       socket
-      |> assign(:beefs, list_beefs())
+      |> assign(:beefs, BigBeef.get_recent_beefs())
       |> assign(:user, nil)
+      |> assign(:is_beef_page, true)
       |> assign(:gooogle_auth_url, "")
+
     {:ok, modified_socket}
   end
 
   @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  @impl true
+  def handle_info({:new_beef, beefs}, socket) do
+    {:noreply, assign(socket, :beefs, beefs)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
