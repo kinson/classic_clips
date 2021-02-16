@@ -14,9 +14,10 @@ defmodule ClassicClips.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: ClassicClips.PubSub},
       # Start the Endpoint (http/https)
-      ClassicClipsWeb.Endpoint
+      ClassicClipsWeb.Endpoint,
       # Start a worker by calling: ClassicClips.Worker.start_link(arg)
       # {ClassicClips.Worker, arg}
+      ClassicClips.BeefServer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

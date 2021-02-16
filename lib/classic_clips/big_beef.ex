@@ -37,6 +37,27 @@ defmodule ClassicClips.BigBeef do
   """
   def get_beef!(id), do: Repo.get!(Beef, id)
 
+  def get_recent_beefs() do
+    offset = -1 * 60 * 60 * 7
+    lower_date_bound = DateTime.utc_now() |> DateTime.add(offset, :second)
+
+    from(b in Beef,
+      join: p in assoc(b, :player),
+      select: %{
+        beef_count: max(b.beef_count),
+        game_time: max(b.game_time),
+        date_time: max(b.date_time),
+        player_first_name: max(p.first_name),
+        player_last_name: max(p.last_name),
+        player_ext_id: max(p.ext_person_id)
+      },
+      where: b.date_time > ^lower_date_bound,
+      order_by: [asc: b.date_time, desc: p.ext_person_id],
+      group_by: [p.ext_person_id, b.date_time]
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Creates a beef.
 
@@ -107,24 +128,20 @@ defmodule ClassicClips.BigBeef do
 
     Stats.games_or_someshit()
     |> Enum.map(&Stats.get_boxscore_for_game/1)
-    |> Enum.map(fn game ->
-      %{home: home, away: away} = Stats.extract_team_stats(game)
+    |> Enum.map(fn {:ok, game} ->
+      %{
+        home: home,
+        away: away,
+        game_time: game_time,
+        game_start_time: game_start_time,
+        game_id: game_id
+      } = Stats.extract_team_stats(game)
 
-      Enum.concat(Stats.extract_team_stats(home), Stats.extract_team_stats(away))
+      Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
+      |> Enum.map(&get_or_create_player(&1, game_time, game_id, game_start_time))
     end)
-  end
 
-  def get_test_game() do
-    alias ClassicClips.BigBeef.Services.Stats
-
-    game_id = "0022000413"
-
-    {:ok, game} = Stats.get_boxscore_for_game(game_id)
-
-    %{home: home, away: away, game_time: game_time} = Stats.extract_team_stats(game)
-
-    Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
-    |> Enum.map(&get_or_create_player(&1, game_time, game_id))
+    get_recent_beefs() |> broadcast_beef(:new_beef)
   end
 
   alias ClassicClips.BigBeef.Player
@@ -223,7 +240,12 @@ defmodule ClassicClips.BigBeef do
     Player.changeset(player, attrs)
   end
 
-  def get_or_create_player(%{ext_person_id: ext_person_id} = player_data, game_time, game_id) do
+  def get_or_create_player(
+        %{ext_person_id: ext_person_id} = player_data,
+        game_time,
+        game_id,
+        game_start_time
+      ) do
     {:ok, player} =
       case Repo.get_by(Player, ext_person_id: ext_person_id) do
         nil -> create_player(player_data)
@@ -231,8 +253,21 @@ defmodule ClassicClips.BigBeef do
       end
 
     beef_data =
-      Map.merge(player_data, %{player_id: player.id, game_time: game_time, ext_game_id: game_id})
+      Map.merge(player_data, %{
+        player_id: player.id,
+        game_time: game_time,
+        ext_game_id: game_id,
+        date_time: game_start_time
+      })
 
     create_beef(beef_data)
+  end
+
+  def subscribe_new_beef() do
+    Phoenix.PubSub.subscribe(ClassicClips.PubSub, "new_beef")
+  end
+
+  def broadcast_beef(beefs, :new_beef) do
+    Phoenix.PubSub.broadcast(ClassicClips.PubSub, "new_beef", {:new_beef, beefs})
   end
 end

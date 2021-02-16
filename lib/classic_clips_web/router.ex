@@ -31,7 +31,7 @@ defmodule ClassicClipsWeb.Router do
 
     live "/user", UserLive.Show, :show
 
-    live "/beefs", BeefLive.Index, :index
+    live "/beef_tracker", BeefLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
