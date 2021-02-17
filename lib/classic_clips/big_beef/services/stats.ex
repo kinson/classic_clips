@@ -17,7 +17,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
          {:ok, _} = response <- Jason.decode(body) do
       response
     else
-      {:error, _} = error -> error
+      {:error, _} = error -> IO.inspect(error)
     end
   end
 
@@ -34,7 +34,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
 
   defp extract_games(%{"scoreboard" => %{"games" => games}}) do
     Enum.map(games, fn game ->
-      Access.get(game, "gameId", nil)
+      {Access.get(game, "gameId", nil), Access.get(game, "gameTimeUTC", nil)}
     end)
   end
 
@@ -70,6 +70,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
           "awayTeam" => %{"players" => away_players, "teamName" => away_team_name},
           "period" => period,
           "gameClock" => game_clock,
+          "gameStatusText" => game_status,
           "gameTimeUTC" => game_start_time,
           "gameId" => game_id
         }
@@ -77,6 +78,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
     %{
       home: %{name: home_team_name, players: home_players},
       away: %{name: away_team_name, players: away_players},
+      game_status: game_status,
       game_time: parse_game_time(game_clock, period),
       game_start_time: game_start_time,
       game_id: game_id

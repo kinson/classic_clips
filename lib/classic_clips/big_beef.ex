@@ -47,6 +47,7 @@ defmodule ClassicClips.BigBeef do
         beef_count: max(b.beef_count),
         game_time: max(b.game_time),
         date_time: max(b.date_time),
+        inserted_at: max(b.inserted_at),
         player_first_name: max(p.first_name),
         player_last_name: max(p.last_name),
         player_ext_id: max(p.ext_person_id)
@@ -123,15 +124,21 @@ defmodule ClassicClips.BigBeef do
     Beef.changeset(beef, attrs)
   end
 
-  def get_games() do
+  def fetch_and_broadcast_games(games) do
     alias ClassicClips.BigBeef.Services.Stats
 
-    Stats.games_or_someshit()
-    |> Enum.map(&Stats.get_boxscore_for_game/1)
-    |> Enum.map(fn {:ok, game} ->
+    games_info = Enum.filter(games, fn {_, game_start_time} ->
+      {:ok, start_time, _} = DateTime.from_iso8601(game_start_time)
+      DateTime.utc_now() > start_time
+    end)
+    |> Enum.map(fn {game_id, _} -> game_id end)
+    |> Enum.map(&get_game_data/1)
+    |> Enum.filter(&(not is_nil(&1)))
+    |> Enum.map(fn game ->
       %{
         home: home,
         away: away,
+        game_status: game_status,
         game_time: game_time,
         game_start_time: game_start_time,
         game_id: game_id
@@ -139,9 +146,20 @@ defmodule ClassicClips.BigBeef do
 
       Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
       |> Enum.map(&get_or_create_player(&1, game_time, game_id, game_start_time))
+
+      {game_id, game_status, game_start_time}
     end)
 
     get_recent_beefs() |> broadcast_beef(:new_beef)
+
+    games_info
+  end
+
+  defp get_game_data(game_id) do
+    case ClassicClips.BigBeef.Services.Stats.get_boxscore_for_game(game_id) do
+      {:ok, game } -> game
+      {:error, _} -> nil
+    end
   end
 
   alias ClassicClips.BigBeef.Player
