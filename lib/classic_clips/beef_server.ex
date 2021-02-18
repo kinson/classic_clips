@@ -15,7 +15,8 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def handle_info(:work, state) do
-    games = fetch_beef_data(state)
+    games = fetch_beef_data(state) |> IO.inspect
+    IO.puts "saving #{Enum.count(games)} games"
     {:noreply, %{games: games}}
   end
 
@@ -26,7 +27,10 @@ defmodule ClassicClips.BeefServer do
 
   defp fetch_beef_data(%{games: []}) do
     # only fetch games if it is game time
-    BigBeef.Services.Stats.games_or_someshit()
+    case game_time?() do
+      true -> BigBeef.Services.Stats.games_or_someshit()
+      false -> []
+    end
   end
 
   defp fetch_beef_data(%{games: games}) do
@@ -36,6 +40,14 @@ defmodule ClassicClips.BeefServer do
       game_status != "Final"
     end)
     |> Enum.map(fn {game_id, _, game_start_time} -> {game_id, game_start_time} end)
-    |> IO.inspect()
+  end
+
+  defp game_time?() do
+    {:ok, game_time} = Time.from_iso8601("15:45:00.000000")
+    {:ok, buzzer_time} = Time.from_iso8601("04:20:00.000000")
+
+    current_time = DateTime.utc_now() |> DateTime.to_time()
+
+    current_time > game_time or current_time < buzzer_time
   end
 end
