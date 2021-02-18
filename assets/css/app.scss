@@ -928,7 +928,7 @@ div#about-page {
 div#beef-container {
   background-color: #111;
   width: 100%;
-  height: 80vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 
@@ -1061,6 +1061,15 @@ div#beef-container {
         & p {
           right: 2.25rem;
         }
+
+        @media (max-width: 40rem) {
+          height: 2.75rem;
+          bottom: -3rem;
+
+          & p {
+            top: 3rem;
+          }
+        }
       }
       &.twoot {
         left: 91.3%;
@@ -1166,18 +1175,22 @@ div#beef-container {
       &:hover {
         max-height: 20px;
         overflow: visible;
-
         transform: scale(1.25);
+        z-index: 4;
       }
 
       & div.beef-info {
         position: relative;
-        margin: 0.4rem;
         width: 20rem;
         background-color: #222;
         border: 1px solid green;
         padding: 0.2rem 0;
         transform: scale(0.75);
+
+        @media (max-width: 40rem) {
+          left: -9.5rem;
+          top: 0.5rem;
+        }
 
         & > p {
           color: #fff;
