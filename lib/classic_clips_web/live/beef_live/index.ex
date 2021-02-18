@@ -14,6 +14,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       |> assign(:user, nil)
       |> assign(:is_beef_page, true)
       |> assign(:gooogle_auth_url, "")
+      |> assign(:last_updated, current_datetime())
 
     {:ok, modified_socket}
   end
@@ -25,7 +26,12 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   @impl true
   def handle_info({:new_beef, beefs}, socket) do
-    {:noreply, assign(socket, :beefs, beefs)}
+    modified_socket =
+      socket
+      |> assign(:last_updated, current_datetime())
+      |> assign(:beefs, beefs)
+
+    {:noreply, modified_socket}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -56,5 +62,9 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   defp list_beefs do
     BigBeef.list_beefs()
+  end
+
+  defp current_datetime do
+    DateTime.utc_now() |> DateTime.to_iso8601()
   end
 end
