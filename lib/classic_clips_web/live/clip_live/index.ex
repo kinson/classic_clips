@@ -317,7 +317,10 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   defp get_user_saves(nil), do: []
 
   defp get_user_thumbs_up(%User{} = user) do
-    Timeline.get_users_clips_vote_total(user)
+    case Timeline.get_users_clips_vote_total(user) do
+      nil -> 0
+      votes -> votes
+    end
   end
 
   defp get_user_thumbs_up(nil), do: 0
