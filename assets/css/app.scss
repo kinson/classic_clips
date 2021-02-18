@@ -928,12 +928,12 @@ div#about-page {
 div#beef-container {
   background-color: #111;
   width: 100%;
-  min-height: 80vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
 
   @media (max-width: 40rem) {
-    min-height: 90vh;
+    min-height: 80rem;
   }
 
   & h1 {
@@ -946,6 +946,7 @@ div#beef-container {
 
     @media (max-width: 40rem) {
       margin: 3rem auto 6rem auto;
+      font-size: 1.8em;
     }
   }
 
@@ -987,7 +988,6 @@ div#beef-container {
       margin: 1rem 2rem 1rem auto;
       width: 70%;
     }
-
 
     & div.graph-lines {
       display: flex;
