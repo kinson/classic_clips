@@ -1,5 +1,7 @@
 source .env
 
+pkill -f "elixir"
+
 export MIX_ENV=prod
 
 npm run deploy --prefix ./assets/
