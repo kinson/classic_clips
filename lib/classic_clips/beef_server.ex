@@ -13,8 +13,9 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def init(state) do
-    :timer.send_interval(60_000, :work)
-    {:ok, state}
+    games = fetch_beef_data(state)
+    :timer.send_interval(10_000, :work)
+    {:ok, %{games: games}}
   end
 
   @impl true
@@ -26,8 +27,9 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def handle_call(:get_active_game_count, _, %{games: games} = state) do
-    count = Enum.count(games, fn {_, game_start_time} ->
-      DateTime.from_iso8601(game_start_time) < DateTime.utc_now()
+    count = Enum.count(games, fn {_, gst} ->
+      {:ok, game_time, _} = DateTime.from_iso8601(gst)
+      game_time < DateTime.utc_now()
     end)
 
     {:reply, count, state}
@@ -49,10 +51,13 @@ defmodule ClassicClips.BeefServer do
   defp fetch_beef_data(%{games: games}) do
     new_games = BigBeef.fetch_and_broadcast_games(games)
 
-    Enum.filter(new_games, fn {_, game_status, _} ->
-      game_status != "Final"
+    Enum.filter(games, fn {game_id, _} ->
+      new_game = Enum.find(new_games, fn {g_id, _, _} -> g_id == game_id end)
+      case new_game do
+        nil -> true
+        {_, game_status, _} -> game_status != "Final"
+      end
     end)
-    |> Enum.map(fn {game_id, _, game_start_time} -> {game_id, game_start_time} end)
   end
 
   defp game_time?() do
