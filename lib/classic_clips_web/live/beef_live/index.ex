@@ -15,6 +15,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       |> assign(:is_beef_page, true)
       |> assign(:gooogle_auth_url, "")
       |> assign(:last_updated, current_datetime())
+      |> assign(:active_game_count, get_active_game_count())
 
     {:ok, modified_socket}
   end
@@ -29,6 +30,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
     modified_socket =
       socket
       |> assign(:last_updated, current_datetime())
+      |> assign(:active_game_count, get_active_game_count())
       |> assign(:beefs, beefs)
 
     {:noreply, modified_socket}
@@ -66,5 +68,9 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   defp current_datetime do
     DateTime.utc_now() |> DateTime.to_iso8601()
+  end
+
+  defp get_active_game_count() do
+    ClassicClips.BeefServer.get_active_game_count()
   end
 end

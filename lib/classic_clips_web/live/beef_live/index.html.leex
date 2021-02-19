@@ -1,5 +1,8 @@
 <div id="beef-container">
-  <h1>BIG BEEF TRACKER<span id="blinky"></span></h1>
+  <h1>BIG BEEF TRACKER</h1>
+  <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
+    <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
+  </p>
   <div id="beef-graph">
     <div class="graph-lines">
       <div class="beef-graph-line"></div>
@@ -16,9 +19,7 @@
 
     <div id="beef-line"><p>BIG BEEF LINE</p></div>
 
-    <div id="regulation-end-line">
-      <%# <p>END OF REGULATION<p> %>
-    </div>
+    <div id="regulation-end-line"></div>
 
     <%= for beef <- @beefs do %>
       <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>

@@ -4,7 +4,11 @@ defmodule ClassicClips.BeefServer do
   alias ClassicClips.BigBeef
 
   def start_link(_) do
-    GenServer.start_link(__MODULE__, %{games: []})
+    GenServer.start_link(__MODULE__, %{games: []}, name: MyBeef)
+  end
+
+  def get_active_game_count() do
+    GenServer.call(MyBeef, :get_active_game_count)
   end
 
   @impl true
@@ -18,6 +22,15 @@ defmodule ClassicClips.BeefServer do
     games = fetch_beef_data(state) |> IO.inspect
     IO.puts "saving #{Enum.count(games)} games"
     {:noreply, %{games: games}}
+  end
+
+  @impl true
+  def handle_call(:get_active_game_count, _, %{games: games} = state) do
+    count = Enum.count(games, fn {_, game_start_time} ->
+      DateTime.from_iso8601(game_start_time) < DateTime.utc_now()
+    end)
+
+    {:reply, count, state}
   end
 
   # every minute
