@@ -18,7 +18,9 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
           <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
           <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
-          <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
+            <a href="<%= @clip.yt_video_url %>">
+              <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
+            </a>
         </div>
         <div class="leigh-container">
           <div class="<%= Timeline.get_vote_class(@id, @votes, @user) %> icon" phx-click="inc_votes" phx-value-clip="<%= @id %>">

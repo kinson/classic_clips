@@ -31,7 +31,9 @@
             </div>
           <% else %>
             <div id="user-header-area">
-              <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
+              <a href="https://twitter.com/leighellis/status/1182013826507694082" target="_blank">
+                <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
+              </a>
               <div class="user-info">
                 <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
                 <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
