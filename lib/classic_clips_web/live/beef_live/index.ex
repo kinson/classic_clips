@@ -50,7 +50,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Beefs")
+    |> assign(:page_title, "BIG BEEF TRACKER")
     |> assign(:beef, nil)
   end
 

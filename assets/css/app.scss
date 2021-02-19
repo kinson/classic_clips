@@ -1060,6 +1060,9 @@ div#beef-container {
       opacity: 0.75;
       bottom: -1.25rem;
 
+      &.oneq {
+        left: -0.18rem;
+      }
       &.twoq {
         left: 20.69%;
       }
