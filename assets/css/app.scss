@@ -183,6 +183,30 @@ div.empty-clips {
   right: 0px;
 }
 
+div.clip-edit-button {
+  z-index: 4;
+  position: absolute;
+  cursor: pointer;
+  left: 1rem;
+  top: 1rem;
+  opacity: 0.7;
+  transition: all ease 0.15s;
+
+  &:hover {
+    opacity: 0.95;
+    transition: all ease 0.15s;
+  }
+
+  &.hide {
+    display: none;
+  }
+
+  & i {
+    color: #dedede;
+    font-size: 1.3em;
+  }
+}
+
 .tas-image {
   filter: blur(1px) brightness(0.3);
 }
@@ -625,14 +649,24 @@ div.show-signup-message {
     margin: 0 auto 1rem auto;
   }
 
-  & button.submit {
+  & button {
     display: block;
-    margin: 0 auto;
-
-    color: rgb(218, 255, 79);
-    background-color: rgb(96, 0, 170);
     font-size: 1em;
     letter-spacing: 0.2rem;
+    margin: 0 auto;
+  }
+
+  & button.submit {
+    color: rgb(218, 255, 79);
+    background-color: rgb(96, 0, 170);
+  }
+
+  & button.delete-clip-button {
+    margin: 1rem auto 0 auto;
+    border: none;
+    opacity: 0.95;
+    color: #fff;
+    background-color: tomato;
   }
 }
 

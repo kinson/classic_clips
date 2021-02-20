@@ -9,6 +9,7 @@ defmodule ClassicClips.Timeline.Clip do
     field :yt_video_url, :string
     field :yt_thumbnail_url, :string
     field :vote_count, :integer
+    field :deleted, :boolean, default: false
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
 
@@ -20,14 +21,15 @@ defmodule ClassicClips.Timeline.Clip do
   @doc false
   def changeset(clip, attrs) do
     clip
-    |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id])
+    |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id, :deleted])
     |> validate_required([:yt_video_url, :title, :user_id])
     |> unique_constraint([:title, :user_id],
       message: "Cannot create two clips with the same title"
     )
     |> validate_length(:title, min: 2, max: 72)
-    |> validate_format(:yt_video_url, ~r/(youtube.com|youtu.be).*t=[0-9]+/, message: "Must be a Youtube link with a timestamp")
-    # |> validate_format(:yt_video_url, ~r//, message: "Url must include a timestamp")
+    |> validate_format(:yt_video_url, ~r/(youtube.com|youtu.be).*t=[0-9]+/,
+      message: "Must be a Youtube link with a timestamp"
+    )
     |> validate_number(:clip_length, greater_than: 0, less_than: 2000)
   end
 end

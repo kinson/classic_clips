@@ -7,7 +7,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   @impl true
   def mount(_params, session, socket) do
     {:ok, user} = get_or_create_user(session)
-    pagination = %{limit: 12, offset: 0}
+    pagination = get_default_pagination()
     category = "goat"
     {clips, pagination} = list_top_clips(category, pagination)
 
@@ -49,16 +49,17 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> assign(:clip, nil)
   end
 
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    clip = Timeline.get_clip!(id)
-    {:ok, _} = Timeline.delete_clip(clip)
+  defp apply_action(socket, :delete, %{"id" => id}) do
+    Timeline.get_clip!(id)
+    |> Timeline.delete_clip()
 
-    {:noreply, assign(socket, :clips, list_top_clips(socket.assigns.pagination))}
+    socket
+    |> put_flash(:info, "Clip deleted successfully")
+    |> push_redirect(to: Routes.clip_index_path(socket, :index))
   end
 
   def handle_event("change_sort", %{"sort" => %{"timeframe" => "new"}}, socket) do
-    {clips, pagination} = list_new_clips(socket.assigns.pagination)
+    {clips, pagination} = list_new_clips(get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -69,7 +70,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   def handle_event("change_sort", %{"sort" => %{"timeframe" => sort_timeframe}}, socket) do
-    {clips, pagination} = list_top_clips(sort_timeframe, socket.assigns.pagination)
+    {clips, pagination} = list_top_clips(sort_timeframe, get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -81,7 +82,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   def handle_event("change_search", %{"search" => %{"term" => search_term}}, socket) do
     {clips, pagination} =
-      search_clips(search_term, socket.assigns.category, socket.assigns.pagination)
+      search_clips(search_term, socket.assigns.category, get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -339,6 +340,10 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       offset: offset,
       count: count
     }
+  end
+
+  defp get_default_pagination() do
+    %{limit: 12, offset: 0}
   end
 
   defp update_subscriptions(socket, old_clips, new_clips) do

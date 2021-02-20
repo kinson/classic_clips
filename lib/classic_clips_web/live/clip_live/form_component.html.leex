@@ -1,4 +1,4 @@
-<h2 class="modal-header">Craft a New Classic Clip</h2>
+<h2 class="modal-header"><%= if @action == :new, do: "Craft a New", else: "Edit Your" %> Classic Clip</h2>
 
 <%= if is_nil(@user) do %>
   <p class="login-for-jd"> Signup or login to share a classic clip with tbj / starters / free agents / no dunks crew &amp; their fans.</p>
@@ -33,4 +33,7 @@
   <% end %>
 
   <%= submit "SAVE", phx_disable_with: "Saving...", class: "submit", disabled: is_nil(@user) %>
+  <%= if @action == :edit do %>
+    <%= button "DELETE", to: Routes.clip_index_path(@socket, :delete, @clip.id), method: :get, class: "delete-clip-button", data: [confirm: "Are you sure you want to delete this clip?"] %>
+  <% end %>
 </form>

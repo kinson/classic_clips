@@ -2,7 +2,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
   use ClassicClipsWeb, :live_component
 
   alias ClassicClips.Timeline
-  alias ClassicClips.Timeline.Clip
+  alias ClassicClips.Timeline.{Clip, User}
 
   @impl true
   def mount(socket) do
@@ -15,10 +15,15 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
     <div class="clip-box">
       <div class="clip-container">
         <div class="tas-container">
+          <div class="clip-edit-button <%= get_edit_class(@user, @clip) %>">
+            <%= live_patch to: Routes.clip_index_path(@socket, :edit, @clip.id) do %>
+              <i class="fas fa-cog"></i>
+            <% end %>
+          </div>
           <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
           <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
-            <a href="<%= @clip.yt_video_url %>">
+            <a href="<%= @clip.yt_video_url %>" target="_blank">
               <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
             </a>
         </div>
@@ -72,5 +77,16 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
       true -> "saved"
       false -> ""
     end
+  end
+
+  defp get_edit_class(%User{id: user_id}, %Clip{} = clip) do
+    case user_id == clip.user.id do
+      true -> ""
+      false -> "hide"
+    end
+  end
+
+  defp get_edit_class(_, _) do
+    "hide"
   end
 end

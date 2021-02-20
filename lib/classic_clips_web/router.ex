@@ -24,7 +24,8 @@ defmodule ClassicClipsWeb.Router do
 
     live "/", ClipLive.Index, :index
     live "/clips/new", ClipLive.Index, :new
-    # live "/clips/:id/edit", ClipLive.Index, :edit
+    live "/clips/:id/edit", ClipLive.Index, :edit
+    live "/clips/:id/delete", ClipLive.Index, :delete
 
     # live "/clips/:id", ClipLive.Show, :show
     # live "/clips/:id/show/edit", ClipLive.Show, :edit

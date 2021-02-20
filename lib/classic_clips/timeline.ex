@@ -76,6 +76,7 @@ defmodule ClassicClips.Timeline do
       from(c in Clip,
         select: c,
         where: c.inserted_at > ^lower_date_bound,
+        where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
         order_by: [desc: c.vote_count, desc: c.id]
@@ -86,7 +87,8 @@ defmodule ClassicClips.Timeline do
     count =
       from(c in Clip,
         select: count(c.id),
-        where: c.inserted_at > ^lower_date_bound
+        where: c.inserted_at > ^lower_date_bound,
+        where: c.deleted == false
       )
       |> Repo.one()
 
@@ -98,6 +100,7 @@ defmodule ClassicClips.Timeline do
       from(c in Clip,
         select: c,
         where: c.user_id == ^user_id,
+        where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
         order_by: [desc: c.inserted_at, desc: c.id]
@@ -108,7 +111,8 @@ defmodule ClassicClips.Timeline do
     count =
       from(c in Clip,
         select: count(c.id),
-        where: c.user_id == ^user_id
+        where: c.user_id == ^user_id,
+        where: c.deleted == false
       )
       |> Repo.one()
 
@@ -121,6 +125,7 @@ defmodule ClassicClips.Timeline do
         join: s in assoc(c, :saves),
         select: c,
         where: s.user_id == ^id,
+        where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
         order_by: [desc: c.inserted_at, desc: c.id]
@@ -132,7 +137,8 @@ defmodule ClassicClips.Timeline do
       from(c in Clip,
         join: s in assoc(c, :saves),
         select: count(c.id),
-        where: s.user_id == ^id
+        where: s.user_id == ^id,
+        where: c.deleted == false
       )
       |> Repo.one()
 
@@ -148,6 +154,7 @@ defmodule ClassicClips.Timeline do
         limit: ^limit,
         offset: ^offset,
         where: ilike(c.title, ^search),
+        where: c.deleted == false,
         order_by: [desc: c.inserted_at, desc: c.id]
       )
       |> Repo.all()
@@ -156,7 +163,8 @@ defmodule ClassicClips.Timeline do
     count =
       from(c in Clip,
         select: count(c.id),
-        where: ilike(c.title, ^search)
+        where: ilike(c.title, ^search),
+        where: c.deleted == false
       )
       |> Repo.one()
 
@@ -190,6 +198,7 @@ defmodule ClassicClips.Timeline do
         select: c,
         where: c.inserted_at > ^lower_date_bound,
         where: ilike(c.title, ^search),
+        where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
         order_by: [desc: c.vote_count, desc: c.id]
@@ -201,7 +210,8 @@ defmodule ClassicClips.Timeline do
       from(c in Clip,
         select: count(c.id),
         where: c.inserted_at > ^lower_date_bound,
-        where: ilike(c.title, ^search)
+        where: ilike(c.title, ^search),
+        where: c.deleted == false
       )
       |> Repo.one()
 
@@ -303,7 +313,8 @@ defmodule ClassicClips.Timeline do
 
   """
   def delete_clip(%Clip{} = clip) do
-    Repo.delete(clip)
+    Clip.changeset(clip, %{deleted: true})
+    |> Repo.update()
   end
 
   @doc """
