@@ -10,6 +10,7 @@ defmodule ClassicClipsWeb.BeefLive.BeefComponent do
   def render(assigns) do
     ~L"""
      <div class="beef-point" style="<%= "left: #{(@beef.game_time / 3600) * 100}%;top:#{100 - (((@beef.beef_count - 5)/21) * 100)}%;" %>">
+      <p class="steak">&#129385;</p>
       <div class="beef-info">
         <p class="l-name"><%= @beef.player_last_name %>, <%= @beef.player_first_name %></p>
         <p class="l-name">Beef Count: <%= @beef.beef_count %></p>

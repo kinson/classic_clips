@@ -933,13 +933,13 @@ div#beef-container {
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 40rem) {
-    min-height: 80rem;
+  @media (max-width: 70rem) {
+    min-height: 95rem;
   }
 
   & h1 {
     color: #fff;
-    font-size: 2em;
+    font-size: 2.5em;
     font-family: "Cutive Mono", monospace;
     width: 80%;
     max-width: 110rem;
@@ -948,6 +948,20 @@ div#beef-container {
     @media (max-width: 40rem) {
       margin: 3rem auto 1rem auto;
       font-size: 1.8em;
+    }
+  }
+
+  & p.lead {
+    font-size: 1.1em;
+    font-family: "Cutive Mono", monospace;
+    color: #fff;
+    width: 80%;
+    max-width: 110rem;
+    margin: 0 auto 1rem auto;
+    opacity: 0.65;
+
+    @media (max-width: 40rem) {
+      font-size: 1em;
     }
   }
 
@@ -1181,16 +1195,21 @@ div#beef-container {
 
     div.beef-point {
       position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      background-color: red;
+      width: 22px;
+      height: 22px;
       left: 50%;
       top: 20%;
       z-index: 3;
       overflow: hidden;
 
       transition: all 0.3s ease;
+
+      & > p.steak {
+        position: relative;
+        bottom: 0.75rem;
+        font-size: 1.4em;
+        margin: 0;
+      }
 
       &:hover {
         max-height: 20px;
@@ -1206,6 +1225,7 @@ div#beef-container {
         border: 1px solid green;
         padding: 0.2rem 0;
         transform: scale(0.75);
+        bottom: 1.85rem;
 
         @media (max-width: 40rem) {
           left: -9.5rem;
