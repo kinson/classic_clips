@@ -127,11 +127,11 @@ defmodule ClassicClips.BigBeef do
   def fetch_and_broadcast_games(games) do
     alias ClassicClips.BigBeef.Services.Stats
 
-    games_info = Enum.filter(games, fn {_, game_start_time} ->
+    games_info = Enum.filter(games, fn {_, game_start_time, game_status} ->
       {:ok, start_time, _} = DateTime.from_iso8601(game_start_time)
-      DateTime.utc_now() > start_time
+      DateTime.utc_now() > start_time and game_status != "PPD"
     end)
-    |> Enum.map(fn {game_id, _} -> game_id end)
+    |> Enum.map(fn {game_id, _, _} -> game_id end)
     |> Enum.map(&get_game_data/1)
     |> Enum.filter(&(not is_nil(&1)))
     |> Enum.map(fn game ->
@@ -147,7 +147,7 @@ defmodule ClassicClips.BigBeef do
       Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
       |> Enum.map(&get_or_create_player(&1, game_time, game_id, game_start_time))
 
-      {game_id, game_status, game_start_time}
+      {game_id, game_start_time, game_status}
     end)
 
     get_recent_beefs() |> broadcast_beef(:new_beef)

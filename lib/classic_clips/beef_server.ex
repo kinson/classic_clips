@@ -27,9 +27,9 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def handle_call(:get_active_game_count, _, %{games: games} = state) do
-    count = Enum.count(games, fn {_, gst} ->
-      {:ok, game_time, _} = DateTime.from_iso8601(gst)
-      game_time < DateTime.utc_now()
+    count = Enum.count(games, fn {_, game_start, game_status} ->
+      {:ok, game_start_time, _} = DateTime.from_iso8601(game_start)
+      game_start_time < DateTime.utc_now() and game_status != "PPD"
     end)
 
     {:reply, count, state}
@@ -51,18 +51,18 @@ defmodule ClassicClips.BeefServer do
   defp fetch_beef_data(%{games: games}) do
     new_games = BigBeef.fetch_and_broadcast_games(games)
 
-    Enum.filter(games, fn {game_id, _} ->
+    Enum.filter(games, fn {game_id, _, _} ->
       new_game = Enum.find(new_games, fn {g_id, _, _} -> g_id == game_id end)
       case new_game do
         nil -> true
-        {_, game_status, _} -> game_status != "Final"
+        {_, _, game_status} -> game_status != "Final" and game_status != "PPD"
       end
     end)
   end
 
   defp game_time?() do
     {:ok, game_time} = Time.from_iso8601("15:45:00.000000")
-    {:ok, buzzer_time} = Time.from_iso8601("08:20:00.000000")
+    {:ok, buzzer_time} = Time.from_iso8601("07:20:00.000000")
 
     current_time = DateTime.utc_now() |> DateTime.to_time()
 

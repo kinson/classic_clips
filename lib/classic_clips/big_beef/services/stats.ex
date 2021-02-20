@@ -34,7 +34,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
 
   defp extract_games(%{"scoreboard" => %{"games" => games}}) do
     Enum.map(games, fn game ->
-      {Access.get(game, "gameId", nil), Access.get(game, "gameTimeUTC", nil)}
+      {Access.get(game, "gameId", nil), Access.get(game, "gameTimeUTC", nil), Access.get(game, "gameStatusText", nil)}
     end)
   end
 
@@ -89,7 +89,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
     # PT03M14.00S
     elapsed_period_time = get_seconds_left_in_period(time, 12)
 
-    ((period - 1) * 12 * 60 + elapsed_period_time)
+    (period - 1) * 12 * 60 + elapsed_period_time
   end
 
   def parse_game_time(time, period) do
