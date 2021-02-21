@@ -282,6 +282,10 @@ defmodule ClassicClips.Timeline do
     |> Repo.update()
   end
 
+  def update_clip(%Ecto.Changeset{} = clip) do
+    Repo.update(clip)
+  end
+
   def inc_votes(clip_id, %User{id: user_id}) do
     {:ok, clip} =
       from(c in Clip, where: c.id == ^clip_id, select: c)
@@ -704,6 +708,20 @@ defmodule ClassicClips.Timeline do
   """
   def list_tags do
     Repo.all(Tag)
+    |> Enum.map(fn t ->
+      %{selected: false, model: t}
+    end)
+  end
+
+  def list_tags_for_clip(%Clip{id: clip_id}) do
+    alias ClassicClips.Timeline.ClipsTags
+
+    from(ct in ClipsTags,
+      join: t in assoc(ct, :tag),
+      where: ct.clip_id == ^clip_id,
+      select: %{selected: true, model: t}
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -881,5 +899,49 @@ defmodule ClassicClips.Timeline do
   """
   def change_clips_tags(%ClipsTags{} = clips_tags, attrs \\ %{}) do
     ClipsTags.changeset(clips_tags, attrs)
+  end
+
+  def change_tags_for_clip(%Clip{id: clip_id} = clip, %{crew: crew_tags, topics: topics_tags}) do
+    # get tags to be added
+    new_tags_for_clip =
+      Enum.concat(crew_tags, topics_tags)
+      |> Enum.filter(fn %{selected: selected} ->
+        selected == true
+      end)
+      |> Enum.map(fn %{model: tag} -> tag end)
+
+    new_tags_for_clip_ids = Enum.map(new_tags_for_clip, & &1.id)
+
+    # get existing clip tags for clip
+    existing_clip_tags = from(ct in ClipsTags, where: ct.clip_id == ^clip_id) |> Repo.all()
+
+    existing_clips_tags_ids = Enum.map(existing_clip_tags, & &1.clip_id)
+
+    # check to see which tags need to be added
+    tags_to_add =
+      Enum.filter(new_tags_for_clip, fn %Tag{id: tag_id} ->
+        not Enum.member?(existing_clips_tags_ids, tag_id)
+      end)
+
+    # check which tags need to be removed
+    clips_tags_to_remove =
+      Enum.filter(existing_clip_tags, fn %ClipsTags{tag_id: tag_id} ->
+        not Enum.member?(new_tags_for_clip_ids, tag_id)
+      end)
+
+    add_tags_to_clip(clip, tags_to_add)
+    remove_tags_from_clip(clips_tags_to_remove)
+  end
+
+  defp add_tags_to_clip(%Clip{id: clip_id}, tags) do
+    Enum.each(tags, fn %Tag{id: tag_id} ->
+      create_clips_tags(%{tag_id: tag_id, clip_id: clip_id})
+    end)
+  end
+
+  defp remove_tags_from_clip(clips_tags) do
+    Enum.each(clips_tags, fn %ClipsTags{} = ct ->
+      delete_clips_tags(ct)
+    end)
   end
 end

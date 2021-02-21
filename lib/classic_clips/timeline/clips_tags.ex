@@ -4,8 +4,8 @@ defmodule ClassicClips.Timeline.ClipsTags do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "clips_tags" do
-    field :clip_id, :binary_id
-    field :tag_id, :binary_id
+    belongs_to :clip, ClassicClips.Timeline.Clip, type: :binary_id
+    belongs_to :tag, ClassicClips.Timeline.Tag, type: :binary_id
 
     timestamps(type: :utc_datetime)
   end

@@ -2,6 +2,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   use ClassicClipsWeb, :live_component
 
   alias ClassicClips.Timeline
+  alias ClassicClips.Timeline.{Clip, Tag}
 
   @impl true
   def update(%{clip: clip} = assigns, socket) do
@@ -9,7 +10,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
     {:ok,
      socket
-     |> assign(:tags, get_tags())
+     |> assign(:tags, get_tags(changeset))
      |> assign(assigns)
      |> assign(:changeset, changeset)}
   end
@@ -31,7 +32,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   def handle_event("select-tag-topic", %{"tag" => tag}, socket) do
     topics_tags =
       Enum.map(socket.assigns.tags.topics, fn t ->
-        case t.name == tag do
+        case t.model.name == tag do
           true -> %{t | selected: not t.selected}
           false -> t
         end
@@ -45,7 +46,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   def handle_event("select-tag-crew", %{"tag" => tag}, socket) do
     crew_tags =
       Enum.map(socket.assigns.tags.crew, fn t ->
-        case t.name == tag do
+        case t.model.name == tag do
           true -> %{t | selected: not t.selected}
           false -> t
         end
@@ -57,24 +58,25 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :edit, clip_params) do
-    case Timeline.update_clip(socket.assigns.clip, clip_params) do
-      {:ok, _clip} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Clip updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
-
+    with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
+         {:ok, changeset} <- validate_yt_url(changeset),
+         {:ok, clip} <- Timeline.update_clip(changeset),
+         _ <- Timeline.change_tags_for_clip(clip, socket.assigns.tags) do
+      {:noreply,
+       socket
+       |> put_flash(:info, "Clip updated successfully")
+       |> push_redirect(to: socket.assigns.return_to)}
+    else
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
     end
   end
 
   defp save_clip(socket, :new, clip_params) do
-    IO.puts "Hello"
-    IO.inspect(clip_params)
     with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
          {:ok, changeset} <- validate_yt_url(changeset),
          {:ok, clip} <- Timeline.insert_clip(changeset),
+         _ <- Timeline.change_tags_for_clip(clip, socket.assigns.tags),
          {:ok, _vote} = Timeline.inc_votes(clip.id, socket.assigns.user) do
       {:noreply,
        socket
@@ -103,7 +105,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
     Jason.decode(body)
   end
 
-  defp validate_yt_url(%Ecto.Changeset{} = changeset) do
+  defp validate_yt_url(%Ecto.Changeset{changes: %{yt_video_url: _}} = changeset) do
     with {:ok, video_data} <- get_clip_data(changeset.changes),
          true <- is_no_dunks_video?(video_data),
          thumbnail_url <- get_thumbnail_url(video_data) do
@@ -127,6 +129,10 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
     end
   end
 
+  defp validate_yt_url(%Ecto.Changeset{} = cs) do
+    {:ok, cs}
+  end
+
   defp is_no_dunks_video?(%{"author_name" => "NoDunks Inc"}), do: true
 
   defp is_no_dunks_video?(%{
@@ -142,17 +148,41 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
   defp get_thumbnail_url(_), do: ""
 
-  defp get_tags() do
+  defp get_tags(%Ecto.Changeset{data: %Clip{id: nil}}) do
     Timeline.list_tags()
-    |> Enum.reduce(
+    |> format_tags()
+  end
+
+  defp get_tags(%Ecto.Changeset{data: %Clip{} = clip}) do
+    existing_tags =
+      Timeline.list_tags_for_clip(clip)
+      |> tags_list_to_map()
+
+    Timeline.list_tags()
+    |> tags_list_to_map()
+    |> Map.merge(existing_tags)
+    |> tags_map_to_list()
+    |> format_tags()
+  end
+
+  defp format_tags(tags) do
+    Enum.reduce(
+      tags,
       %{topics: [], crew: []},
-      fn %ClassicClips.Timeline.Tag{type: type, name: name, id: id}, acc ->
-        t = %{selected: false, name: name, id: id}
+      fn %{model: %ClassicClips.Timeline.Tag{type: type}} = tag, acc ->
         case type == "crew" do
-          true -> %{acc | crew: [t | acc.crew]}
-          false -> %{acc | topics: [t | acc.topics]}
+          true -> %{acc | crew: [tag | acc.crew]}
+          false -> %{acc | topics: [tag | acc.topics]}
         end
       end
     )
+  end
+
+  defp tags_list_to_map(tags) do
+    Enum.into(tags, %{}, fn %{model: %Tag{id: id}} = tag -> {id, tag} end)
+  end
+
+  defp tags_map_to_list(tags) do
+    Enum.into(tags, [], fn {_, tag} -> tag end)
   end
 end

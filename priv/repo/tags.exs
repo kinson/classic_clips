@@ -12,9 +12,8 @@ tags = [
   %{name: "Hot Take", code: "hot-take", type: "topics"},
 ]
 
-taggers = Enum.map(tags, &(Tag.changeset(%Tag{}, &1))) |> IO.inspect
+taggers = Enum.map(tags, &(Tag.changeset(%Tag{}, &1)))
 
 Enum.each(taggers, fn t ->
-  IO.inspect t
   Repo.insert(t)
 end)
