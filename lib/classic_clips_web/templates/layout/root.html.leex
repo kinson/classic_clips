@@ -8,53 +8,49 @@
     <%= live_title_tag assigns[:page_title] || "Classic Clips" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Teko:wght@600&family=Cutive+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Teko:wght@600&display=swap" rel="stylesheet">
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <script defer src="https://kit.fontawesome.com/52e2b7ce67.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <%= if is_nil(assigns[:is_beef_page]) do %>
-      <header>
-        <div class="title">
-          <div class="big-ass-name">
-            <%= link "CLASSIC", to: "/", class: "classic" %>
-            <%= link "CLIPS", to: "/", class: "clips" %>
-            <%= link "[?]", to: "/about", class: "header-about" %>
-          </div>
-
-          <%= if is_nil(@user) do %>
-            <div class="auth">
-              <div class="signup">
-                <%= link "sign up", to: @gooogle_auth_url %>
-              </div>
-              <%= link "or, login", to: @gooogle_auth_url, class: "signin" %>
-            </div>
-          <% else %>
-            <div id="user-header-area">
-              <a href="https://twitter.com/leighellis/status/1182013826507694082" target="_blank">
-                <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
-              </a>
-              <div class="user-info">
-                <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
-                <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
-              </div>
-          </div>
-          <% end %>
+    <header>
+      <div class="title">
+        <div class="big-ass-name">
+          <%= link "CLASSIC", to: "/", class: "classic" %>
+          <%= link "CLIPS", to: "/", class: "clips" %>
+          <%= link "[?]", to: "/about", class: "header-about" %>
         </div>
 
-      </header>
-    <% end %>
+        <%= if is_nil(@user) do %>
+          <div class="auth">
+            <div class="signup">
+              <%= link "sign up", to: @gooogle_auth_url %>
+            </div>
+            <%= link "or, login", to: @gooogle_auth_url, class: "signin" %>
+          </div>
+        <% else %>
+          <div id="user-header-area">
+            <a href="https://twitter.com/leighellis/status/1182013826507694082" target="_blank">
+              <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
+            </a>
+            <div class="user-info">
+              <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
+              <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
+            </div>
+        </div>
+        <% end %>
+      </div>
+
+    </header>
     <%= @inner_content %>
 
-    <%= if is_nil(assigns[:is_beef_page]) do %>
-      <footer class="<%= if assigns[:is_beef_page] == true, do: "beef-footer" %>">
-        <div class="footer-links">
-          <%= link "About", to: "/about" %>
-          <a href="https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g">No Dunks Youtube</a>
-        </div>
+    <footer class="<%= if assigns[:is_beef_page] == true, do: "beef-footer" %>">
+      <div class="footer-links">
+        <%= link "About", to: "/about" %>
+        <a href="https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g">No Dunks Youtube</a>
+      </div>
 
-        <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
-      </footer>
-    <% end %>
+      <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
+    </footer>
   </body>
 </html>

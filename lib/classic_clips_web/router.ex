@@ -14,6 +14,10 @@ defmodule ClassicClipsWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :beef_web do
+    plug :put_root_layout, {ClassicClipsWeb.LayoutView, :beef_root}
+  end
+
   scope "/", ClassicClipsWeb do
     pipe_through :browser
 
@@ -31,8 +35,13 @@ defmodule ClassicClipsWeb.Router do
     # live "/clips/:id/show/edit", ClipLive.Show, :edit
 
     live "/user", UserLive.Show, :show
+  end
 
-    live "/beef_tracker", BeefLive.Index, :index
+  scope "/beef", ClassicClipsWeb do
+    pipe_through :browser
+    pipe_through :beef_web
+
+    live "/", BeefLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
