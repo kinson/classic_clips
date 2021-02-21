@@ -1,6 +1,6 @@
 <div id="beef-container">
   <h1>BIG BEEF TRACKER</h1>
-  <p class="lead">Keep an eye on the nightly big beef prospects across the league. Hover over the beef to see more information.</p>
+  <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information.</p>
   <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
     <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
   </p>
