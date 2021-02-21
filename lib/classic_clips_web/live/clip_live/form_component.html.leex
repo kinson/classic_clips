@@ -10,6 +10,10 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
+  <%= if @user do %>
+    <%= hidden_input f, :user_id, value: @user.id %>
+  <% end %>
+
   <div class="input-group">
     <%= label f, :title, "Title" %>
     <%= text_input f, :title, placeholder: "Leigh's story about old eight toes" %>
@@ -28,9 +32,30 @@
     <%= error_tag f, :clip_length %>
   </div>
 
-  <%= if @user do %>
-    <%= hidden_input f, :user_id, value: @user.id %>
-  <% end %>
+  <div class="input-group">
+    <%= label f, :tags, "Tags" %>
+    <%# <%= hidden_input f, :tags, value:  %>
+    <%= for tags_form <- inputs_for(f, :tags) do %>
+      <%= hidden_inputs_for(tags_form) %>
+      <%= hidden_input tags_form, :id, value: "22222" %>
+    <% end %>
+    <div class="tag-group">
+      <div class="crew">
+        <%= for tag <- @tags.crew do %>
+          <div class="tag <%= if tag.selected == true, do: "selected"%>" phx-click="select-tag-crew" phx-target="<%= @myself %>" phx-value-tag="<%= tag.name %>">
+            <p><%= tag.name %></p>
+          </div>
+        <% end %>
+      </div>
+      <div class="topic">
+        <%= for tag <- @tags.topics do %>
+          <div class="tag <%= if tag.selected == true, do: "selected"%>" phx-click="select-tag-topic" phx-target="<%= @myself %>" phx-value-tag="<%= tag.name %>">
+            <p><%= tag.name %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
   <%= submit "SAVE", phx_disable_with: "Saving...", class: "submit", disabled: is_nil(@user) %>
   <%= if @action == :edit do %>

@@ -690,4 +690,196 @@ defmodule ClassicClips.Timeline do
   def change_save(%Save{} = save, attrs \\ %{}) do
     Save.changeset(save, attrs)
   end
+
+  alias ClassicClips.Timeline.Tag
+
+  @doc """
+  Returns the list of tags.
+
+  ## Examples
+
+      iex> list_tags()
+      [%Tag{}, ...]
+
+  """
+  def list_tags do
+    Repo.all(Tag)
+  end
+
+  @doc """
+  Gets a single tag.
+
+  Raises `Ecto.NoResultsError` if the Tag does not exist.
+
+  ## Examples
+
+      iex> get_tag!(123)
+      %Tag{}
+
+      iex> get_tag!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_tag!(id), do: Repo.get!(Tag, id)
+
+  @doc """
+  Creates a tag.
+
+  ## Examples
+
+      iex> create_tag(%{field: value})
+      {:ok, %Tag{}}
+
+      iex> create_tag(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_tag(attrs \\ %{}) do
+    %Tag{}
+    |> Tag.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a tag.
+
+  ## Examples
+
+      iex> update_tag(tag, %{field: new_value})
+      {:ok, %Tag{}}
+
+      iex> update_tag(tag, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_tag(%Tag{} = tag, attrs) do
+    tag
+    |> Tag.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a tag.
+
+  ## Examples
+
+      iex> delete_tag(tag)
+      {:ok, %Tag{}}
+
+      iex> delete_tag(tag)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_tag(%Tag{} = tag) do
+    Repo.delete(tag)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking tag changes.
+
+  ## Examples
+
+      iex> change_tag(tag)
+      %Ecto.Changeset{data: %Tag{}}
+
+  """
+  def change_tag(%Tag{} = tag, attrs \\ %{}) do
+    Tag.changeset(tag, attrs)
+  end
+
+  alias ClassicClips.Timeline.ClipsTags
+
+  @doc """
+  Returns the list of clips_tags.
+
+  ## Examples
+
+      iex> list_clips_tags()
+      [%ClipsTags{}, ...]
+
+  """
+  def list_clips_tags do
+    Repo.all(ClipsTags)
+  end
+
+  @doc """
+  Gets a single clips_tags.
+
+  Raises `Ecto.NoResultsError` if the Clips tags does not exist.
+
+  ## Examples
+
+      iex> get_clips_tags!(123)
+      %ClipsTags{}
+
+      iex> get_clips_tags!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_clips_tags!(id), do: Repo.get!(ClipsTags, id)
+
+  @doc """
+  Creates a clips_tags.
+
+  ## Examples
+
+      iex> create_clips_tags(%{field: value})
+      {:ok, %ClipsTags{}}
+
+      iex> create_clips_tags(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_clips_tags(attrs \\ %{}) do
+    %ClipsTags{}
+    |> ClipsTags.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a clips_tags.
+
+  ## Examples
+
+      iex> update_clips_tags(clips_tags, %{field: new_value})
+      {:ok, %ClipsTags{}}
+
+      iex> update_clips_tags(clips_tags, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_clips_tags(%ClipsTags{} = clips_tags, attrs) do
+    clips_tags
+    |> ClipsTags.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a clips_tags.
+
+  ## Examples
+
+      iex> delete_clips_tags(clips_tags)
+      {:ok, %ClipsTags{}}
+
+      iex> delete_clips_tags(clips_tags)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_clips_tags(%ClipsTags{} = clips_tags) do
+    Repo.delete(clips_tags)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking clips_tags changes.
+
+  ## Examples
+
+      iex> change_clips_tags(clips_tags)
+      %Ecto.Changeset{data: %ClipsTags{}}
+
+  """
+  def change_clips_tags(%ClipsTags{} = clips_tags, attrs \\ %{}) do
+    ClipsTags.changeset(clips_tags, attrs)
+  end
 end

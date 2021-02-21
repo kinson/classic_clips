@@ -12,8 +12,8 @@ defmodule ClassicClips.Timeline.Clip do
     field :deleted, :boolean, default: false
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
-
     has_many :saves, ClassicClips.Timeline.Save
+    many_to_many :tags, ClassicClips.Timeline.Tag, join_through: "clips_tags"
 
     timestamps(type: :utc_datetime)
   end
