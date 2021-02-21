@@ -252,4 +252,124 @@ defmodule ClassicClips.TimelineTest do
       assert %Ecto.Changeset{} = Timeline.change_save(save)
     end
   end
+
+  describe "tags" do
+    alias ClassicClips.Timeline.Tag
+
+    @valid_attrs %{enabled: true}
+    @update_attrs %{enabled: false}
+    @invalid_attrs %{enabled: nil}
+
+    def tag_fixture(attrs \\ %{}) do
+      {:ok, tag} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Timeline.create_tag()
+
+      tag
+    end
+
+    test "list_tags/0 returns all tags" do
+      tag = tag_fixture()
+      assert Timeline.list_tags() == [tag]
+    end
+
+    test "get_tag!/1 returns the tag with given id" do
+      tag = tag_fixture()
+      assert Timeline.get_tag!(tag.id) == tag
+    end
+
+    test "create_tag/1 with valid data creates a tag" do
+      assert {:ok, %Tag{} = tag} = Timeline.create_tag(@valid_attrs)
+      assert tag.enabled == true
+    end
+
+    test "create_tag/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Timeline.create_tag(@invalid_attrs)
+    end
+
+    test "update_tag/2 with valid data updates the tag" do
+      tag = tag_fixture()
+      assert {:ok, %Tag{} = tag} = Timeline.update_tag(tag, @update_attrs)
+      assert tag.enabled == false
+    end
+
+    test "update_tag/2 with invalid data returns error changeset" do
+      tag = tag_fixture()
+      assert {:error, %Ecto.Changeset{}} = Timeline.update_tag(tag, @invalid_attrs)
+      assert tag == Timeline.get_tag!(tag.id)
+    end
+
+    test "delete_tag/1 deletes the tag" do
+      tag = tag_fixture()
+      assert {:ok, %Tag{}} = Timeline.delete_tag(tag)
+      assert_raise Ecto.NoResultsError, fn -> Timeline.get_tag!(tag.id) end
+    end
+
+    test "change_tag/1 returns a tag changeset" do
+      tag = tag_fixture()
+      assert %Ecto.Changeset{} = Timeline.change_tag(tag)
+    end
+  end
+
+  describe "clips_tags" do
+    alias ClassicClips.Timeline.ClipsTags
+
+    @valid_attrs %{clip_id: "some clip_id", tag_id: "some tag_id"}
+    @update_attrs %{clip_id: "some updated clip_id", tag_id: "some updated tag_id"}
+    @invalid_attrs %{clip_id: nil, tag_id: nil}
+
+    def clips_tags_fixture(attrs \\ %{}) do
+      {:ok, clips_tags} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Timeline.create_clips_tags()
+
+      clips_tags
+    end
+
+    test "list_clips_tags/0 returns all clips_tags" do
+      clips_tags = clips_tags_fixture()
+      assert Timeline.list_clips_tags() == [clips_tags]
+    end
+
+    test "get_clips_tags!/1 returns the clips_tags with given id" do
+      clips_tags = clips_tags_fixture()
+      assert Timeline.get_clips_tags!(clips_tags.id) == clips_tags
+    end
+
+    test "create_clips_tags/1 with valid data creates a clips_tags" do
+      assert {:ok, %ClipsTags{} = clips_tags} = Timeline.create_clips_tags(@valid_attrs)
+      assert clips_tags.clip_id == "some clip_id"
+      assert clips_tags.tag_id == "some tag_id"
+    end
+
+    test "create_clips_tags/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Timeline.create_clips_tags(@invalid_attrs)
+    end
+
+    test "update_clips_tags/2 with valid data updates the clips_tags" do
+      clips_tags = clips_tags_fixture()
+      assert {:ok, %ClipsTags{} = clips_tags} = Timeline.update_clips_tags(clips_tags, @update_attrs)
+      assert clips_tags.clip_id == "some updated clip_id"
+      assert clips_tags.tag_id == "some updated tag_id"
+    end
+
+    test "update_clips_tags/2 with invalid data returns error changeset" do
+      clips_tags = clips_tags_fixture()
+      assert {:error, %Ecto.Changeset{}} = Timeline.update_clips_tags(clips_tags, @invalid_attrs)
+      assert clips_tags == Timeline.get_clips_tags!(clips_tags.id)
+    end
+
+    test "delete_clips_tags/1 deletes the clips_tags" do
+      clips_tags = clips_tags_fixture()
+      assert {:ok, %ClipsTags{}} = Timeline.delete_clips_tags(clips_tags)
+      assert_raise Ecto.NoResultsError, fn -> Timeline.get_clips_tags!(clips_tags.id) end
+    end
+
+    test "change_clips_tags/1 returns a clips_tags changeset" do
+      clips_tags = clips_tags_fixture()
+      assert %Ecto.Changeset{} = Timeline.change_clips_tags(clips_tags)
+    end
+  end
 end

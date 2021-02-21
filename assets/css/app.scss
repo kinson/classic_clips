@@ -668,6 +668,48 @@ div.show-signup-message {
     color: #fff;
     background-color: tomato;
   }
+
+  & div.tag-group {
+    display: flex;
+    flex-direction: column;
+
+    & div.crew,
+    & div.topic {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+
+      & div.tag {
+        cursor: pointer;
+        height: 2.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        background-color: transparent;
+        margin: 0.5rem 0.5rem 0.5rem 0;
+
+        &.selected {
+          background-color: rgb(96, 0, 170);
+          & > p {
+            text-decoration: none;
+            color: rgb(218, 255, 79);
+            font-weight: 600;
+            margin: 0 0.6rem;
+          }
+        }
+
+        & > p {
+          font-size: 0.9em;
+          color: #222;
+          margin: 0 0.75rem;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }
 
 .login-for-jd {

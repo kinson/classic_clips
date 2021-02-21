@@ -9,6 +9,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
     {:ok,
      socket
+     |> assign(:tags, get_tags())
      |> assign(assigns)
      |> assign(:changeset, changeset)}
   end
@@ -27,6 +28,34 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
     save_clip(socket, socket.assigns.action, clip_params)
   end
 
+  def handle_event("select-tag-topic", %{"tag" => tag}, socket) do
+    topics_tags =
+      Enum.map(socket.assigns.tags.topics, fn t ->
+        case t.name == tag do
+          true -> %{t | selected: not t.selected}
+          false -> t
+        end
+      end)
+
+    new_tags = %{socket.assigns.tags | topics: topics_tags}
+
+    {:noreply, assign(socket, :tags, new_tags)}
+  end
+
+  def handle_event("select-tag-crew", %{"tag" => tag}, socket) do
+    crew_tags =
+      Enum.map(socket.assigns.tags.crew, fn t ->
+        case t.name == tag do
+          true -> %{t | selected: not t.selected}
+          false -> t
+        end
+      end)
+
+    new_tags = %{socket.assigns.tags | crew: crew_tags}
+
+    {:noreply, assign(socket, :tags, new_tags)}
+  end
+
   defp save_clip(socket, :edit, clip_params) do
     case Timeline.update_clip(socket.assigns.clip, clip_params) do
       {:ok, _clip} ->
@@ -41,6 +70,8 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp save_clip(socket, :new, clip_params) do
+    IO.puts "Hello"
+    IO.inspect(clip_params)
     with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
          {:ok, changeset} <- validate_yt_url(changeset),
          {:ok, clip} <- Timeline.insert_clip(changeset),
@@ -110,4 +141,18 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp get_thumbnail_url(_), do: ""
+
+  defp get_tags() do
+    Timeline.list_tags()
+    |> Enum.reduce(
+      %{topics: [], crew: []},
+      fn %ClassicClips.Timeline.Tag{type: type, name: name, id: id}, acc ->
+        t = %{selected: false, name: name, id: id}
+        case type == "crew" do
+          true -> %{acc | crew: [t | acc.crew]}
+          false -> %{acc | topics: [t | acc.topics]}
+        end
+      end
+    )
+  end
 end

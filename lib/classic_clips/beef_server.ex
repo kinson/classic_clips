@@ -14,7 +14,7 @@ defmodule ClassicClips.BeefServer do
   @impl true
   def init(state) do
     games = fetch_beef_data(state)
-    :timer.send_interval(45_000, :work)
+    :timer.send_interval(100_000, :work)
     {:ok, %{games: games}}
   end
 
