@@ -20,17 +20,18 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def handle_info(:work, state) do
-    games = fetch_beef_data(state) |> IO.inspect
-    IO.puts "saving #{Enum.count(games)} games"
+    games = fetch_beef_data(state) |> IO.inspect()
+    IO.puts("saving #{Enum.count(games)} games")
     {:noreply, %{games: games}}
   end
 
   @impl true
   def handle_call(:get_active_game_count, _, %{games: games} = state) do
-    count = Enum.count(games, fn {_, game_start, game_status} ->
-      {:ok, game_start_time, _} = DateTime.from_iso8601(game_start)
-      game_start_time < DateTime.utc_now() and game_status != "PPD"
-    end)
+    count =
+      Enum.count(games, fn {_, game_start, game_status} ->
+        {:ok, game_start_time, _} = DateTime.from_iso8601(game_start)
+        game_start_time < DateTime.utc_now() and game_status != "PPD"
+      end)
 
     {:reply, count, state}
   end
@@ -43,8 +44,12 @@ defmodule ClassicClips.BeefServer do
   defp fetch_beef_data(%{games: []}) do
     # only fetch games if it is game time
     case game_time?() do
-      true -> BigBeef.Services.Stats.games_or_someshit()
-      false -> []
+      true ->
+        BigBeef.Services.Stats.games_or_someshit()
+        |> Enum.filter(&filter_ppd_games/1)
+
+      false ->
+        []
     end
   end
 
@@ -53,6 +58,7 @@ defmodule ClassicClips.BeefServer do
 
     Enum.filter(games, fn {game_id, _, _} ->
       new_game = Enum.find(new_games, fn {g_id, _, _} -> g_id == game_id end)
+
       case new_game do
         nil -> true
         {_, _, game_status} -> game_status != "Final" and game_status != "PPD"
@@ -68,4 +74,6 @@ defmodule ClassicClips.BeefServer do
 
     current_time > game_time or current_time < buzzer_time
   end
+
+  defp filter_ppd_games({_, _, game_status}), do: game_status != "PPD"
 end
