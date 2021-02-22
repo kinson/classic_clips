@@ -67,8 +67,8 @@ defmodule ClassicClips.BeefServer do
   end
 
   defp game_time?() do
-    {:ok, game_time} = Time.from_iso8601("15:45:00.000000")
-    {:ok, buzzer_time} = Time.from_iso8601("07:20:00.000000")
+    {:ok, game_time} = Time.from_iso8601("16:15:00.000000")
+    {:ok, buzzer_time} = Time.from_iso8601("04:31:00.000000")
 
     current_time = DateTime.utc_now() |> DateTime.to_time()
 
