@@ -38,7 +38,7 @@ defmodule ClassicClips.BigBeef do
   def get_beef!(id), do: Repo.get!(Beef, id)
 
   def get_recent_beefs() do
-    offset = -1 * 60 * 60 * 7
+    offset = -1 * 60 * 60 * 12
     lower_date_bound = DateTime.utc_now() |> DateTime.add(offset, :second)
 
     from(b in Beef,
