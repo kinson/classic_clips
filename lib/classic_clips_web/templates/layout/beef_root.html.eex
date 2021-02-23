@@ -12,8 +12,9 @@
     <meta name="og:url" content="http://www.classicclipsinc.com/beef"/>
     <meta name="title" content="Big Beef Tracker"/>
     <meta name="og:title" content="Big Beef Tracker"/>
-    <meta name="og:image" content="https://beef-tracker-assets.s3.amazonaws.com/big_beef_image.png"/>
-    <meta name="image" content="https://beef-tracker-assets.s3.amazonaws.com/big_beef_image.png"/>
+    <meta name="og:image" content="https://beef-tracker-assets.s3.amazonaws.com/big_beef_2.png"/>
+    <meta name="image" content="https://beef-tracker-assets.s3.amazonaws.com/big_beef_2.png"/>
+    <meta name="twitter:card" content="summary_large_image" />
     <%= csrf_meta_tag() %>
     <%= live_title_tag assigns[:page_title] || "Classic Clips" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
