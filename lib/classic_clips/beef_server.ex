@@ -14,6 +14,7 @@ defmodule ClassicClips.BeefServer do
   @impl true
   def init(state) do
     games = fetch_beef_data(state)
+    IO.inspect(games)
     :timer.send_interval(50_000, :work)
     {:ok, %{games: games}}
   end
@@ -30,7 +31,8 @@ defmodule ClassicClips.BeefServer do
     count =
       Enum.count(games, fn {_, game_start, game_status} ->
         {:ok, game_start_time, _} = DateTime.from_iso8601(game_start)
-        game_start_time < DateTime.utc_now() and game_status != "PPD"
+        game_started = DateTime.compare(DateTime.utc_now(), game_start_time) == :gt
+        game_started and game_status != "PPD"
       end)
 
     {:reply, count, state}
