@@ -318,4 +318,102 @@ defmodule ClassicClips.BigBeef do
   def broadcast_beef(beefs, :new_beef) do
     Phoenix.PubSub.broadcast(ClassicClips.PubSub, "new_beef", {:new_beef, beefs})
   end
+
+  alias ClassicClips.BigBeef.BigBeefEvent
+
+  @doc """
+  Returns the list of big_beef_events.
+
+  ## Examples
+
+      iex> list_big_beef_events()
+      [%BigBeefEvent{}, ...]
+
+  """
+  def list_big_beef_events do
+    from(bbe in BigBeefEvent, order_by: [desc: :inserted_at])
+    |> Repo.all()
+    |> Repo.preload([beef: [:player]])
+  end
+
+  @doc """
+  Gets a single big_beef_event.
+
+  Raises `Ecto.NoResultsError` if the Big beef event does not exist.
+
+  ## Examples
+
+      iex> get_big_beef_event!(123)
+      %BigBeefEvent{}
+
+      iex> get_big_beef_event!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_big_beef_event!(id), do: Repo.get!(BigBeefEvent, id)
+
+  @doc """
+  Creates a big_beef_event.
+
+  ## Examples
+
+      iex> create_big_beef_event(%{field: value})
+      {:ok, %BigBeefEvent{}}
+
+      iex> create_big_beef_event(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_big_beef_event(attrs \\ %{}) do
+    %BigBeefEvent{}
+    |> BigBeefEvent.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a big_beef_event.
+
+  ## Examples
+
+      iex> update_big_beef_event(big_beef_event, %{field: new_value})
+      {:ok, %BigBeefEvent{}}
+
+      iex> update_big_beef_event(big_beef_event, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_big_beef_event(%BigBeefEvent{} = big_beef_event, attrs) do
+    big_beef_event
+    |> BigBeefEvent.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a big_beef_event.
+
+  ## Examples
+
+      iex> delete_big_beef_event(big_beef_event)
+      {:ok, %BigBeefEvent{}}
+
+      iex> delete_big_beef_event(big_beef_event)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_big_beef_event(%BigBeefEvent{} = big_beef_event) do
+    Repo.delete(big_beef_event)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking big_beef_event changes.
+
+  ## Examples
+
+      iex> change_big_beef_event(big_beef_event)
+      %Ecto.Changeset{data: %BigBeefEvent{}}
+
+  """
+  def change_big_beef_event(%BigBeefEvent{} = big_beef_event, attrs \\ %{}) do
+    BigBeefEvent.changeset(big_beef_event, attrs)
+  end
 end

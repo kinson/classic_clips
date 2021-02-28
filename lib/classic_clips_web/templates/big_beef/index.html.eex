@@ -1,0 +1,17 @@
+<div class="previous-beef">
+    <div class="results">
+        <h1>Big Beef Recipients</h1>
+        <div class="big-beef-list">
+          <%= for beef <- @big_beefs do %>
+            <div class="big-beef">
+                <p class="date">[<%= format_time(beef.beef.date_time) %>]</p>
+                <p class="name"><%= name(beef.beef.player) %></p>
+                <p class="count"><%= count(beef.beef) %> 🥩</p>
+
+                <a class="highlights" href="<%= yt_link(beef) %>" target="_blank">Big Beef Highlights</a>
+                <a class="box-score" href="<%= bs_link(beef) %>" target="_blank">Box Score</a>
+            </div>
+            <% end %>
+        </div>
+    </div>
+</div>

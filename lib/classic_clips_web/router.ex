@@ -16,6 +16,7 @@ defmodule ClassicClipsWeb.Router do
 
   pipeline :beef_web do
     plug :put_root_layout, {ClassicClipsWeb.LayoutView, :beef_root}
+    plug :put_layout, {ClassicClipsWeb.LayoutView, :beef_app}
   end
 
   scope "/", ClassicClipsWeb do
@@ -42,6 +43,8 @@ defmodule ClassicClipsWeb.Router do
     pipe_through :beef_web
 
     live "/", BeefLive.Index, :index
+
+    get "/previous", BigBeefController, :previous_beef
   end
 
   # Other scopes may use custom stacks.

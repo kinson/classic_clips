@@ -1,0 +1,3 @@
+<main role="main" class="previous-beef">
+  <%= @inner_content %>
+</main>

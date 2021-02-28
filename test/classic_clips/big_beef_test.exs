@@ -130,4 +130,67 @@ defmodule ClassicClips.BigBeefTest do
       assert %Ecto.Changeset{} = BigBeef.change_player(player)
     end
   end
+
+  describe "big_beef_events" do
+    alias ClassicClips.BigBeef.BigBeefEvent
+
+    @valid_attrs %{beef_id: "some beef_id", box_score_url: "some box_score_url", yt_highlight_video_url: "some yt_highlight_video_url"}
+    @update_attrs %{beef_id: "some updated beef_id", box_score_url: "some updated box_score_url", yt_highlight_video_url: "some updated yt_highlight_video_url"}
+    @invalid_attrs %{beef_id: nil, box_score_url: nil, yt_highlight_video_url: nil}
+
+    def big_beef_event_fixture(attrs \\ %{}) do
+      {:ok, big_beef_event} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> BigBeef.create_big_beef_event()
+
+      big_beef_event
+    end
+
+    test "list_big_beef_events/0 returns all big_beef_events" do
+      big_beef_event = big_beef_event_fixture()
+      assert BigBeef.list_big_beef_events() == [big_beef_event]
+    end
+
+    test "get_big_beef_event!/1 returns the big_beef_event with given id" do
+      big_beef_event = big_beef_event_fixture()
+      assert BigBeef.get_big_beef_event!(big_beef_event.id) == big_beef_event
+    end
+
+    test "create_big_beef_event/1 with valid data creates a big_beef_event" do
+      assert {:ok, %BigBeefEvent{} = big_beef_event} = BigBeef.create_big_beef_event(@valid_attrs)
+      assert big_beef_event.beef_id == "some beef_id"
+      assert big_beef_event.box_score_url == "some box_score_url"
+      assert big_beef_event.yt_highlight_video_url == "some yt_highlight_video_url"
+    end
+
+    test "create_big_beef_event/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = BigBeef.create_big_beef_event(@invalid_attrs)
+    end
+
+    test "update_big_beef_event/2 with valid data updates the big_beef_event" do
+      big_beef_event = big_beef_event_fixture()
+      assert {:ok, %BigBeefEvent{} = big_beef_event} = BigBeef.update_big_beef_event(big_beef_event, @update_attrs)
+      assert big_beef_event.beef_id == "some updated beef_id"
+      assert big_beef_event.box_score_url == "some updated box_score_url"
+      assert big_beef_event.yt_highlight_video_url == "some updated yt_highlight_video_url"
+    end
+
+    test "update_big_beef_event/2 with invalid data returns error changeset" do
+      big_beef_event = big_beef_event_fixture()
+      assert {:error, %Ecto.Changeset{}} = BigBeef.update_big_beef_event(big_beef_event, @invalid_attrs)
+      assert big_beef_event == BigBeef.get_big_beef_event!(big_beef_event.id)
+    end
+
+    test "delete_big_beef_event/1 deletes the big_beef_event" do
+      big_beef_event = big_beef_event_fixture()
+      assert {:ok, %BigBeefEvent{}} = BigBeef.delete_big_beef_event(big_beef_event)
+      assert_raise Ecto.NoResultsError, fn -> BigBeef.get_big_beef_event!(big_beef_event.id) end
+    end
+
+    test "change_big_beef_event/1 returns a big_beef_event changeset" do
+      big_beef_event = big_beef_event_fixture()
+      assert %Ecto.Changeset{} = BigBeef.change_big_beef_event(big_beef_event)
+    end
+  end
 end
