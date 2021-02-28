@@ -4,6 +4,7 @@
   <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
     <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
   </p>
+  <div class="graph-container">
   <div id="beef-graph">
     <div class="graph-lines">
       <div class="beef-graph-line"></div>
@@ -44,5 +45,13 @@
 
     <p class="last-updated-time">last updated: <%= @last_updated %>
   </div>
+  </div>
+
+  <footer class="beef-footer">
+    <a href="https://twitter.com/BigBeefTracker">Twitter</a>
+    <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
+      Big Beef Highlights
+    </a>
+  </footer>
 
 </div>

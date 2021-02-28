@@ -1301,11 +1301,10 @@ div#beef-container {
         border: 1px solid green;
         padding: 0.2rem 0;
         transform: scale(0.75);
-        bottom: 2rem;
+        bottom: 2.25rem;
 
         @media (max-width: 40rem) {
           left: -9.5rem;
-          top: 0.5rem;
         }
 
         & > p {
@@ -1315,6 +1314,29 @@ div#beef-container {
           text-transform: uppercase;
         }
       }
+    }
+  }
+
+  & div.graph-container {
+    height: 64rem;
+  }
+
+  & footer.beef-footer {
+    border-top: 1px solid rgba(240, 240, 240, 0.35);
+    width: 80%;
+    max-width: 110rem;
+    margin: 1rem auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    & a {
+      text-decoration: underline;
+      color: #fff;
+      font-family: "Cutive Mono", monospace;
+      opacity: 0.6;
+      margin-top: 1.5rem;
     }
   }
 }
