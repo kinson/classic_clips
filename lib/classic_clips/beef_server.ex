@@ -1,7 +1,7 @@
 defmodule ClassicClips.BeefServer do
   use GenServer
 
-  alias ClassicClips.BigBeef
+  alias ClassicClips.{BigBeef, GameData}
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{games: []}, name: MyBeef)
@@ -14,26 +14,20 @@ defmodule ClassicClips.BeefServer do
   @impl true
   def init(state) do
     games = fetch_beef_data(state)
-    IO.inspect(games)
     :timer.send_interval(50_000, :work)
     {:ok, %{games: games}}
   end
 
   @impl true
   def handle_info(:work, state) do
-    games = fetch_beef_data(state) |> IO.inspect()
-    IO.puts("saving #{Enum.count(games)} games")
+    games = fetch_beef_data(state)
     {:noreply, %{games: games}}
   end
 
   @impl true
   def handle_call(:get_active_game_count, _, %{games: games} = state) do
     count =
-      Enum.count(games, fn {_, game_start, game_status} ->
-        {:ok, game_start_time, _} = DateTime.from_iso8601(game_start)
-        game_started = DateTime.compare(DateTime.utc_now(), game_start_time) == :gt
-        game_started and game_status != "PPD"
-      end)
+      Enum.count(games, &GameData.is_game_active?/1)
 
     {:reply, count, state}
   end
@@ -48,7 +42,8 @@ defmodule ClassicClips.BeefServer do
     case game_time?() do
       true ->
         BigBeef.Services.Stats.games_or_someshit()
-        |> Enum.filter(&filter_ppd_games/1)
+        |> Enum.filter(&GameData.should_keep_game_on_active_list?/1)
+        |> IO.inspect()
 
       false ->
         []
@@ -58,14 +53,12 @@ defmodule ClassicClips.BeefServer do
   defp fetch_beef_data(%{games: games}) do
     new_games = BigBeef.fetch_and_broadcast_games(games)
 
-    Enum.filter(games, fn {game_id, _, _} ->
-      new_game = Enum.find(new_games, fn {g_id, _, _} -> g_id == game_id end)
+    update_game_data = make_update_game_data(new_games)
 
-      case new_game do
-        nil -> true
-        {_, _, game_status} -> game_status != "Final" and game_status != "PPD"
-      end
-    end)
+    Enum.map(games, update_game_data)
+    |> Enum.map(&GameData.increment_fetch_count/1)
+    |> Enum.filter(&GameData.should_keep_game_on_active_list?/1)
+    |> IO.inspect()
   end
 
   defp game_time?() do
@@ -74,8 +67,22 @@ defmodule ClassicClips.BeefServer do
 
     current_time = DateTime.utc_now() |> DateTime.to_time()
 
-    current_time > game_time or current_time < buzzer_time
+    games_have_started = first_is_after?(current_time, game_time)
+    games_have_not_ended = first_is_after?(buzzer_time, current_time)
+
+    games_have_started or games_have_not_ended
   end
 
-  defp filter_ppd_games({_, _, game_status}), do: game_status != "PPD"
+  defp first_is_after?(d1, d2) do
+    Time.compare(d1, d2) == :gt
+  end
+
+  defp make_update_game_data(new_games) do
+    fn %GameData{id: id} = gd ->
+      case Enum.find(new_games, fn %GameData{id: g_id} -> g_id == id end) do
+        nil -> gd
+        %GameData{status: new_status} -> %GameData{gd | status: new_status}
+      end
+    end
+  end
 end

@@ -33,8 +33,22 @@ defmodule ClassicClips.BigBeef.Services.Stats do
   end
 
   defp extract_games(%{"scoreboard" => %{"games" => games}}) do
+    alias ClassicClips.GameData
+
     Enum.map(games, fn game ->
-      {Access.get(game, "gameId", nil), Access.get(game, "gameTimeUTC", nil), Access.get(game, "gameStatusText", nil)}
+      {:ok, start_time, 0} =
+        Access.get(game, "gameTimeUTC", nil)
+        |> DateTime.from_iso8601()
+
+      id = Access.get(game, "gameId", nil)
+
+      status = Access.get(game, "gameStatusText", nil)
+
+      %GameData{
+        id: id,
+        start_time: start_time,
+        status: status
+      }
     end)
   end
 
