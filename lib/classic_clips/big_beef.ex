@@ -174,7 +174,7 @@ defmodule ClassicClips.BigBeef do
     games_info
   end
 
-  defp get_game_data(%GameData{id: id}) do
+  def get_game_data(%GameData{id: id}) do
     case ClassicClips.BigBeef.Services.Stats.get_boxscore_for_game(id) do
       {:ok, game} -> game
       {:error, _} -> nil
@@ -331,9 +331,13 @@ defmodule ClassicClips.BigBeef do
 
   """
   def list_big_beef_events do
-    from(bbe in BigBeefEvent, order_by: [desc: :inserted_at])
+    from(bbe in BigBeefEvent,
+      join: b in assoc(bbe, :beef),
+      order_by: [desc: b.date_time],
+      select: bbe
+    )
     |> Repo.all()
-    |> Repo.preload([beef: [:player]])
+    |> Repo.preload(beef: [:player])
   end
 
   @doc """

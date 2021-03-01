@@ -40,3 +40,5 @@ tmp/
 .env
 
 .DS_Store
+
+.elixir_ls

@@ -926,24 +926,6 @@ footer {
   width: 100%;
   border-top: 1px solid #999;
 
-  &.beef-footer {
-    background-color: #111;
-    max-width: initial;
-    margin: 0;
-    border: none;
-    color: #fff;
-
-    & div.footer-links {
-      margin: 0;
-    }
-
-    & p#disclaimer {
-      margin-bottom: 0;
-      color: #efefef;
-      padding-bottom: 2rem;
-    }
-  }
-
   & div.footer-links {
     display: flex;
     flex-direction: row;
@@ -1030,14 +1012,24 @@ div#beef-container {
   & p.lead {
     font-size: 1.1em;
     font-family: "Cutive Mono", monospace;
-    color: #fff;
+    color: rgba(240, 240, 240, 0.75);
     width: 80%;
     max-width: 110rem;
     margin: 0 auto 1rem auto;
-    opacity: 0.65;
 
     @media (max-width: 40rem) {
       font-size: 1em;
+    }
+
+    & span.new {
+      background-color: rgba(255, 0, 0, 0.75);
+      padding: 0.15rem 0.6rem;
+      color: #fff;
+    }
+
+    & a {
+      color: rgba(240, 240, 240, 0.75);
+      text-decoration: underline;
     }
   }
 
@@ -1320,24 +1312,24 @@ div#beef-container {
   & div.graph-container {
     height: 64rem;
   }
+}
 
-  & footer.beef-footer {
-    border-top: 1px solid rgba(240, 240, 240, 0.35);
-    width: 80%;
-    max-width: 110rem;
-    margin: 1rem auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
+footer.beef-footer {
+  border-top: 1px solid rgba(240, 240, 240, 0.35);
+  width: 80%;
+  max-width: 110rem;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 
-    & a {
-      text-decoration: underline;
-      color: #fff;
-      font-family: "Cutive Mono", monospace;
-      opacity: 0.6;
-      margin-top: 1.5rem;
-    }
+  & a {
+    text-decoration: underline;
+    color: #fff;
+    font-family: "Cutive Mono", monospace;
+    opacity: 0.6;
+    margin-top: 1.5rem;
   }
 }
 
@@ -1357,6 +1349,8 @@ div.previous-beef {
       color: #fff;
       font-family: "Cutive Mono", monospace;
       opacity: 0.9;
+      text-decoration: underline;
+      text-decoration-color: green;
 
       @media (max-width: 40rem) {
         font-size: 2em;
@@ -1371,7 +1365,7 @@ div.previous-beef {
       & div.big-beef {
         display: flex;
         flex-direction: row;
-        margin: 1rem 0;
+        margin: 2rem 0;
 
         @media (max-width: 40rem) {
           flex-direction: column;

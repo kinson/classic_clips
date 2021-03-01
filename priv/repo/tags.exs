@@ -23,7 +23,7 @@ tags_beta = [
   %{name: "Tweet Of The Night", code: "tofn", type: "topics"}
 ]
 
-taggers = Enum.map(tags_beta, &(Tag.changeset(%Tag{}, &1)))
+taggers = Enum.map(tags_beta, &Tag.changeset(%Tag{}, &1))
 
 Enum.each(taggers, fn t ->
   Repo.insert(t)

@@ -28,17 +28,18 @@ titles = [
 
 user = ClassicClips.Repo.get_by(ClassicClips.Timeline.User, email: "swilkinsonhunter@gmail.com")
 
-clips = Enum.map(titles, fn title ->
-  %{
-    yt_video_url: "https://youtu.be/3_U3AwtmVQo?t=1352",
-    title: title,
-    yt_thumbnail_url: "https://i.ytimg.com/vi/3_U3AwtmVQo/mqdefault.jpg",
-    vote_count: 55,
-    clip_length: nil,
-    user_id: user.id,
-    inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
-    updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-  }
-end)
+clips =
+  Enum.map(titles, fn title ->
+    %{
+      yt_video_url: "https://youtu.be/3_U3AwtmVQo?t=1352",
+      title: title,
+      yt_thumbnail_url: "https://i.ytimg.com/vi/3_U3AwtmVQo/mqdefault.jpg",
+      vote_count: 55,
+      clip_length: nil,
+      user_id: user.id,
+      inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
+      updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    }
+  end)
 
 ClassicClips.Repo.insert_all(ClassicClips.Timeline.Clip, clips)

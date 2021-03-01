@@ -12,6 +12,5 @@ defmodule ClassicClips.Repo.Migrations.CreateClips do
 
       timestamps(type: :utc_datetime)
     end
-
   end
 end

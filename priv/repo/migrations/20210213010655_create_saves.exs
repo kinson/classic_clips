@@ -11,6 +11,5 @@ defmodule ClassicClips.Repo.Migrations.CreateSaves do
     end
 
     create unique_index(:saves, [:clip_id, :user_id])
-
   end
 end

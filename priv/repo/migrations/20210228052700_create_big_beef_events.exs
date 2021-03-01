@@ -10,6 +10,5 @@ defmodule ClassicClips.Repo.Migrations.CreateBigBeefEvents do
 
       timestamps(type: :utc_datetime)
     end
-
   end
 end
