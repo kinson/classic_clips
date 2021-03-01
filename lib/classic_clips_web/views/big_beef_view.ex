@@ -18,6 +18,31 @@ defmodule ClassicClipsWeb.BigBeefView do
 
   def count(%Beef{beef_count: count}), do: count
 
-  def bs_link(%BigBeefEvent{box_score_url: url}), do: url
-  def yt_link(%BigBeefEvent{yt_highlight_video_url: url}), do: url
+  def bs_link(%BigBeefEvent{box_score_url: url}) do
+    case String.contains?(url, "https://") do
+      true -> url
+      false -> "#"
+    end
+  end
+
+  def yt_link(%BigBeefEvent{yt_highlight_video_url: url}) do
+    case String.contains?(url, "https://") do
+      true -> url
+      false -> "#"
+    end
+  end
+
+  def yt_text(%BigBeefEvent{yt_highlight_video_url: url}) do
+    case String.contains?(url, "https://") do
+      true -> "Big Beef Highlights"
+      false -> "Coming Soon..."
+    end
+  end
+
+  def bs_text(%BigBeefEvent{box_score_url: url}) do
+    case String.contains?(url, "https://") do
+      true -> "Box Score"
+      false -> "Coming Soon..."
+    end
+  end
 end

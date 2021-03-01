@@ -987,13 +987,9 @@ div#about-page {
 div#beef-container {
   background-color: #111;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 70rem) {
-    min-height: 108rem;
-  }
 
   & h1 {
     color: #fff;
