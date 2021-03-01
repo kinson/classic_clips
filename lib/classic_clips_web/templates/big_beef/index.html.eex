@@ -1,6 +1,6 @@
 <div class="previous-beef">
   <div class="results">
-    <h1>Big Beef Recipients</h1>
+    <h1>PREVIOUS BIG BEEFS</h1>
     <div class="big-beef-list">
       <%= for beef <- @big_beefs do %>
         <div class="big-beef">
