@@ -2,6 +2,10 @@
 @import "./phoenix.css";
 @import "../node_modules/nprogress/nprogress.css";
 
+$saucy-black: rgb(35, 31, 32);
+$saucy-red: #d71921;
+$saucy-bg-gray: rgb(247, 246, 243);
+
 /* LiveView specific classes for your customizations */
 .phx-no-feedback.invalid-feedback,
 .phx-no-feedback .invalid-feedback {
@@ -1412,7 +1416,7 @@ div.previous-beef {
         & p.name {
           margin-left: 1rem;
           width: 31rem;
-          
+
           @media (max-width: 40rem) {
             margin-left: 5rem;
           }
@@ -1421,7 +1425,7 @@ div.previous-beef {
         & p.count {
           margin-left: auto;
           margin-right: 1.5rem;
-          
+
           @media (max-width: 40rem) {
             margin-left: 5rem;
           }
@@ -1429,7 +1433,7 @@ div.previous-beef {
 
         & a.highlights {
           margin-right: 1rem;
-          
+
           @media (max-width: 40rem) {
             margin-left: 5rem;
           }
@@ -1437,12 +1441,133 @@ div.previous-beef {
 
         & a.box-score {
           margin-right: 0;
-          
+
           @media (max-width: 40rem) {
             margin-left: 5rem;
           }
         }
       }
+    }
+  }
+}
+
+div#beef-container.saucy {
+  background-color: #fff;
+
+  & h1 {
+    font-family: "Rokkitt", serif;
+    font-weight: 700;
+    font-size: 2.75em;
+    color: $saucy-red;
+
+    @media (max-width: 40rem) {
+      font-size: 2.2em;
+    }
+  }
+
+  & p.lead {
+    font-family: "Rokkitt", sans-serif;
+    font-weight: 400;
+    color: $saucy-black;
+    text-transform: uppercase;
+    font-size: 1.2em;
+
+    & a {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 40rem) {
+      font-size: 1.1em;
+    }
+  }
+
+  & p.active-count {
+    color: #555;
+    font-family: "Lato", sans-serif;
+    text-transform: uppercase;
+
+    &.active {
+      background-color: $saucy-red;
+    }
+  }
+
+  & div#beef-graph {
+    border-bottom: 2px solid $saucy-red;
+    border-left: 2px solid $saucy-red;
+
+    & div.graph-lines {
+      & div.beef-graph-line {
+        border-bottom: 1px solid $saucy-red;
+      }
+    }
+
+    & div#beef-line {
+      border-top: 3px solid $saucy-red;
+    }
+
+    & div#regulation-end-line {
+      border-left: 3px solid $saucy-red;
+    }
+
+    & div.x-axis-label {
+      background-color: #444;
+
+      & p {
+        font-family: "Lato", sans-serif;
+        color: #111;
+      }
+    }
+
+    & div.y-axis-label {
+      background-color: #444;
+
+      & p {
+        font-family: "Lato", sans-serif;
+        color: #111;
+      }
+    }
+
+    p.y-axis-title {
+      font-family: "Rokkitt", serif;
+      font-weight: 700;
+      color: $saucy-red;
+      font-size: 1.55em;
+    }
+
+    p.x-axis-title {
+      font-family: "Rokkitt", serif;
+      font-weight: 700;
+      color: $saucy-red;
+      font-size: 1.55em;
+    }
+
+    p.last-updated-time {
+      color: #444;
+      font-family: "Lato", sans-serif;
+      text-transform: uppercase;
+    }
+
+    div.beef-point {
+      & div.beef-info {
+        background-color: $saucy-bg-gray;
+        border: 1px solid $saucy-red;
+
+        & > p {
+          color: $saucy-red;
+          font-family: "Lato", sans-serif;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+
+  & footer.beef-footer {
+    border-top: 1px solid rgba(15, 15, 15, 0.35);
+
+    & a {
+      color: $saucy-black;
+      font-family: "Lato", sans-serif;
     }
   }
 }
