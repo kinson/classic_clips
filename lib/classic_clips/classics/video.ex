@@ -2,22 +2,22 @@ defmodule ClassicClips.Classics.Video do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "videos" do
     field :description, :string
     field :publish_date, :string
     field :title, :string
     field :type, :string
-    field :yt_thumbnail_url, :string
+    field :thumbnails, :map
     field :yt_video_id, :string
-    field :yt_video_url, :string
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
   def changeset(video, attrs) do
     video
-    |> cast(attrs, [:publish_date, :yt_video_id, :yt_video_url, :type, :title, :description, :yt_thumbnail_url])
-    |> validate_required([:publish_date, :yt_video_id, :yt_video_url, :type, :title, :description, :yt_thumbnail_url])
+    |> cast(attrs, [:publish_date, :yt_video_id, :type, :title, :description, :thumbnails])
+    |> validate_required([:publish_date, :yt_video_id, :type, :title, :description, :thumbnails])
   end
 end

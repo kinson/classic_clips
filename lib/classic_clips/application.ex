@@ -17,7 +17,8 @@ defmodule ClassicClips.Application do
       ClassicClipsWeb.Endpoint,
       # Start a worker by calling: ClassicClips.Worker.start_link(arg)
       # {ClassicClips.Worker, arg}
-      ClassicClips.BeefServer
+      ClassicClips.BeefServer,
+      ClassicClips.ClassicsServer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
