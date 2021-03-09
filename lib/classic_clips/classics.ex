@@ -7,6 +7,7 @@ defmodule ClassicClips.Classics do
   alias ClassicClips.Repo
 
   alias ClassicClips.Classics.Video
+  alias ClassicClips.Classics.Services.Youtube
 
   @doc """
   Returns the list of videos.
@@ -100,5 +101,19 @@ defmodule ClassicClips.Classics do
   """
   def change_video(%Video{} = video, attrs \\ %{}) do
     Video.changeset(video, attrs)
+  end
+
+  def fetch_recent_videos() do
+    case Youtube.check_for_new_videos() do
+      {:ok, videos} -> insert_videos(videos)
+      {:error, _} = error -> error
+    end
+  end
+
+  def insert_videos(videos) do
+    Repo.transaction(fn ->
+      Enum.map(videos, &Video.changeset(%Video{}, &1))
+      |> Enum.each(&Repo.insert!(&1, on_conflict: :nothing))
+    end)
   end
 end
