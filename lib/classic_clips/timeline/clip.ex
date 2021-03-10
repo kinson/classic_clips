@@ -14,6 +14,7 @@ defmodule ClassicClips.Timeline.Clip do
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
     has_many :saves, ClassicClips.Timeline.Save
     many_to_many :tags, ClassicClips.Timeline.Tag, join_through: "clips_tags"
+    belongs_to :video, ClassicClips.Classics.Video, type: :binary_id
 
     timestamps(type: :utc_datetime)
   end
@@ -21,7 +22,7 @@ defmodule ClassicClips.Timeline.Clip do
   @doc false
   def changeset(clip, attrs) do
     clip
-    |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id, :deleted])
+    |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id, :deleted, :video_id])
     |> validate_required([:yt_video_url, :title, :user_id])
     |> unique_constraint([:title, :user_id],
       message: "Cannot create two clips with the same title"

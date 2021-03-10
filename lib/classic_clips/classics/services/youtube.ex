@@ -27,15 +27,18 @@ defmodule ClassicClips.Classics.Services.Youtube do
   end
 
   def get_video_attrs({:ok, %{"items" => items}}) do
-    Enum.map(items, fn %{
-                         "id" => %{"videoId" => video_id},
-                         "snippet" => %{
-                           "description" => description,
-                           "title" => title,
-                           "publishTime" => publish_time,
-                           "thumbnails" => thumbnails
-                         }
-                       } ->
+    Enum.filter(items, fn %{"id" => %{"kind" => kind}} ->
+      kind == "youtube#video"
+    end)
+    |> Enum.map(fn %{
+                     "id" => %{"videoId" => video_id},
+                     "snippet" => %{
+                       "description" => description,
+                       "title" => title,
+                       "publishTime" => publish_time,
+                       "thumbnails" => thumbnails
+                     }
+                   } ->
       %{
         title: title,
         description: description,
@@ -50,10 +53,13 @@ defmodule ClassicClips.Classics.Services.Youtube do
   def fetch_new_videos() do
     part = "part=snippet"
     channel_id = "channelId=UCi6Nwwk1pAp7gYwe3is7Y0g"
+    max_results = "maxResults=50"
+
+    one_day = 24 * 60 * 60
 
     published_after_date =
       DateTime.utc_now()
-      |> DateTime.add(-512_000, :second)
+      |> DateTime.add(-1 * one_day * 50, :second)
       |> DateTime.to_iso8601()
 
     published_after =
@@ -64,7 +70,7 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
     base = @youtube_api_base <> @search_endpoint
 
-    endpoint = "?#{part}&#{channel_id}&#{published_after}&#{key}"
+    endpoint = "?#{part}&#{channel_id}&#{published_after}&#{max_results}&#{key}"
 
     url = base <> endpoint
 
