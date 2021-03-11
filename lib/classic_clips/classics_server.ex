@@ -9,7 +9,7 @@ defmodule ClassicClips.ClassicsServer do
 
   @impl true
   def init(state) do
-    :timer.send_interval(5_000, :work)
+    :timer.send_interval(500_000, :work)
     {:ok, state}
   end
 

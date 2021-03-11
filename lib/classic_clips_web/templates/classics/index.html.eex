@@ -1,1 +1,71 @@
-<h2>Here you go</h2>
+<h2>Hall of Classics</h2>
+<div class="classics-container">
+  <div class="item1">
+    <img src="https://i.ytimg.com/vi/AvNqUzgy9fA/mqdefault.jpg"/>
+    <p class="title">Zach LaVine Must Be In All-Star Game, Dunk Contest, And 3-Point Contest | NBA Daily Recap (Feb 18)</p>
+    <p class="description">Zach LaVine better be in every event at All-Star Weekend. The day's NBA news including Zach LaVine making his All-Star case and hopes that there isn't a ...</p>
+    <div class="tags">
+      <div class="date">
+        <p>3/2/21</p>
+      </div>
+      <div class="type">
+        <p>WHAT YOU NEED TO KNOW</p>
+      </div>
+    </div>
+  </div>
+  <div class="item2">
+    <img src="https://i.ytimg.com/vi/AvNqUzgy9fA/mqdefault.jpg"/>
+    <p class="title">Zach LaVine Must Be In All-Star Game, Dunk Contest, And 3-Point Contest | NBA Daily Recap (Feb 18)</p>
+    <p class="description">Zach LaVine better be in every event at All-Star Weekend. The day's NBA news including Zach LaVine making his All-Star case and hopes that there isn't a ...</p>
+    <div class="tags">
+      <div class="date">
+        <p>3/2/21</p>
+      </div>
+      <div class="type">
+        <p>WHAT YOU NEED TO KNOW</p>
+      </div>
+    </div>
+  </div>
+  <div class="item3">
+    <img src="https://i.ytimg.com/vi/HlVTJmXj_h0/mqdefault.jpg"/>
+    <p>Selecting Our 2021 NBA All-Star Reserves | The Drop (Ep. 417)</p>
+     <div class="tags">
+      <div class="date">
+        <p>3/2/21</p>
+      </div>
+      <div class="type">
+        <p>WHAT YOU NEED TO KNOW</p>
+      </div>
+    </div>
+  </div>
+  <div class="item4">
+    <img src="https://i.ytimg.com/vi/HlVTJmXj_h0/mqdefault.jpg"/>
+    <p>Selecting Our 2021 NBA All-Star Reserves | The Drop (Ep. 417)</p>
+     <div class="tags">
+      <div class="date">
+        <p>3/2/21</p>
+      </div>
+      <div class="type">
+        <p>WHAT YOU NEED TO KNOW</p>
+      </div>
+    </div>
+  </div>
+  <div class="item5">
+    <img src="https://i.ytimg.com/vi/HlVTJmXj_h0/mqdefault.jpg"/>
+    <p>Selecting Our 2021 NBA All-Star Reserves | The Drop (Ep. 417)</p>
+     <div class="tags">
+      <div class="date">
+        <p>3/2/21</p>
+      </div>
+      <div class="type">
+        <p>WHAT YOU NEED TO KNOW</p>
+      </div>
+    </div>
+  </div>
+  <div class="item6"></div>
+  <div class="item7"></div>
+  <div class="item8"></div>
+  <div class="item9"></div>
+  <div class="item10"></div>
+  <div class="item11"></div>
+</div>
