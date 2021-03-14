@@ -22,6 +22,11 @@ defmodule ClassicClips.Classics do
     Repo.all(Video)
   end
 
+  def list_recent_videos do
+    from(v in Video, select: v, order_by: [desc: :publish_date], limit: 11)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single video.
 
@@ -113,7 +118,12 @@ defmodule ClassicClips.Classics do
   def insert_videos(videos) do
     Repo.transaction(fn ->
       Enum.map(videos, &Video.changeset(%Video{}, &1))
-      |> Enum.each(&Repo.insert!(&1, on_conflict: :nothing))
+      |> Enum.each(
+        &Repo.insert!(&1,
+          conflict_target: [:yt_video_id],
+          on_conflict: {:replace, [:title, :description, :publish_date, :thumbnails]}
+        )
+      )
     end)
   end
 end

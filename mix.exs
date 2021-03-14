@@ -35,6 +35,7 @@ defmodule ClassicClips.MixProject do
     [
       {:elixir_auth_google, "~> 1.3.0"},
       {:sentry, "8.0.0"},
+      {:html_entities, "~> 0.5"},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
