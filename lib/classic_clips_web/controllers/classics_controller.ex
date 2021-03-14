@@ -10,10 +10,14 @@ defmodule ClassicClipsWeb.ClassicsController do
       Plug.Conn.get_session(conn, :profile)
       |> get_or_create_user()
 
+    classics = ClassicClips.Classics.list_recent_videos()
+
     conn
     |> assign(:user, user)
     |> assign(:gooogle_auth_url, generate_oauth_url())
     |> assign(:thumbs_up_total, get_user_thumbs_up(user))
+    |> assign(:classics, classics)
+    |> assign(:page_title, "Classics")
     |> render(:index)
   end
 

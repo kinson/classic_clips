@@ -20,7 +20,6 @@
           <%= link "CLIPS", to: "/", class: "clips" %>
           <%= link "[?]", to: "/about", class: "header-about" %>
         </div>
-
         <%= if is_nil(@user) do %>
           <div class="auth">
             <div class="signup">
@@ -37,19 +36,27 @@
               <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
               <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
             </div>
-        </div>
+          </div>
         <% end %>
       </div>
-
+      <div class="menu-bar">
+        <div class="options">
+          <%= link to: "/" do %>
+            <p class="<%= clips(@page_title) %>">CLIPS</p>
+          <% end %>
+          <p class="slash">//</p>
+          <%= link to: "/classics" do %>
+            <p class="<%= classics(@page_title) %>">CLASSICS</p>
+          <% end %>
+        </div>
+      </div>
     </header>
     <%= @inner_content %>
-
     <footer>
       <div class="footer-links">
         <%= link "About", to: "/about" %>
         <a href="https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g">No Dunks Youtube</a>
       </div>
-
       <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
     </footer>
   </body>

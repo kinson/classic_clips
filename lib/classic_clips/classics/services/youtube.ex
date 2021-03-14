@@ -59,7 +59,7 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
     published_after_date =
       DateTime.utc_now()
-      |> DateTime.add(-1 * one_day * 2, :second)
+      |> DateTime.add(-1 * one_day * 4, :second)
       |> DateTime.to_iso8601()
 
     published_after =
@@ -75,7 +75,7 @@ defmodule ClassicClips.Classics.Services.Youtube do
     url = base <> endpoint
 
     case HTTPoison.get(url) do
-      {:ok, %HTTPoison.Response{body: body}} -> Jason.decode(body)
+      {:ok, %HTTPoison.Response{body: body}} -> Jason.decode(body) |> IO.inspect()
       {:error, _} = error -> error
     end
   end
