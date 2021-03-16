@@ -387,7 +387,7 @@ header {
       letter-spacing: 0.015em;
 
       @media (max-width: 40rem) {
-        font-size: 3.14em;
+        font-size: 2.56em;
         line-height: 1em;
       }
 
@@ -1619,7 +1619,7 @@ div#beef-container.saucy {
 
 div.classics-container {
   display: grid;
-  width: 90%;
+  width: 98%;
   max-width: 110rem;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 43rem 39rem 14rem 14rem 14rem;
