@@ -517,6 +517,10 @@ header {
       max-width: 110rem;
       margin: 0 auto;
 
+      @media (max-width: 40rem) {
+        justify-content: center;
+      }
+
       & p {
         margin: 0 0.25rem;
         font-family: "Lato", sans-serif;
@@ -532,6 +536,10 @@ header {
 
       & p.clips {
         margin-left: 4rem;
+
+        @media (max-width: 40rem) {
+          margin-left: 0;
+        }
       }
 
       & p.selected {
@@ -1614,8 +1622,15 @@ div.classics-container {
   width: 90%;
   max-width: 110rem;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 43rem 38rem 14rem 14rem 14rem;
+  grid-template-rows: 43rem 39rem 14rem 14rem 14rem;
   grid-gap: 3.25rem;
+
+  @media (max-width: 40rem) {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 42rem) repeat(6, 17rem);
+    grid-gap: 2rem;
+    margin: 0 auto;
+  }
 
   & div {
     display: flex;
@@ -1646,6 +1661,10 @@ div.classics-container {
       flex-direction: row;
       align-items: center;
       margin-top: auto;
+
+      @media (max-width: 40rem) {
+        margin-top: 1rem;
+      }
 
       & div {
         display: flex;
@@ -1697,28 +1716,6 @@ div.classics-container {
     grid-row: 2 / 3;
   }
 
-  & div.item6,
-  & div.item7,
-  & div.item8,
-  & div.item9,
-  & div.item10,
-  & div.item11 {
-    & div.title-row {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-
-      & p {
-        margin: 0 0 0 1.5rem;
-      }
-
-      & img {
-        height: 10rem;
-        width: auto;
-      }
-    }
-  }
-
   & div.item6 {
     grid-column: 1 / 4;
     grid-row: 3 / 4;
@@ -1746,5 +1743,53 @@ div.classics-container {
   & div.item11 {
     grid-column: 4 / 7;
     grid-row: 5 / 6;
+  }
+
+  & div.item1,
+  & div.item2,
+  & div.item3,
+  & div.item4,
+  & div.item5 {
+    @media (max-width: 40rem) {
+      grid-row: auto;
+      grid-column: auto;
+    }
+  }
+
+  & div.item6,
+  & div.item7,
+  & div.item8,
+  & div.item9,
+  & div.item10,
+  & div.item11 {
+    @media (max-width: 40rem) {
+      grid-row: auto;
+      grid-column: auto;
+    }
+
+    & div.title-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      & p {
+        margin: 0 0 0 1.5rem;
+      }
+
+      & img {
+        height: 10rem;
+        width: auto;
+
+        @media (max-width: 40rem) {
+          margin: 1rem 0;
+        }
+      }
+    }
+
+    & div.tags {
+      @media (max-width: 40rem) {
+        margin-top: 0.5rem;
+      }
+    }
   }
 }

@@ -1,11 +1,11 @@
 <div class="classics-container">
   <%= for {video, index} <- big_list(@classics) do %>
-    <%= link to: yt_url(video), target: "_blank" do %>
-      <div class="<%= classic_class(index) %>">
+    <div class="<%= classic_class(index) %>">
       <img src="<%= image_url(video) %>" />
+    <%= link to: yt_url(video), target: "_blank" do %>
       <p class="title"><%= title(video) %></p>
-      <p class="description"><%= video.description %></p>
     <% end %>
+    <p class="description"><%= video.description %></p>
     <div class="tags">
       <div class="date">
         <p><%= publish_date(video) %></p>
@@ -18,14 +18,14 @@
 <% end %>
 <%= for {video, index} <- little_list(@classics) do %>
   <div class="<%= classic_class(index) %>">
-  <%= link to: yt_url(video), target: "_blank" do %>
     <div class="title-row">
       <img src="<%= image_url(video) %>" />
-  <p class="title">
-    <%= title(video) %>
-  </p>
+  <%= link to: yt_url(video), target: "_blank" do %>
+    <p class="title">
+      <%= title(video) %>
+    </p>
+  <% end %>
 </div>
-<% end %>
 <div class="tags">
   <div class="date">
     <p><%= publish_date(video) %></p>
