@@ -18,6 +18,6 @@ defmodule ClassicClips.Classics.Video do
   def changeset(video, attrs) do
     video
     |> cast(attrs, [:publish_date, :yt_video_id, :type, :title, :description, :thumbnails])
-    |> validate_required([:publish_date, :yt_video_id, :type, :title, :description, :thumbnails])
+    |> validate_required([:publish_date, :yt_video_id, :type, :title, :thumbnails])
   end
 end
