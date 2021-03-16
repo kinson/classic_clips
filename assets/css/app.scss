@@ -1774,6 +1774,11 @@ div.classics-container {
 
       & p {
         margin: 0 0 0 1.5rem;
+
+        @media (max-width: 40rem) {
+          margin: 0 0 0 0.8rem;
+          font-size: 0.9em;
+        }
       }
 
       & img {
