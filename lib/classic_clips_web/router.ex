@@ -46,7 +46,7 @@ defmodule ClassicClipsWeb.Router do
 
     live "/", BeefLive.Index, :index
 
-    get "/previous", BigBeefController, :previous_beef
+    get "/archive", BigBeefController, :archive_beef
   end
 
   # Other scopes may use custom stacks.

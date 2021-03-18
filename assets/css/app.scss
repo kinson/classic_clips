@@ -1496,6 +1496,44 @@ div.previous-beef {
   }
 }
 
+div.previous-beef.saucy {
+  background-color: #fff;
+
+  & div h1 {
+    font-family: "Rokkitt", serif;
+    font-weight: 700;
+    font-size: 2.75em;
+    color: $saucy-red;
+    text-decoration: none;
+
+    @media (max-width: 40rem) {
+      font-size: 2.2em;
+    }
+  }
+
+  & div div.big-beef-list {
+    & div.big-beef {
+      p, a {
+        color: $saucy-black;
+      }
+
+      p.name {
+        font-weight: 600;
+      }
+    }
+  }
+
+  & footer.beef-footer {
+    border-top: 1px solid rgba(15, 15, 15, 0.35);
+
+    & a {
+      font-family: "Cutive Mono", monospace;
+      color: $saucy-black;
+      opacity: 0.9;
+    }
+  }
+}
+
 div#beef-container.saucy {
   background-color: #fff;
 
@@ -1611,8 +1649,9 @@ div#beef-container.saucy {
     border-top: 1px solid rgba(15, 15, 15, 0.35);
 
     & a {
+      font-family: "Cutive Mono", monospace;
       color: $saucy-black;
-      font-family: "Lato", sans-serif;
+      opacity: 0.9;
     }
   }
 }

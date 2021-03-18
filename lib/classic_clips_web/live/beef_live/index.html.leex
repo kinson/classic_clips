@@ -1,6 +1,6 @@
 <div id="beef-container" class="saucy">
   <h1>BIG BEEF TRACKER</h1>
-  <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/previous">BIG BEEF archives</a>.</p>
+  <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/archive">BIG BEEF archives</a>.</p>
   <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
       <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
     </p>
@@ -64,7 +64,7 @@
         </div>
       </div>
       <footer class="beef-footer">
-        <a href="/beef/previous">Previous Beefs</a>
+        <a href="/beef/archive">Big Beef Archive</a>
         <a href="https://twitter.com/BigBeefTracker">Twitter</a>
         <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
           Big Beef Highlights
