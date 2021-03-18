@@ -76,8 +76,28 @@ box_scores_2 = [
   }
 ]
 
+box_scores_3 = [
+  %{
+    id: "0022000594",
+    box_score_url: "https://www.basketball-reference.com/boxscores/202103140GSW.html",
+    yt_highlight_video_url: "aaa"
+  }
+]
+
+beef_3 = %{
+  ext_game_id: "0022000594",
+  beef_count: 28,
+  date_time: "2021-03-15 01:30:00",
+  game_time: 2880,
+  player_id: "c11f0585-9826-4947-a6d2-68330cb4de31"
+}
+
+Beef.changeset(%Beef{}, beef_3)
+|> Repo.insert!()
+
+
 scores =
-  box_scores_2
+  box_scores_3
   |> Enum.map(fn %{id: id} -> %GameData{id: id} end)
   |> Enum.map(&BigBeef.get_game_data/1)
   |> Enum.map(fn game ->
@@ -96,7 +116,7 @@ scores =
   |> IO.inspect()
 
 big_beefs =
-  box_scores_2
+  box_scores_3
   |> Enum.map(fn big ->
     beef =
       from(b in Beef, where: b.ext_game_id == ^big.id, where: b.beef_count > 19) |> Repo.one()
