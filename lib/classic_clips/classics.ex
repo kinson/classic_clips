@@ -22,9 +22,60 @@ defmodule ClassicClips.Classics do
     Repo.all(Video)
   end
 
-  def list_recent_videos do
-    from(v in Video, select: v, order_by: [desc: :publish_date], limit: 11)
-    |> Repo.all()
+  def search_classics("", "", %{limit: limit, offset: offset}) do
+    classics =
+      from(v in Video,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: v.publish_date, desc: v.id]
+      )
+      |> Repo.all()
+
+    {:ok, classics}
+  end
+
+  def search_classics("", filter, %{limit: limit, offset: offset}) do
+    classics =
+      from(v in Video,
+        where: v.type == ^filter,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: v.publish_date, desc: v.id]
+      )
+      |> Repo.all()
+
+    {:ok, classics}
+  end
+
+  def search_classics(search_term, "", %{limit: limit, offset: offset}) do
+    search = "%#{search_term}%"
+
+    classics =
+      from(v in Video,
+        where: ilike(v.title, ^search),
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: v.publish_date, desc: v.id]
+      )
+      |> Repo.all()
+
+    {:ok, classics}
+  end
+
+  def search_classics(search_term, filter, %{limit: limit, offset: offset}) do
+    search = "%#{search_term}%"
+
+    classics =
+      from(v in Video,
+        where: ilike(v.title, ^search),
+        where: v.type == ^filter,
+        limit: ^limit,
+        offset: ^offset,
+        order_by: [desc: v.publish_date, desc: v.id]
+      )
+      |> Repo.all()
+
+    {:ok, classics}
   end
 
   @doc """

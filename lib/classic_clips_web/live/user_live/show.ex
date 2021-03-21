@@ -203,22 +203,6 @@ defmodule ClassicClipsWeb.UserLive.Show do
   defp page_title(:show), do: "Show Clip"
   defp page_title(:edit), do: "Edit Clip"
 
-  defp get_or_create_user(%{"profile" => profile}) do
-    case Repo.get_by(User, email: profile.email) do
-      nil -> User.create_user(profile)
-      %User{} = user -> {:ok, user}
-    end
-  end
-
-  defp get_or_create_user(_) do
-    {:ok, nil}
-  end
-
-  defp generate_oauth_url do
-    %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "4000")}
-    |> ElixirAuthGoogle.generate_oauth_url()
-  end
-
   defp list_user_clips(%User{id: id}, %{offset: offset, limit: limit} = pagination) do
     {:ok, clips, count} = Timeline.list_user_clips(id, pagination)
 
@@ -267,24 +251,6 @@ defmodule ClassicClipsWeb.UserLive.Show do
   defp default_pagination() do
     %{limit: 12, offset: 0}
   end
-
-  defp get_user_votes(nil), do: []
-
-  defp get_user_votes(%User{} = user) do
-    Timeline.list_votes_for_user(user)
-  end
-
-  defp get_user_saves(nil), do: []
-
-  defp get_user_saves(%User{} = user) do
-    Timeline.list_saves_for_user(user)
-  end
-
-  defp get_user_thumbs_up(%User{} = user) do
-    Timeline.get_users_clips_vote_total(user)
-  end
-
-  defp get_user_thumbs_up(nil), do: 0
 
   defp update_saves(saves, clip_id, user_id) do
     case Enum.find(saves, &(clip_id == &1.clip_id)) do

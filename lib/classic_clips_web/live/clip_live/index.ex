@@ -1,8 +1,8 @@
 defmodule ClassicClipsWeb.ClipLive.Index do
   use ClassicClipsWeb, :live_view
 
-  alias ClassicClips.{Repo, Timeline}
-  alias ClassicClips.Timeline.{Clip, User}
+  alias ClassicClips.{Timeline}
+  alias ClassicClips.Timeline.{Clip}
 
   @impl true
   def mount(_params, session, socket) do
@@ -287,46 +287,6 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     {:ok, clips, count} = Timeline.search_top_clips_by_date(search_term, timeframe, pagination)
 
     {clips, get_pagination_info(count, offset, limit)}
-  end
-
-  defp generate_oauth_url do
-    %{host: ClassicClipsWeb.Endpoint.host(), port: System.get_env("PORT", "4000")}
-    |> ElixirAuthGoogle.generate_oauth_url()
-  end
-
-  defp get_or_create_user(%{"profile" => profile}) do
-    case Repo.get_by(User, email: profile.email) do
-      nil -> User.create_user(profile)
-      %User{} = user -> {:ok, user}
-    end
-  end
-
-  defp get_or_create_user(_) do
-    {:ok, nil}
-  end
-
-  defp get_user_votes(nil), do: []
-
-  defp get_user_votes(%User{} = user) do
-    Timeline.list_votes_for_user(user)
-  end
-
-  defp get_user_saves(%User{} = user) do
-    Timeline.list_saves_for_user(user)
-  end
-
-  defp get_user_saves(nil), do: []
-
-  defp get_user_thumbs_up(%User{} = user) do
-    case Timeline.get_users_clips_vote_total(user) do
-      nil -> 0
-      votes -> votes
-    end
-  end
-
-  defp get_user_thumbs_up(nil), do: 0
-
-  defp show_signup_message() do
   end
 
   defp get_pagination_info(count, offset, limit) do

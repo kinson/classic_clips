@@ -1,4 +1,19 @@
 <div class="classics-container">
+  <div class="skeets-container-classics">
+    <div class="swimup-bar">
+      <div id="search-area">
+        <i class="fas fa-search"></i>
+        <%= d = form_for :search, Routes.classic_index_path(@socket, :index), phx_change: "change_search", class: "search-form" %>
+        <%= text_input d, :term, phx_debounce: "250", placeholder: "Search", value: @search_term %>
+      </form>
+    </div>
+    <p class="sort-by">viewing:</p>
+    <%= f = form_for :filter, Routes.classic_index_path(@socket, :index), "phx-change": "change_filter", class: "sort-form" %>
+    <%= select f, :type, ["ALL": "", "DAILY SHOW": "DAILY SHOW", "WYNTK": "WYNTK", "THE DROP": "THE DROP"], selected: @filter %>
+  </form>
+</div>
+</div>
+<div id="classics" phx-update="replace">
   <%= for {video, index} <- big_list(@classics) do %>
     <div class="<%= classic_class(index) %>">
       <img src="<%= image_url(video) %>" />
@@ -36,4 +51,10 @@
 </div>
 </div>
 <% end %>
+</div>
+<div class="load-more">
+  <div phx-click="more_classics">
+    <p>LOAD MORE CLASSICS</p>
+  </div>
+</div>
 </div>

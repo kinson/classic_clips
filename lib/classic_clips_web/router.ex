@@ -25,7 +25,7 @@ defmodule ClassicClipsWeb.Router do
     get "/auth/google/callback", GoogleAuthController, :index
     get "/about", AboutController, :index
 
-    get "/classics", ClassicsController, :index
+    live "/classics", ClassicLive.Index, :index
 
     # live "/", PageLive, :index
 
