@@ -1712,6 +1712,7 @@ div.classics-container {
         flex-direction: row;
         align-items: center;
         margin-top: auto;
+        flex-wrap: wrap;
 
         @media (max-width: 40rem) {
           margin-top: 1rem;
@@ -1722,7 +1723,8 @@ div.classics-container {
           align-self: center;
           align-items: center;
           justify-content: center;
-          margin: 0 0.25rem;
+          margin-top: 0.25rem;
+
           & p {
             color: #fff;
             margin: 0.35rem 1rem;
@@ -1734,6 +1736,7 @@ div.classics-container {
         & div.date {
           background-color: rgb(96, 0, 170);
           margin-left: 0;
+          margin-right: 0.5rem;
         }
 
         & div.type {
