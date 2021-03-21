@@ -58,6 +58,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> push_redirect(to: Routes.clip_index_path(socket, :index))
   end
 
+  @impl true
   def handle_event("change_sort", %{"sort" => %{"timeframe" => "new"}}, socket) do
     {clips, pagination} = list_new_clips(get_default_pagination())
 

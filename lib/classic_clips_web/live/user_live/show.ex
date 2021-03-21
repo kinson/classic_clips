@@ -3,7 +3,6 @@ defmodule ClassicClipsWeb.UserLive.Show do
 
   alias ClassicClips.Timeline
   alias ClassicClips.Timeline.User
-  alias ClassicClips.Repo
 
   @impl true
   def mount(_params, session, socket) do
