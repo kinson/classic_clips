@@ -20,6 +20,7 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
       |> assign(:classics, classics)
       |> assign(:search_term, "")
       |> assign(:filter, "")
+      |> assign(:types, get_classic_types())
       |> assign(:page_title, "Classics")
 
     {:ok, modifed_socket}
@@ -85,6 +86,10 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
   defp search_classics(search_term, filter, pagination) do
     {:ok, classics} = Classics.search_classics(search_term, filter, pagination)
     classics
+  end
+
+  defp get_classic_types() do
+    Classics.get_classic_types() |> Enum.into(["ALL": ""], fn x -> {x, x} end) |> IO.inspect()
   end
 
   defp default_pagination() do

@@ -78,6 +78,15 @@ defmodule ClassicClips.Classics do
     {:ok, classics}
   end
 
+  def get_classic_types() do
+    from(v in Video,
+        select: v.type,
+        where: v.type != "classic",
+        group_by: v.type
+      )
+      |> Repo.all()
+  end
+
   @doc """
   Gets a single video.
 

@@ -9,7 +9,7 @@
     </div>
     <p class="sort-by">viewing:</p>
     <%= f = form_for :filter, Routes.classic_index_path(@socket, :index), "phx-change": "change_filter", class: "sort-form" %>
-    <%= select f, :type, ["ALL": "", "DAILY SHOW": "DAILY SHOW", "WYNTK": "WYNTK", "THE DROP": "THE DROP"], selected: @filter %>
+    <%= select f, :type, @types, selected: @filter %>
   </form>
 </div>
 </div>
