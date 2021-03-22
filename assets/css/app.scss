@@ -1736,13 +1736,26 @@ div.classics-container {
         & div.date {
           background-color: rgb(96, 0, 170);
           margin-left: 0;
-          margin-right: 0.5rem;
+          margin-right: 0.75rem;
         }
 
         & div.type {
           background-color: rgb(233, 52, 215);
-          margin-right: 0;
+          margin-right: 0.75rem;
           letter-spacing: 1px;
+        }
+
+        & div.clips {
+          margin-right: 0;
+
+          & a {
+            color: blue;
+            opacity: 0.8;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+          }
         }
       }
     }

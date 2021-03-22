@@ -28,8 +28,38 @@
       <div class="type">
         <p><%= type(video) %></p>
       </div>
+      <%= if has_clips?(video) do %>
+        <div class="clips">
+          <%= link count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id) %>
+        </div>
+      <% end %>
     </div>
   </div>
+<% end %>
+<%= for {video, index} <- medium_list(@classics) do %>
+  <div class="<%= classic_class(index) %>">
+    <div class="title-row">
+      <img src="<%= image_url(video) %>" />
+  <%= link to: yt_url(video), target: "_blank" do %>
+    <p class="title">
+      <%= title(video) %>
+    </p>
+  <% end %>
+</div>
+<div class="tags">
+  <div class="date">
+    <p><%= publish_date(video) %></p>
+  </div>
+  <div class="type">
+    <p><%= type(video) %></p>
+  </div>
+  <%= if has_clips?(video) do %>
+    <div class="clips">
+      <%= link count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id) %>
+    </div>
+  <% end %>
+</div>
+</div>
 <% end %>
 <%= for {video, index} <- little_list(@classics) do %>
   <div class="<%= classic_class(index) %>">
@@ -48,6 +78,11 @@
   <div class="type">
     <p><%= type(video) %></p>
   </div>
+  <%= if has_clips?(video) do %>
+    <div class="clips">
+      <%= link count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id) %>
+    </div>
+  <% end %>
 </div>
 </div>
 <% end %>

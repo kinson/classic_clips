@@ -21,45 +21,63 @@ defmodule ClassicClips.Timeline do
     Repo.all(Clip) |> Repo.preload(:user)
   end
 
-  def list_newest_clips(%{limit: limit, offset: offset}) do
-    clips =
+  def list_newest_clips(%{limit: limit, offset: offset}, video_id) do
+    clips_query =
       from(c in Clip,
         select: c,
+        where: c.deleted == false,
         order_by: [desc: c.inserted_at, desc: c.id],
         limit: ^limit,
         offset: ^offset
       )
+
+    clips_query =
+      case video_id do
+        nil -> clips_query
+        id -> from c in clips_query, where: c.video_id == ^id
+      end
+
+    clips =
+      clips_query
       |> Repo.all()
       |> Repo.preload(:user)
 
-    count =
+    count_query =
       from(c in Clip,
-        select: count(c.id)
+        select: count(c.id),
+        where: c.deleted == false
       )
-      |> Repo.one()
+
+    count_query =
+      case video_id do
+        nil -> count_query
+        id -> from(c in count_query, where: c.video_id == ^id)
+      end
+
+    count = Repo.one(count_query)
 
     {:ok, clips, count}
   end
 
   @day_in_seconds 60 * 60 * 24
 
-  def list_top_clips_by_date("today", opts) do
+  def list_top_clips_by_date("today", opts, video_id) do
     DateTime.utc_now()
     |> DateTime.add(-1 * @day_in_seconds, :second)
-    |> list_top_clips(opts)
+    |> list_top_clips(opts, video_id)
   end
 
-  def list_top_clips_by_date("week", opts) do
+  def list_top_clips_by_date("week", opts, video_id) do
     DateTime.utc_now()
     |> DateTime.add(-1 * 7 * @day_in_seconds, :second)
-    |> list_top_clips(opts)
+    |> list_top_clips(opts, video_id)
   end
 
-  def list_top_clips_by_date("goat", opts) do
+  def list_top_clips_by_date("goat", opts, video_id) do
     # This could be a problem 10 years from now...good problem tho
     DateTime.utc_now()
     |> DateTime.add(-1 * 365 * 10 * @day_in_seconds, :second)
-    |> list_top_clips(opts)
+    |> list_top_clips(opts, video_id)
   end
 
   @doc """
@@ -71,8 +89,8 @@ defmodule ClassicClips.Timeline do
       [%Clip{}, ...]
 
   """
-  def list_top_clips(lower_date_bound, %{limit: limit, offset: offset}) do
-    clips =
+  def list_top_clips(lower_date_bound, %{limit: limit, offset: offset}, video_id) do
+    clips_query =
       from(c in Clip,
         select: c,
         where: c.inserted_at > ^lower_date_bound,
@@ -81,16 +99,32 @@ defmodule ClassicClips.Timeline do
         offset: ^offset,
         order_by: [desc: c.vote_count, desc: c.id]
       )
+
+    clips_query =
+      case video_id do
+        nil -> clips_query
+        id -> from c in clips_query, where: c.video_id == ^id
+      end
+
+    clips =
+      clips_query
       |> Repo.all()
       |> Repo.preload(:user)
 
-    count =
+    count_query =
       from(c in Clip,
         select: count(c.id),
         where: c.inserted_at > ^lower_date_bound,
         where: c.deleted == false
       )
-      |> Repo.one()
+
+    count_query =
+      case video_id do
+        nil -> count_query
+        id -> from(c in count_query, where: c.video_id == ^id)
+      end
+
+    count = Repo.one(count_query)
 
     {:ok, clips, count}
   end
@@ -145,10 +179,10 @@ defmodule ClassicClips.Timeline do
     {:ok, clips, count}
   end
 
-  def search_new_clips(search_term, %{limit: limit, offset: offset}) do
+  def search_new_clips(search_term, %{limit: limit, offset: offset}, video_id) do
     search = "%#{search_term}%"
 
-    clips =
+    clips_query =
       from(c in Clip,
         select: c,
         limit: ^limit,
@@ -157,43 +191,59 @@ defmodule ClassicClips.Timeline do
         where: c.deleted == false,
         order_by: [desc: c.inserted_at, desc: c.id]
       )
+
+    clips_query =
+      case video_id do
+        nil -> clips_query
+        id -> from c in clips_query, where: c.video_id == ^id
+      end
+
+    clips =
+      clips_query
       |> Repo.all()
       |> Repo.preload(:user)
 
-    count =
+    count_query =
       from(c in Clip,
         select: count(c.id),
         where: ilike(c.title, ^search),
         where: c.deleted == false
       )
-      |> Repo.one()
+
+    count_query =
+      case video_id do
+        nil -> count_query
+        id -> from(c in count_query, where: c.video_id == ^id)
+      end
+
+    count = Repo.one(count_query)
 
     {:ok, clips, count}
   end
 
-  def search_top_clips_by_date(search_term, "today", opts) do
+  def search_top_clips_by_date(search_term, "today", opts, video_id) do
     DateTime.utc_now()
     |> DateTime.add(-1 * @day_in_seconds, :second)
-    |> search_top_clips(search_term, opts)
+    |> search_top_clips(search_term, opts, video_id)
   end
 
-  def search_top_clips_by_date(search_term, "week", opts) do
+  def search_top_clips_by_date(search_term, "week", opts, video_id) do
     DateTime.utc_now()
     |> DateTime.add(-1 * 7 * @day_in_seconds, :second)
-    |> search_top_clips(search_term, opts)
+    |> search_top_clips(search_term, opts, video_id)
   end
 
-  def search_top_clips_by_date(search_term, "goat", opts) do
+  def search_top_clips_by_date(search_term, "goat", opts, video_id) do
     # This could be a problem 10 years from now...good problem tho
     DateTime.utc_now()
     |> DateTime.add(-1 * 365 * 10 * @day_in_seconds, :second)
-    |> search_top_clips(search_term, opts)
+    |> search_top_clips(search_term, opts, video_id)
   end
 
-  defp search_top_clips(lower_date_bound, search_term, %{limit: limit, offset: offset}) do
+  defp search_top_clips(lower_date_bound, search_term, %{limit: limit, offset: offset}, video_id) do
     search = "%#{search_term}%"
 
-    clips =
+    clips_query =
       from(c in Clip,
         select: c,
         where: c.inserted_at > ^lower_date_bound,
@@ -203,17 +253,33 @@ defmodule ClassicClips.Timeline do
         offset: ^offset,
         order_by: [desc: c.vote_count, desc: c.id]
       )
+
+    clips_query =
+      case video_id do
+        nil -> clips_query
+        id -> from c in clips_query, where: c.video_id == ^id
+      end
+
+    clips =
+      clips_query
       |> Repo.all()
       |> Repo.preload(:user)
 
-    count =
+    count_query =
       from(c in Clip,
         select: count(c.id),
         where: c.inserted_at > ^lower_date_bound,
         where: ilike(c.title, ^search),
         where: c.deleted == false
       )
-      |> Repo.one()
+
+    count_query =
+      case video_id do
+        nil -> count_query
+        id -> from(c in count_query, where: c.video_id == ^id)
+      end
+
+    count = Repo.one(count_query)
 
     {:ok, clips, count}
   end

@@ -50,7 +50,6 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
         %{assigns: %{filter: filter}} = socket
       ) do
     pagination = default_pagination()
-
     classics = search_classics(search_term, filter, pagination)
 
     modified_socket =
@@ -67,7 +66,6 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
         %{assigns: %{search_term: search_term}} = socket
       ) do
     pagination = default_pagination()
-
     classics = search_classics(search_term, type, pagination)
 
     modified_socket =
@@ -89,7 +87,7 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
   end
 
   defp get_classic_types() do
-    Classics.get_classic_types() |> Enum.into(["ALL": ""], fn x -> {x, x} end) |> IO.inspect()
+    Classics.get_classic_types() |> Enum.into([ALL: ""], fn x -> {x, x} end)
   end
 
   defp default_pagination() do
@@ -118,10 +116,16 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
     |> Enum.slice(0, 5)
   end
 
+  def medium_list(classics) do
+    classics
+    |> Enum.with_index()
+    |> Enum.slice(5, 6)
+  end
+
   def little_list(classics) do
     classics
     |> Enum.with_index()
-    |> Enum.slice(5, 100)
+    |> Enum.slice(11, 100)
   end
 
   def title(%Video{title: title}) do
@@ -134,6 +138,16 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
     d = DateTime.add(dt, -18000) |> DateTime.to_date()
 
     "#{d.month}/#{d.day}/#{d.year}"
+  end
+
+  def has_clips?(%Video{clips: []}), do: false
+  def has_clips?(%Video{clips: _}), do: true
+
+  def count_clips(%Video{clips: clips}) do
+    case Enum.count(clips) do
+      1 -> "1 CLIP"
+      n -> "#{n} CLIPS"
+    end
   end
 
   def type(%Video{type: nil}) do

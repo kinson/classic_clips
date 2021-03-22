@@ -23,6 +23,8 @@ defmodule ClassicClips.Classics do
   end
 
   def search_classics("", "", %{limit: limit, offset: offset}) do
+    clips_query = from c in ClassicClips.Timeline.Clip, select: c.id, where: c.deleted == false
+
     classics =
       from(v in Video,
         limit: ^limit,
@@ -30,11 +32,14 @@ defmodule ClassicClips.Classics do
         order_by: [desc: v.publish_date, desc: v.id]
       )
       |> Repo.all()
+      |> Repo.preload(clips: clips_query)
 
     {:ok, classics}
   end
 
   def search_classics("", filter, %{limit: limit, offset: offset}) do
+    clips_query = from c in ClassicClips.Timeline.Clip, select: c.id, where: c.deleted == false
+
     classics =
       from(v in Video,
         where: v.type == ^filter,
@@ -43,12 +48,14 @@ defmodule ClassicClips.Classics do
         order_by: [desc: v.publish_date, desc: v.id]
       )
       |> Repo.all()
+      |> Repo.preload(clips: clips_query)
 
     {:ok, classics}
   end
 
   def search_classics(search_term, "", %{limit: limit, offset: offset}) do
     search = "%#{search_term}%"
+    clips_query = from c in ClassicClips.Timeline.Clip, select: c.id, where: c.deleted == false
 
     classics =
       from(v in Video,
@@ -58,12 +65,14 @@ defmodule ClassicClips.Classics do
         order_by: [desc: v.publish_date, desc: v.id]
       )
       |> Repo.all()
+      |> Repo.preload(clips: clips_query)
 
     {:ok, classics}
   end
 
   def search_classics(search_term, filter, %{limit: limit, offset: offset}) do
     search = "%#{search_term}%"
+    clips_query = from c in ClassicClips.Timeline.Clip, select: c.id, where: c.deleted == false
 
     classics =
       from(v in Video,
@@ -74,17 +83,18 @@ defmodule ClassicClips.Classics do
         order_by: [desc: v.publish_date, desc: v.id]
       )
       |> Repo.all()
+      |> Repo.preload(clips: clips_query)
 
     {:ok, classics}
   end
 
   def get_classic_types() do
     from(v in Video,
-        select: v.type,
-        where: v.type != "classic",
-        group_by: v.type
-      )
-      |> Repo.all()
+      select: v.type,
+      where: v.type != "classic",
+      group_by: v.type
+    )
+    |> Repo.all()
   end
 
   @doc """

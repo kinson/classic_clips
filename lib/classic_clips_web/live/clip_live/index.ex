@@ -7,20 +7,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   @impl true
   def mount(_params, session, socket) do
     {:ok, user} = get_or_create_user(session)
-    pagination = get_default_pagination()
-    category = "goat"
-    {clips, pagination} = list_top_clips(category, pagination)
-
-    if connected?(socket), do: Timeline.subscribe(clips)
 
     modified_socket =
       socket
       |> assign(:page_title, "Classic Clips")
       |> assign(:show_signup_message, false)
       |> assign(:user, user)
-      |> assign(:clips, clips)
-      |> assign(:category, category)
-      |> assign(:pagination, pagination)
       |> assign(:votes, get_user_votes(user))
       |> assign(:saves, get_user_saves(user))
       |> assign(:thumbs_up_total, get_user_thumbs_up(user))
@@ -44,9 +36,21 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> assign(:clip, %Clip{})
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
+    video_id = Access.get(params, "video_id", nil)
+    socket = assign(socket, :video_id, video_id)
+
+    pagination = get_default_pagination()
+    category = "goat"
+    {clips, pagination} = list_top_clips(socket, category, pagination)
+
+    if connected?(socket), do: Timeline.subscribe(clips)
+
     socket
     |> assign(:clip, nil)
+    |> assign(:clips, clips)
+    |> assign(:category, category)
+    |> assign(:pagination, pagination)
   end
 
   defp apply_action(socket, :delete, %{"id" => id}) do
@@ -60,7 +64,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   @impl true
   def handle_event("change_sort", %{"sort" => %{"timeframe" => "new"}}, socket) do
-    {clips, pagination} = list_new_clips(get_default_pagination())
+    {clips, pagination} = list_new_clips(socket, get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -71,7 +75,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   def handle_event("change_sort", %{"sort" => %{"timeframe" => sort_timeframe}}, socket) do
-    {clips, pagination} = list_top_clips(sort_timeframe, get_default_pagination())
+    {clips, pagination} = list_top_clips(socket, sort_timeframe, get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -83,7 +87,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   def handle_event("change_search", %{"search" => %{"term" => search_term}}, socket) do
     {clips, pagination} =
-      search_clips(search_term, socket.assigns.category, get_default_pagination())
+      search_clips(socket, search_term, socket.assigns.category, get_default_pagination())
 
     modified_socket =
       assign(socket, :clips, clips)
@@ -142,7 +146,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         } = socket
       ) do
     if current_page >= total_pages, do: {:noreply, socket}
-    {clips, pagination} = list_new_clips(%{pagination | offset: offset + limit})
+    {clips, pagination} = list_new_clips(socket, %{pagination | offset: offset + limit})
 
     update_subscriptions(socket, old_clips, clips)
 
@@ -168,7 +172,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
         } = socket
       ) do
     if current_page >= total_pages, do: {:noreply, socket}
-    {clips, pagination} = list_top_clips(category, %{pagination | offset: offset + limit})
+    {clips, pagination} = list_top_clips(socket, category, %{pagination | offset: offset + limit})
 
     update_subscriptions(socket, old_clips, clips)
 
@@ -194,7 +198,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
           }
         } = socket
       ) do
-    {clips, pagination} = list_new_clips(%{pagination | offset: offset - limit})
+    {clips, pagination} = list_new_clips(socket, %{pagination | offset: offset - limit})
 
     update_subscriptions(socket, old_clips, clips)
 
@@ -217,7 +221,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
           }
         } = socket
       ) do
-    {clips, pagination} = list_top_clips(category, %{pagination | offset: offset - limit})
+    {clips, pagination} = list_top_clips(socket, category, %{pagination | offset: offset - limit})
 
     update_subscriptions(socket, old_clips, clips)
 
@@ -262,30 +266,26 @@ defmodule ClassicClipsWeb.ClipLive.Index do
      end)}
   end
 
-  defp list_top_clips(pagination) do
-    list_top_clips("goat", pagination)
-  end
-
-  defp list_top_clips(timeframe, %{offset: offset, limit: limit} = pagination) do
-    {:ok, clips, count} = Timeline.list_top_clips_by_date(timeframe, pagination)
+  defp list_top_clips(socket, timeframe, %{offset: offset, limit: limit} = pagination) do
+    {:ok, clips, count} = Timeline.list_top_clips_by_date(timeframe, pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
 
-  defp list_new_clips(%{limit: limit, offset: offset} = pagination) do
-    {:ok, clips, count} = Timeline.list_newest_clips(pagination)
+  defp list_new_clips(socket, %{limit: limit, offset: offset} = pagination) do
+    {:ok, clips, count} = Timeline.list_newest_clips(pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
 
-  defp search_clips(search_term, "new", %{limit: limit, offset: offset} = pagination) do
-    {:ok, clips, count} = Timeline.search_new_clips(search_term, pagination)
+  defp search_clips(socket, search_term, "new", %{limit: limit, offset: offset} = pagination) do
+    {:ok, clips, count} = Timeline.search_new_clips(search_term, pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
 
-  defp search_clips(search_term, timeframe, %{limit: limit, offset: offset} = pagination) do
-    {:ok, clips, count} = Timeline.search_top_clips_by_date(search_term, timeframe, pagination)
+  defp search_clips(socket, search_term, timeframe, %{limit: limit, offset: offset} = pagination) do
+    {:ok, clips, count} = Timeline.search_top_clips_by_date(search_term, timeframe, pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end

@@ -11,6 +11,8 @@ defmodule ClassicClips.Classics.Video do
     field :thumbnails, :map
     field :yt_video_id, :string
 
+    has_many :clips, ClassicClips.Timeline.Clip
+
     timestamps(type: :utc_datetime)
   end
 
