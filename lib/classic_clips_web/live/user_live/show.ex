@@ -199,9 +199,6 @@ defmodule ClassicClipsWeb.UserLive.Show do
      end)}
   end
 
-  defp page_title(:show), do: "Show Clip"
-  defp page_title(:edit), do: "Edit Clip"
-
   defp list_user_clips(%User{id: id}, %{offset: offset, limit: limit} = pagination) do
     {:ok, clips, count} = Timeline.list_user_clips(id, pagination)
 

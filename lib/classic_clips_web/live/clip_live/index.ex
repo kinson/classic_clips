@@ -285,7 +285,8 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp list_top_clips(socket, timeframe, %{offset: offset, limit: limit} = pagination) do
-    {:ok, clips, count} = Timeline.list_top_clips_by_date(timeframe, pagination, socket.assigns.video_id)
+    {:ok, clips, count} =
+      Timeline.list_top_clips_by_date(timeframe, pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
@@ -297,13 +298,20 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp search_clips(socket, search_term, "new", %{limit: limit, offset: offset} = pagination) do
-    {:ok, clips, count} = Timeline.search_new_clips(search_term, pagination, socket.assigns.video_id)
+    {:ok, clips, count} =
+      Timeline.search_new_clips(search_term, pagination, socket.assigns.video_id)
 
     {clips, get_pagination_info(count, offset, limit)}
   end
 
   defp search_clips(socket, search_term, timeframe, %{limit: limit, offset: offset} = pagination) do
-    {:ok, clips, count} = Timeline.search_top_clips_by_date(search_term, timeframe, pagination, socket.assigns.video_id)
+    {:ok, clips, count} =
+      Timeline.search_top_clips_by_date(
+        search_term,
+        timeframe,
+        pagination,
+        socket.assigns.video_id
+      )
 
     {clips, get_pagination_info(count, offset, limit)}
   end
@@ -331,20 +339,6 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     if connected?(socket), do: Timeline.resubscribe(unsub_list, sub_list)
   end
-
-  defp subscribe_to_new_clips(%{assigns: %{category: "new"}}), do: :ok
-
-  defp subscribe_to_new_clips(socket) do
-    if connected?(socket), do: Timeline.subscribe_new()
-    :ok
-  end
-
-  defp unsubscribe_from_new_clips(%{assigns: %{category: "new"}} = socket) do
-    if connected?(socket), do: Timeline.unsubscribe_new()
-    :ok
-  end
-
-  defp unsubscribe_from_new_clips(_), do: :ok
 
   defp update_saves(saves, clip_id, user_id) do
     case Enum.find(saves, &(clip_id == &1.clip_id)) do
