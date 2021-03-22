@@ -228,6 +228,10 @@ div.clip-edit-button {
   z-index: 3;
   text-align: center;
 
+  @media (max-width: 40rem) {
+    font-size: 1.25em;
+  }
+
   &:active,
   &:hover {
     color: rgb(218, 255, 79);
