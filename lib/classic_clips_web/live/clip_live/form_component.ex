@@ -1,8 +1,9 @@
 defmodule ClassicClipsWeb.ClipLive.FormComponent do
   use ClassicClipsWeb, :live_component
 
-  alias ClassicClips.Timeline
+  alias ClassicClips.{Repo, Timeline}
   alias ClassicClips.Timeline.{Clip, Tag}
+  alias ClassicClips.Classics.{Services, Video}
 
   @impl true
   def update(%{clip: clip} = assigns, socket) do
@@ -60,6 +61,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   defp save_clip(socket, :edit, clip_params) do
     with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
          {:ok, changeset} <- validate_yt_url(changeset),
+         {:ok, changeset} <- add_video_id(changeset),
          {:ok, clip} <- Timeline.update_clip(changeset),
          _ <- Timeline.change_tags_for_clip(clip, socket.assigns.tags) do
       {:noreply,
@@ -75,6 +77,7 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   defp save_clip(socket, :new, clip_params) do
     with changeset <- Timeline.change_clip(socket.assigns.clip, clip_params),
          {:ok, changeset} <- validate_yt_url(changeset),
+         {:ok, changeset} <- add_video_id(changeset),
          {:ok, clip} <- Timeline.insert_clip(changeset),
          _ <- Timeline.change_tags_for_clip(clip, socket.assigns.tags),
          {:ok, _vote} = Timeline.inc_votes(clip.id, socket.assigns.user) do
@@ -185,4 +188,18 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   defp tags_map_to_list(tags) do
     Enum.into(tags, [], fn {_, tag} -> tag end)
   end
+
+  defp add_video_id(%Ecto.Changeset{changes: %{yt_video_url: yt_video_url}} = cs) do
+    ext_video_id = Services.Youtube.get_video_id(yt_video_url)
+
+    new_cs =
+      case Repo.get_by(Video, yt_video_id: ext_video_id) do
+        nil -> cs
+        %Video{id: id} -> Ecto.Changeset.put_change(cs, :video_id, id)
+      end
+
+    {:ok, new_cs}
+  end
+
+  defp add_video_id(cs), do: {:ok, cs}
 end

@@ -82,4 +82,9 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
   def search_video_from_id() do
   end
+
+  def get_video_id(url) do
+      String.replace(url, "https://youtu.be/", "")
+      |> String.replace(~r/\?t=.*/, "")
+  end
 end

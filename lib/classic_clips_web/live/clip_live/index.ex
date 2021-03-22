@@ -27,12 +27,30 @@ defmodule ClassicClipsWeb.ClipLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    socket = assign(socket, :video_id, nil)
+
+    pagination = get_default_pagination()
+    category = "goat"
+    {clips, pagination} = list_top_clips(socket, category, pagination)
+
     socket
+    |> assign(:category, category)
+    |> assign(:clips, clips)
+    |> assign(:pagination, pagination)
     |> assign(:clip, Timeline.get_clip!(id))
   end
 
   defp apply_action(socket, :new, _params) do
+    socket = assign(socket, :video_id, nil)
+
+    pagination = get_default_pagination()
+    category = "goat"
+    {clips, pagination} = list_top_clips(socket, category, pagination)
+
     socket
+    |> assign(:category, category)
+    |> assign(:clips, clips)
+    |> assign(:pagination, pagination)
     |> assign(:clip, %Clip{})
   end
 

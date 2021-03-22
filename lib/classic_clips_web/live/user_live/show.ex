@@ -24,6 +24,7 @@ defmodule ClassicClipsWeb.UserLive.Show do
       |> assign(:thumbs_up_total, get_user_thumbs_up(user))
       |> assign(:clip_area_content, "your_clips")
       |> assign(:show_edit, false)
+      |> assign(:page_title, "Your Profile")
       |> assign(:changeset, changeset)
 
     {:ok, modifed_socket}
@@ -33,7 +34,6 @@ defmodule ClassicClipsWeb.UserLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     {:noreply,
      socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:clip, Timeline.get_user!(id))}
   end
 
