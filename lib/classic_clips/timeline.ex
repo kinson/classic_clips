@@ -18,7 +18,7 @@ defmodule ClassicClips.Timeline do
 
   """
   def list_clips do
-    Repo.all(Clip) |> Repo.preload(:user)
+    Repo.all(Clip) |> Repo.preload(:user) |> Repo.preload(:tags)
   end
 
   def list_newest_clips(%{limit: limit, offset: offset}, video_id) do
@@ -37,10 +37,7 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips =
-      clips_query
-      |> Repo.all()
-      |> Repo.preload(:user)
+    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
 
     count_query =
       from(c in Clip,
@@ -106,10 +103,7 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips =
-      clips_query
-      |> Repo.all()
-      |> Repo.preload(:user)
+    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
 
     count_query =
       from(c in Clip,
@@ -141,6 +135,7 @@ defmodule ClassicClips.Timeline do
       )
       |> Repo.all()
       |> Repo.preload(:user)
+      |> Repo.preload(:tags)
 
     count =
       from(c in Clip,
@@ -166,6 +161,7 @@ defmodule ClassicClips.Timeline do
       )
       |> Repo.all()
       |> Repo.preload(:user)
+      |> Repo.preload(:tags)
 
     count =
       from(c in Clip,
@@ -198,10 +194,7 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips =
-      clips_query
-      |> Repo.all()
-      |> Repo.preload(:user)
+    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
 
     count_query =
       from(c in Clip,
@@ -260,10 +253,7 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips =
-      clips_query
-      |> Repo.all()
-      |> Repo.preload(:user)
+    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
 
     count_query =
       from(c in Clip,
@@ -981,7 +971,7 @@ defmodule ClassicClips.Timeline do
     # get existing clip tags for clip
     existing_clip_tags = from(ct in ClipsTags, where: ct.clip_id == ^clip_id) |> Repo.all()
 
-    existing_clips_tags_ids = Enum.map(existing_clip_tags, & &1.clip_id)
+    existing_clips_tags_ids = Enum.map(existing_clip_tags, & &1.tag_id)
 
     # check to see which tags need to be added
     tags_to_add =

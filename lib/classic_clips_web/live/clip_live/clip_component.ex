@@ -2,7 +2,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
   use ClassicClipsWeb, :live_component
 
   alias ClassicClips.Timeline
-  alias ClassicClips.Timeline.{Clip, User}
+  alias ClassicClips.Timeline.{Clip, Tag, User}
 
   @impl true
   def mount(socket) do
@@ -32,9 +32,16 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
             <div class="arrow"></div>
           </div>
           <p class="leigh-score"><%= @clip.vote_count %></p>
-          <div class="leigh-label-container"><p><%= get_username(@clip) %></p></div>
+          <%= if has_tags?(@clip) do %>
+            <div class="leigh-tags">
+              <i class="fas fa-tags"></i>
+            </div>
+          <% end %>
+          <div class="leigh-label-container">
+            <p><%= get_username(@clip) %></p>
+          </div>
+          <p class="tags-text"><%= get_tags(@clip) %></p>
         </div>
-      </div>
     </div>
     """
   end
@@ -67,6 +74,39 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
       false ->
         username
     end
+  end
+
+  defp has_tags?(%Clip{tags: []}) do
+    false
+  end
+
+  defp has_tags?(%Clip{tags: _tags}) do
+    true
+  end
+
+  defp get_tags(%Clip{tags: []}) do
+    ""
+  end
+
+  defp get_tags(%Clip{tags: tags}) do
+    tag_count = Enum.count(tags)
+    case tag_count > 4 do
+      true ->
+        tag_list = Enum.take(tags, 4) |> tags_string()
+        "#{tag_list}, and #{tag_count - 4} more tags"
+
+
+      false ->
+        tags_string(tags)
+    end
+
+  end
+
+  defp tags_string(tags) do
+    Enum.reduce(tags, "", fn %Tag{name: name}, acc ->
+      acc <> "#{name}, "
+    end)
+    |> String.replace_trailing(", ", "")
   end
 
   defp format_time_text(seconds) when seconds < 10, do: "0#{seconds}"

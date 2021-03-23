@@ -4,7 +4,8 @@ defmodule ClassicClips.BigBeef.Services.Stats do
   @box_score_url "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_"
 
   def get_todays_scoreboard() do
-    with {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(@todays_games_url),
+    with {:ok, %HTTPoison.Response{body: body}} <-
+           HTTPoison.get(@todays_games_url),
          {:ok, _} = response <- Jason.decode(body) do
       response
     else
@@ -17,13 +18,13 @@ defmodule ClassicClips.BigBeef.Services.Stats do
          {:ok, _} = response <- Jason.decode(body) do
       response
     else
-      {:error, _} = error -> IO.inspect(error)
+      {:error, _} = error -> error
     end
   end
 
   def games_or_someshit() do
     case get_todays_scoreboard() do
-      {:ok, games} -> extract_games(games)
+      {:ok, games} -> {:ok, extract_games(games)}
       {:error, _} = error -> error
     end
   end

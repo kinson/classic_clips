@@ -254,7 +254,6 @@ div.clip-edit-button {
   flex-direction: row;
   align-items: center;
   height: 6rem;
-  position: relative;
   overflow: hidden;
 }
 
@@ -265,6 +264,30 @@ div.clip-edit-button {
   opacity: 0.8;
   position: relative;
   margin: 0 0 0 1rem;
+}
+
+.leigh-tags {
+  color: #666;
+  margin-left: 2rem;
+}
+
+.tags-text {
+  position: absolute;
+  color: #fff;
+  padding: 1rem;
+  background-color: #222;
+  z-index: 5;
+  bottom: 3.75rem;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  opacity: 0;
+  box-shadow: 0px 2px 2px #555;
+  transition: all 0.3s ease;
+}
+
+.leigh-tags:hover ~ p.tags-text {
+  opacity: 1;
+  transition: all 0.3s ease;
 }
 
 div.leigh-score-voted.icon {

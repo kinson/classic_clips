@@ -26,8 +26,7 @@ defmodule ClassicClips.BeefServer do
 
   @impl true
   def handle_call(:get_active_game_count, _, %{games: games} = state) do
-    count =
-      Enum.count(games, &GameData.is_game_active?/1)
+    count = Enum.count(games, &GameData.is_game_active?/1)
 
     {:reply, count, state}
   end
@@ -41,9 +40,7 @@ defmodule ClassicClips.BeefServer do
     # only fetch games if it is game time
     case game_time?() do
       true ->
-        BigBeef.Services.Stats.games_or_someshit()
-        |> Enum.filter(&GameData.should_keep_game_on_active_list?/1)
-        |> IO.inspect()
+        get_current_schedule()
 
       false ->
         []
@@ -58,7 +55,22 @@ defmodule ClassicClips.BeefServer do
     Enum.map(games, update_game_data)
     |> Enum.map(&GameData.increment_fetch_count/1)
     |> Enum.filter(&GameData.should_keep_game_on_active_list?/1)
-    |> IO.inspect()
+  end
+
+  defp get_current_schedule() do
+    case BigBeef.Services.Stats.games_or_someshit() do
+      {:ok, games} ->
+        Enum.filter(games, &GameData.should_keep_game_on_active_list?/1)
+
+      {:error, _} = error ->
+        Sentry.Event.create_event(
+          original_exception: error,
+          message: "Could not fetch schedule"
+        )
+        |> Sentry.send_event()
+
+        []
+    end
   end
 
   defp game_time?() do
