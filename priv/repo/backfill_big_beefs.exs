@@ -92,8 +92,8 @@ beef_3 = %{
   player_id: "c11f0585-9826-4947-a6d2-68330cb4de31"
 }
 
-Beef.changeset(%Beef{}, beef_3)
-|> Repo.insert!()
+# Beef.changeset(%Beef{}, beef_3)
+# |> Repo.insert!()
 
 
 box_scores_4 = [
@@ -104,8 +104,16 @@ box_scores_4 = [
   }
 ]
 
+box_scores_5 = [
+  %{
+    id: "0022000699",
+    box_score_url: "https://www.basketball-reference.com/boxscores/202103270OKC.html",
+    yt_highlight_video_url: "aaa"
+  }
+]
+
 scores =
-  box_scores_4
+  box_scores_5
   |> Enum.map(fn %{id: id} -> %GameData{id: id} end)
   |> Enum.map(&BigBeef.get_game_data/1)
   |> Enum.map(fn game ->
@@ -124,7 +132,7 @@ scores =
   |> IO.inspect()
 
 big_beefs =
-  box_scores_4
+  box_scores_5
   |> Enum.map(fn big ->
     beef =
       from(b in Beef, where: b.ext_game_id == ^big.id, where: b.beef_count > 19) |> Repo.one()
