@@ -1600,6 +1600,104 @@ div#beef-container.saucy {
     }
   }
 
+  & div.stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin: 3rem auto 5rem auto;
+    background-color: $saucy-red;
+    opacity: 0.8;
+    padding: 3rem 0;
+
+    & p {
+      font-family: "Lato", sans-serif;
+      color: #fff;
+      margin: 0.25rem;
+
+      &.big {
+        font-size: 1.8em;
+        font-family: "Rokkitt", serif;
+        font-weight: 600;
+        margin: 0;
+        line-height: 0.9em;
+        letter-spacing: 1px;
+      }
+
+      &.beef {
+        font-size: 0.9em;
+        font-family: "Rokkitt", serif;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    & div.leaderboard,
+    div.last {
+      width: 33%;
+      margin: 1rem auto;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      & div.label {
+        min-width: 18rem;
+      }
+    }
+
+    & div.last {
+      & p.beef {
+        font-size: 1em;
+      }
+
+      & p.stat {
+        font-weight: 500;
+        font-size: 1.35em;
+        margin-right: 2rem;
+      }
+
+      & div.links {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        & p {
+          margin-right: 1rem;
+        }
+      }
+    }
+
+    & div.leaderboard {
+      & p.beef {
+        font-size: 1em;
+      }
+
+      & div.leader-stats {
+        display: flex;
+        flex-direction: row;
+        margin-top: 1.5rem;
+
+        & p.title {
+          font-size: 1.18em;
+          text-decoration: underline;
+          text-underline-offset: 5px;
+        }
+
+        & p {
+          font-size: 1.08em;
+        }
+
+        & > div:first-child {
+          margin-right: 8rem;
+        }
+
+        & > div > p {
+          margin: 0.75rem 0;
+        }
+      }
+    }
+  }
+
   & p.active-count {
     color: #555;
     font-family: "Lato", sans-serif;

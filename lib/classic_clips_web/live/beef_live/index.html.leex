@@ -1,73 +1,107 @@
+<!-- 1:11:15 does that tickle your balls -->
+<!-- 1:15:15 leigh eats the apple core -->
 <div id="beef-container" class="saucy">
   <h1>BIG BEEF TRACKER</h1>
   <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/archive">BIG BEEF archives</a>.</p>
-  <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
-      <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
-    </p>
-    <div class="graph-container">
-      <div id="beef-graph">
-        <div class="graph-lines">
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
+  <div class="stats">
+    <div class="last">
+      <div class="label">
+        <p class="big">LATEST</p>
+        <p class="beef">BIG BEEF</p>
+      </div>
+      <div>
+      <p class="stat">Johnson, Keldon (21)</p>
+      <div class="links">
+        <p>Highlights</p>
+        <p>Box Score</p>
+      </div>
+      </div>
+    </div>
+    <div class="leaderboard">
+      <div class="label">
+        <p class="beef">BIG BEEF</p>
+        <p class="big">LEADERS</p>
+      </div>
+      <div class="leader-stats">
+        <div class="total">
+          <p class="title">Total Big Beefs:</p>
+          <p>1. Enes Kanter (3)</p>
+          <p>2. Clint Capella (2)</p>
+          <p>3. Rudy Gobert (2)</p>
         </div>
-        <div id="beef-line">
-          <p>BIG BEEF LINE</p>
-        </div>
-        <div id="regulation-end-line"></div>
-        <%= for beef <- @beefs do %>
-          <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
-        <% end %>
-        <div class="x-axis-label oneq">
-          <p>1Q</p>
-        </div>
-        <div class="x-axis-label twoq">
-          <p>2Q</p>
-        </div>
-        <div class="x-axis-label threeq">
-          <p>3Q</p>
-        </div>
-        <div class="x-axis-label fourq">
-          <p>4Q</p>
-        </div>
-        <div class="x-axis-label endreg">
-          <p>Buzzer</p>
-        </div>
-        <div class="x-axis-label twoot">
-          <p>2OT</p>
-        </div>
-        <div class="y-axis-label">
-          <p>5</p>
-        </div>
-        <div class="y-axis-label ten-off">
-          <p>10</p>
-        </div>
-        <div class="y-axis-label fift-off">
-          <p>15</p>
-        </div>
-        <div class="y-axis-label twen-off">
-          <p>20</p>
-        </div>
-        <div class="y-axis-label twefiv-off">
-          <p>25</p>
-        </div>
-        <p class="y-axis-title">BEEF COUNT</p>
-        <p class="x-axis-title">GAME TIME</p>
-        <p class="last-updated-time">last updated: <%= @last_updated %>
+        <div class="single-game">
+          <p class="title">Single Game Leaders:</p>
+          <p>1. Rudy Gobert (28)</p>
+          <p>2. Enes Kanter (24)</p>
+          <p>3. Evan Fournier (22)</p>
         </div>
       </div>
-      <footer class="beef-footer">
-        <a href="/beef/archive">Big Beef Archive</a>
-        <a href="https://twitter.com/BigBeefTracker">Twitter</a>
-        <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
-          Big Beef Highlights
-        </a>
-      </footer>
     </div>
+  </div>
+  <div class="graph-container">
+    <div id="beef-graph">
+      <div class="graph-lines">
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+        <div class="beef-graph-line"></div>
+      </div>
+      <div id="beef-line">
+        <p>BIG BEEF LINE</p>
+      </div>
+      <div id="regulation-end-line"></div>
+      <%= for beef <- @beefs do %>
+        <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
+      <% end %>
+      <div class="x-axis-label oneq">
+        <p>1Q</p>
+      </div>
+      <div class="x-axis-label twoq">
+        <p>2Q</p>
+      </div>
+      <div class="x-axis-label threeq">
+        <p>3Q</p>
+      </div>
+      <div class="x-axis-label fourq">
+        <p>4Q</p>
+      </div>
+      <div class="x-axis-label endreg">
+        <p>Buzzer</p>
+      </div>
+      <div class="x-axis-label twoot">
+        <p>2OT</p>
+      </div>
+      <div class="y-axis-label">
+        <p>5</p>
+      </div>
+      <div class="y-axis-label ten-off">
+        <p>10</p>
+      </div>
+      <div class="y-axis-label fift-off">
+        <p>15</p>
+      </div>
+      <div class="y-axis-label twen-off">
+        <p>20</p>
+      </div>
+      <div class="y-axis-label twefiv-off">
+        <p>25</p>
+      </div>
+      <p class="y-axis-title">BEEF COUNT</p>
+      <p class="x-axis-title">GAME TIME</p>
+      <p class="last-updated-time">last updated: <%= @last_updated %>
+      </div>
+    </div>
+    <footer class="beef-footer">
+      <a href="/beef/archive">Big Beef Archive</a>
+      <a href="https://twitter.com/BigBeefTracker">Twitter</a>
+      <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
+        Big Beef Highlights
+      </a>
+    </footer>
+  </div>
