@@ -14,7 +14,7 @@ defmodule ClassicClips.BigBeef.Services.Stats do
   end
 
   def get_boxscore_for_game(game_id) do
-    with {:ok, %HTTPoison.Response{body: body}} = get_box_score_url(game_id) |> HTTPoison.get(),
+    with {:ok, %HTTPoison.Response{body: body}} <- get_box_score_url(game_id) |> HTTPoison.get(),
          {:ok, _} = response <- Jason.decode(body) do
       response
     else
