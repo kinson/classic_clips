@@ -1,66 +1,99 @@
 <div id="beef-container" class="saucy">
-  <h1>BIG BEEF TRACKER</h1>
-  <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/archive">BIG BEEF archives</a>.</p>
-  <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
-      <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
-    </p>
-    <div class="graph-container">
-      <div id="beef-graph">
-        <div class="graph-lines">
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
-          <div class="beef-graph-line"></div>
+  <div class="header-row">
+    <img src="<%= Routes.static_path(@socket, "/images/big-beef-logo-1.png") %>" alt="" />
+    <h1>BIG BEEF TRACKER</h1>
+  </div>
+  <%# <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/archive">BIG BEEF archives</a>.</p> %>
+  <div class="beef-box">
+    <div class="menu-floater">
+      <div class="<%= is_active(@page_type, "live") %>" phx-click="select-live">
+        <p>Real Time</p>
+      </div>
+      <div class="<%= is_active(@page_type, "archive") %>" phx-click="select-archive">
+        <p>Archive</p>
+      </div>
+      <%# <div>
+        <p>Stats</p>
+      </div> %>
+    </div>
+    <div class="graph-floater <%= is_active(@page_type, "live") %>">
+      <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
+          <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
+        </p>
+        <div class="graph-container">
+          <div id="beef-graph">
+            <div class="graph-lines">
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+              <div class="beef-graph-line"></div>
+            </div>
+            <div id="beef-line">
+              <p>BIG BEEF LINE</p>
+            </div>
+            <div id="regulation-end-line"></div>
+            <%= for beef <- @beefs do %>
+              <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
+            <% end %>
+            <div class="x-axis-label oneq">
+              <p>1Q</p>
+            </div>
+            <div class="x-axis-label twoq">
+              <p>2Q</p>
+            </div>
+            <div class="x-axis-label threeq">
+              <p>3Q</p>
+            </div>
+            <div class="x-axis-label fourq">
+              <p>4Q</p>
+            </div>
+            <div class="x-axis-label endreg">
+              <p>Buzzer</p>
+            </div>
+            <div class="x-axis-label twoot">
+              <p>2OT</p>
+            </div>
+            <div class="y-axis-label">
+              <p>5</p>
+            </div>
+            <div class="y-axis-label ten-off">
+              <p>10</p>
+            </div>
+            <div class="y-axis-label fift-off">
+              <p>15</p>
+            </div>
+            <div class="y-axis-label twen-off">
+              <p>20</p>
+            </div>
+            <div class="y-axis-label twefiv-off">
+              <p>25</p>
+            </div>
+            <p class="y-axis-title">BEEF COUNT</p>
+            <p class="x-axis-title">GAME TIME</p>
+            <p class="last-updated-time">last updated: <%= @last_updated %>
+            </div>
+          </div>
         </div>
-        <div id="beef-line">
-          <p>BIG BEEF LINE</p>
-        </div>
-        <div id="regulation-end-line"></div>
-        <%= for beef <- @beefs do %>
-          <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
-        <% end %>
-        <div class="x-axis-label oneq">
-          <p>1Q</p>
-        </div>
-        <div class="x-axis-label twoq">
-          <p>2Q</p>
-        </div>
-        <div class="x-axis-label threeq">
-          <p>3Q</p>
-        </div>
-        <div class="x-axis-label fourq">
-          <p>4Q</p>
-        </div>
-        <div class="x-axis-label endreg">
-          <p>Buzzer</p>
-        </div>
-        <div class="x-axis-label twoot">
-          <p>2OT</p>
-        </div>
-        <div class="y-axis-label">
-          <p>5</p>
-        </div>
-        <div class="y-axis-label ten-off">
-          <p>10</p>
-        </div>
-        <div class="y-axis-label fift-off">
-          <p>15</p>
-        </div>
-        <div class="y-axis-label twen-off">
-          <p>20</p>
-        </div>
-        <div class="y-axis-label twefiv-off">
-          <p>25</p>
-        </div>
-        <p class="y-axis-title">BEEF COUNT</p>
-        <p class="x-axis-title">GAME TIME</p>
-        <p class="last-updated-time">last updated: <%= @last_updated %>
+        <div class="previous-beef saucy <%= is_active(@page_type, "archive") %>">
+          <div class="results">
+            <div class="big-beef-list">
+              <%= for beef <- @big_beefs do %>
+                <div class="big-beef">
+                  <p class="date">[<%= format_time(beef.beef.date_time) %>]</p>
+                  <p class="name"><%= name(beef.beef.player) %></p>
+                  <p class="count"><%= count(beef.beef) %> 🥩</p>
+                  <a class="highlights" href="<%= yt_link(beef) %>" target="_blank"><%= yt_text(beef) %></a>
+                  <a class="box-score" href="<%= bs_link(beef) %>" target="_blank"><%= bs_text(beef) %></a>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
       <footer class="beef-footer">
