@@ -6,6 +6,9 @@ $saucy-black: rgb(35, 31, 32);
 $saucy-red: #d71921;
 $saucy-bg-gray: rgb(247, 246, 243);
 
+$saucy-red-a: rgba(215, 25, 33, 0.4);
+$saucy-red-b: rgba(215, 25, 33, 0.05);
+
 /* LiveView specific classes for your customizations */
 .phx-no-feedback.invalid-feedback,
 .phx-no-feedback .invalid-feedback {
@@ -1188,17 +1191,24 @@ div#beef-container {
   display: flex;
   flex-direction: column;
 
-  & h1 {
-    color: #fff;
-    font-size: 2.5em;
-    font-family: "Cutive Mono", monospace;
+  & div.header-row {
     width: 80%;
     max-width: 110rem;
-    margin: 4rem auto 0.5rem auto;
+    margin: 4rem auto 1rem auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    @media (max-width: 40rem) {
-      margin: 3rem auto 1rem auto;
-      font-size: 1.8em;
+    & h1 {
+      color: #fff;
+      font-size: 2.5em;
+      font-family: "Cutive Mono", monospace;
+      margin-bottom: 0;
+
+      @media (max-width: 40rem) {
+        margin: 3rem auto 1rem auto;
+        font-size: 1.8em;
+      }
     }
   }
 
@@ -1235,7 +1245,7 @@ div#beef-container {
     font-size: 0.99em;
     width: 80%;
     max-width: 110rem;
-    margin: 0.5rem auto 2rem auto;
+    margin: 2rem auto;
 
     @media (max-width: 40rem) {
       margin: 0rem auto 5rem auto;
@@ -1267,7 +1277,7 @@ div#beef-container {
     position: relative;
     margin: 1rem auto;
     width: 80%;
-    max-width: 110rem;
+    max-width: 100rem;
     height: 50rem;
     border-bottom: 2px solid green;
     border-left: 2px solid green;
@@ -1503,7 +1513,7 @@ div#beef-container {
   }
 
   & div.graph-container {
-    height: 64rem;
+    min-height: 62rem;
   }
 }
 
@@ -1537,16 +1547,16 @@ footer.beef-footer {
 
 div.previous-beef {
   background-color: #111;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
+  // width: 100%;
+  // min-height: 100vh;
+  display: none;
   flex-direction: column;
 
-  & div.results {
-    width: 100%;
-    max-width: 110rem;
-    margin: 2rem auto;
+  &.show {
+    display: flex;
+  }
 
+  & div.results {
     & h1 {
       color: #fff;
       font-family: "Cutive Mono", monospace;
@@ -1608,6 +1618,7 @@ div.previous-beef {
 
         & p.name {
           margin-left: 1rem;
+          margin-right: 2rem;
           width: 31rem;
 
           @media (max-width: 40rem) {
@@ -1645,7 +1656,7 @@ div.previous-beef {
 }
 
 div.previous-beef.saucy {
-  background-color: #fff;
+  background-color: #f6f8fa;
 
   & div h1 {
     font-family: "Rokkitt", serif;
@@ -1684,16 +1695,23 @@ div.previous-beef.saucy {
 }
 
 div#beef-container.saucy {
-  background-color: #fff;
+  background-color: #f6f8fa;
 
-  & h1 {
-    font-family: "Rokkitt", serif;
-    font-weight: 700;
-    font-size: 2.75em;
-    color: $saucy-red;
+  & div.header-row {
+    & h1 {
+      font-family: "Rokkitt", serif;
+      font-weight: 700;
+      font-size: 2.75em;
+      color: $saucy-red;
 
-    @media (max-width: 40rem) {
-      font-size: 2.2em;
+      @media (max-width: 40rem) {
+        font-size: 2.2em;
+      }
+    }
+
+    & img {
+      margin-right: 4rem;
+      height: 3.5rem;
     }
   }
 
@@ -1721,6 +1739,71 @@ div#beef-container.saucy {
 
     &.active {
       background-color: $saucy-red;
+    }
+  }
+
+  & div.beef-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 110rem;
+    margin: 2rem auto;
+  }
+
+  & div.menu-floater {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid $saucy-red;
+    height: max-content;
+    border-radius: 3px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+
+    & > div {
+      border-bottom: 1px solid #aaa;
+      border-top: 1px solid #aaa;
+      cursor: pointer;
+
+      &:first-child {
+        border-top: none !important;
+      }
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      &.show {
+        background: linear-gradient(
+          to bottom right,
+          $saucy-red-a,
+          $saucy-red-b
+        );
+
+        border-bottom: 3px solid $saucy-red;
+        border-top: 3px solid $saucy-red;
+
+        & > p {
+          font-weight: 500;
+        }
+      }
+
+      & > p {
+        font-family: "Open Sans", sans-serif;
+        font-size: 1.05em;
+        margin: 0.5rem 5rem 0.5rem 3rem;
+      }
+    }
+  }
+
+  & div.graph-floater {
+    width: 80%;
+    max-width: 100rem;
+    box-shadow: 2px 2px 4px #777;
+    border-radius: 3px;
+    display: none;
+
+    &.show {
+      display: block;
     }
   }
 
