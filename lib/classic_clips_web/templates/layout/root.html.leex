@@ -23,9 +23,9 @@
         <%= if is_nil(@user) do %>
           <div class="auth">
             <div class="signup">
-              <%= link "sign up", to: @gooogle_auth_url %>
+              <img src="<%= Routes.static_path(@conn, "/images/google_logo.png") %>" alt="Google Sign In" />
+              <%= link "Sign In", to: @gooogle_auth_url %>
             </div>
-            <%= link "or, login", to: @gooogle_auth_url, class: "signin" %>
           </div>
         <% else %>
           <div id="user-header-area">

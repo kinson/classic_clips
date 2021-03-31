@@ -456,39 +456,33 @@ header {
     }
 
     & div.signup {
-      background-color: rgb(218, 255, 79);
+      border-radius: 3.75rem;
+      box-shadow: 2px 2px 4px #666;
       display: flex;
-      justify-content: center;
+      flex-direction: row;
       align-items: center;
-      border-radius: 0.5rem;
+      height: 4.5rem;
+      background-color: #fff;
       cursor: pointer;
 
       @media (max-width: 40rem) {
         margin: 0.5rem 1rem;
       }
 
+      & img {
+        width: 3rem;
+        margin: 0 0.5rem 0 1.5rem;
+      }
+
       & a {
         color: #222;
         font-size: 1.1em;
         font-weight: 500;
-        margin: 0.2rem 0.6rem;
+        margin: 0 2rem 0 1rem;
 
         @media (max-width: 40rem) {
           margin: 0 0.5rem;
         }
-      }
-    }
-
-    & a.signin {
-      cursor: pointer;
-      text-decoration: underline;
-      font-size: 1.1em;
-      margin: 1rem 0 0 0;
-      color: #fff;
-
-      @media (max-width: 40rem) {
-        margin: 0 1rem;
-        line-height: 2em;
       }
     }
   }
