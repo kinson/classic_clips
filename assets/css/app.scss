@@ -240,6 +240,7 @@ div.clip-edit-button {
 
 .tas-time {
   color: #fff;
+  opacity: 0.75;
   font-weight: 500;
   font-size: 1em;
   margin: 0;
@@ -247,6 +248,23 @@ div.clip-edit-button {
   position: absolute;
   right: 1.5rem;
   bottom: 1rem;
+}
+
+.tas-date {
+  color: #fff;
+  opacity: 0.75;
+  font-weight: 500;
+  font-size: 1em;
+  margin: 0;
+  z-index: 3;
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1rem;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgb(218, 255, 79);
+  }
 }
 
 .leigh-container {
@@ -596,6 +614,7 @@ div.show-clip {
 
   @media (max-width: 40rem) {
     margin: 4rem 0;
+    padding: 0 0 4rem 0;
   }
 
   & > p.hero {
@@ -617,7 +636,7 @@ div.show-clip {
 
     @media (max-width: 40rem) {
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       align-items: center;
       justify-content: center;
     }
@@ -628,6 +647,7 @@ div.show-clip {
 
       @media (max-width: 40rem) {
         margin-right: 0;
+        margin-top: 4rem;
       }
 
       & p.featured-in {

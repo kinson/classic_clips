@@ -3,6 +3,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
 
   alias ClassicClips.Timeline
   alias ClassicClips.Timeline.{Clip, Tag, User}
+  alias ClassicClips.Classics.Video
 
   @impl true
   def mount(socket) do
@@ -22,6 +23,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
           </div>
           <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
           <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
+          <%= link get_publish_date(@clip.video), to: Routes.clip_index_path(@socket, :show, @clip.id) , class: "tas-date" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
             <a href="<%= @clip.yt_video_url %>" target="_blank">
               <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
@@ -44,6 +46,16 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
         </div>
     </div>
     """
+  end
+
+  def get_publish_date(nil), do: ""
+
+  def get_publish_date(%Video{publish_date: publish_date}) do
+    {:ok, dt, 0} = DateTime.from_iso8601(publish_date)
+
+    d = DateTime.add(dt, -18000) |> DateTime.to_date()
+
+    "#{d.month}/#{d.day}/#{d.year}"
   end
 
   defp get_duration(nil), do: ""

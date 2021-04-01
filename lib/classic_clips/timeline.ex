@@ -18,7 +18,7 @@ defmodule ClassicClips.Timeline do
 
   """
   def list_clips do
-    Repo.all(Clip) |> Repo.preload(:user) |> Repo.preload(:tags)
+    Repo.all(Clip) |> Repo.preload(:user) |> Repo.preload(:tags) |> Repo.preload(:video)
   end
 
   def list_newest_clips(%{limit: limit, offset: offset}, video_id) do
@@ -37,7 +37,12 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
+    clips =
+      clips_query
+      |> Repo.all()
+      |> Repo.preload(:user)
+      |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count_query =
       from(c in Clip,
@@ -103,7 +108,12 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
+    clips =
+      clips_query
+      |> Repo.all()
+      |> Repo.preload(:user)
+      |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count_query =
       from(c in Clip,
@@ -136,6 +146,7 @@ defmodule ClassicClips.Timeline do
       |> Repo.all()
       |> Repo.preload(:user)
       |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count =
       from(c in Clip,
@@ -162,6 +173,7 @@ defmodule ClassicClips.Timeline do
       |> Repo.all()
       |> Repo.preload(:user)
       |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count =
       from(c in Clip,
@@ -194,7 +206,12 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
+    clips =
+      clips_query
+      |> Repo.all()
+      |> Repo.preload(:user)
+      |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count_query =
       from(c in Clip,
@@ -253,7 +270,12 @@ defmodule ClassicClips.Timeline do
         id -> from c in clips_query, where: c.video_id == ^id
       end
 
-    clips = clips_query |> Repo.all() |> Repo.preload(:user) |> Repo.preload(:tags)
+    clips =
+      clips_query
+      |> Repo.all()
+      |> Repo.preload(:user)
+      |> Repo.preload(:tags)
+      |> Repo.preload(:video)
 
     count_query =
       from(c in Clip,

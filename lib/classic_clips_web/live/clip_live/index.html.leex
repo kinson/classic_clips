@@ -16,15 +16,16 @@
 
 <%= if @live_action in [:show] do %>
   <div class="show-clip">
-    <p class="hero">A CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
+    <p class="hero">CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
     <div>
       <div class="video-area">
         <p class="featured-in">FEATURED IN</p>
         <%= link title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title" %>
         <p class="description"><%= @clip.video.description %></p>
+        <%= link "See More Clips From This Video", to: Routes.clip_index_path(@socket, :index, video_id: @clip.video.id) %>
       </div>
       <div class="clip-area">
-        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
+        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: "show-" <> @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
       </div>
     </div>
   </div>
