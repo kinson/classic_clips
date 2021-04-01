@@ -41,7 +41,10 @@ defmodule ClassicClipsWeb.LiveHelpers do
   end
 
   def get_user_thumbs_up(%User{} = user) do
-    Timeline.get_users_clips_vote_total(user)
+    case Timeline.get_users_clips_vote_total(user) do
+      nil -> 0
+      count -> count
+    end
   end
 
   def get_user_thumbs_up(nil), do: 0
