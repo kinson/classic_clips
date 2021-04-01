@@ -25,7 +25,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
           <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
           <%= link get_publish_date(@clip.video), to: Routes.clip_index_path(@socket, :show, @clip.id) , class: "tas-date" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
-            <a href="<%= @clip.yt_video_url %>" target="_blank">
+            <a href="<%= @clip.yt_video_url %>" target="_blank" class="tas-video-link">
               <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
             </a>
         </div>
