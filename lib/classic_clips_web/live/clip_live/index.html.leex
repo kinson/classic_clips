@@ -14,6 +14,22 @@
   </div>
 <% end %>
 
+<%= if @live_action in [:show] do %>
+  <div class="show-clip">
+    <p class="hero">A CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
+    <div>
+      <div class="video-area">
+        <p class="featured-in">FEATURED IN</p>
+        <%= link title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title" %>
+        <p class="description"><%= @clip.video.description %></p>
+      </div>
+      <div class="clip-area">
+        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="skeets-container">
   <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>
   <div class="swimup-bar-loooking-good">
@@ -30,22 +46,6 @@
 </form>
 </div>
 </div>
-
-<%= if @live_action in [:show] do %>
-  <div class="show-clip">
-    <p class="hero">A CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
-    <div>
-      <div class="video-area">
-        <p class="featured-in">FEATURED IN</p>
-        <%= link title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title" %>
-        <p class="description"><%= @clip.video.description %></p>
-      </div>
-      <div class="clip-area">
-        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
-      </div>
-    </div>
-  </div>
-<% end %>
 
 <div id="clipss" class="timeline-container" phx-update="replace">
   <%= if Enum.empty?(@clips) do %>

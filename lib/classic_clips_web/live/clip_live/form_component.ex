@@ -205,6 +205,8 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
 
   def can_edit(nil, _), do: false
 
+  def can_edit(_, %Ecto.Changeset{data: %{user_id: nil}}), do: true
+
   def can_edit(user, %Ecto.Changeset{} = cs) do
     user.id == cs.data.user_id
   end

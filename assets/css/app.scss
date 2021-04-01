@@ -593,10 +593,14 @@ div.show-signup-message {
 }
 
 div.show-clip {
-  border-top: 3px solid rgba(96, 0, 170, 0.5);
-  border-bottom: 3px solid rgba(96, 0, 170, 0.5);
+  border-top: 4px solid rgba(96, 0, 170, 0.75);
+  border-bottom: 3px solid rgba(96, 0, 170, 0.75);
   padding: 0rem 0 5rem 0;
-  margin: 6rem 0 4rem 0;
+  margin: 6rem 0;
+
+  @media (max-width: 40rem) {
+    margin: 4rem 0;
+  }
 
   & > p.hero {
     font-family: "Open Sans", sans-serif;
@@ -615,9 +619,20 @@ div.show-clip {
     align-items: center;
     justify-content: center;
 
+    @media (max-width: 40rem) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     & div.video-area {
       width: 33rem;
       margin-right: 2rem;
+
+      @media (max-width: 40rem) {
+        margin-right: 0;
+      }
 
       & p.featured-in {
         font-family: "Open Sans", sans-serif;
@@ -650,6 +665,10 @@ div.show-clip {
     & div.clip-container {
       margin-left: 2rem;
       box-shadow: 15px 15px 0px rebeccapurple;
+
+      @media (max-width: 40rem) {
+        margin-left: 0;
+      }
     }
   }
 }
