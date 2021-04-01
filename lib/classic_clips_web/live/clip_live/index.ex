@@ -3,6 +3,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
   alias ClassicClips.{Timeline}
   alias ClassicClips.Timeline.{Clip}
+  alias ClassicClips.Classics.Video
 
   @impl true
   def mount(_params, session, socket) do
@@ -52,6 +53,20 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> assign(:clips, clips)
     |> assign(:pagination, pagination)
     |> assign(:clip, %Clip{})
+  end
+
+  defp apply_action(socket, :show, %{"id" => id}) do
+    socket = assign(socket, :video_id, nil)
+
+    pagination = get_default_pagination()
+    category = "goat"
+    {clips, pagination} = list_top_clips(socket, category, pagination)
+
+    socket
+    |> assign(:category, category)
+    |> assign(:clips, clips)
+    |> assign(:pagination, pagination)
+    |> assign(:clip, Timeline.get_clip!(id) |> ClassicClips.Repo.preload([:user, :tags, :video]))
   end
 
   defp apply_action(socket, :index, params) do
@@ -359,5 +374,21 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       {:ok, save} -> {:ok, [save | saves]}
       {:error, _} = error -> error
     end
+  end
+
+  def yt_url(%Video{yt_video_id: yt_video_id}) do
+    "https://youtube.com/watch?v=#{yt_video_id}"
+  end
+
+  def title(%Video{title: title}) do
+    HtmlEntities.decode(title)
+  end
+
+  def publish_date(%Video{publish_date: publish_date}) do
+    {:ok, dt, 0} = DateTime.from_iso8601(publish_date)
+
+    d = DateTime.add(dt, -18000) |> DateTime.to_date()
+
+    "#{d.month}/#{d.day}/#{d.year}"
   end
 end

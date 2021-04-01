@@ -202,4 +202,10 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp add_video_id(cs), do: {:ok, cs}
+
+  def can_edit(nil, _), do: false
+
+  def can_edit(user, %Ecto.Changeset{} = cs) do
+    user.id == cs.data.user_id
+  end
 end

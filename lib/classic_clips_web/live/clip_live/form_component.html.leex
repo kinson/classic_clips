@@ -52,8 +52,8 @@
     </div>
   </div>
 
-  <%= submit "SAVE", phx_disable_with: "Saving...", class: "submit", disabled: is_nil(@user) %>
+  <%= submit "SAVE", phx_disable_with: "Saving...", class: "submit", disabled: not can_edit(@user, @changeset) %>
   <%= if @action == :edit do %>
-    <%= button "DELETE", to: Routes.clip_index_path(@socket, :delete, @clip.id), method: :get, class: "delete-clip-button", data: [confirm: "Are you sure you want to delete this clip?"] %>
+    <%= button "DELETE", to: Routes.clip_index_path(@socket, :delete, @clip.id), method: :get, class: "delete-clip-button", data: [confirm: "Are you sure you want to delete this clip?"], disabled: not can_edit(@user, @changeset) %>
   <% end %>
 </form>

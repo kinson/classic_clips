@@ -592,6 +592,68 @@ div.show-signup-message {
   }
 }
 
+div.show-clip {
+  border-top: 3px solid rgba(96, 0, 170, 0.5);
+  border-bottom: 3px solid rgba(96, 0, 170, 0.5);
+  padding: 0rem 0 5rem 0;
+  margin: 6rem 0 4rem 0;
+
+  & > p.hero {
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.4em;
+    color: rgba(96, 0, 170, 1);
+    background-color: rgba(218, 255, 79, 1);
+    margin: 0 0 2rem 0;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.5rem 0;
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    & div.video-area {
+      width: 33rem;
+      margin-right: 2rem;
+
+      & p.featured-in {
+        font-family: "Open Sans", sans-serif;
+        font-size: 1em;
+        margin: 0.5rem 0;
+        padding: 0.1rem 0.75rem;
+        background-color: rgba(233, 52, 215, 0.75);
+        color: #fff;
+        display: inline-block;
+      }
+
+      & a.title {
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        font-size: 1.1em;
+        line-height: 1.25em;
+        margin: 0.75rem 0;
+        display: block;
+      }
+
+      & p.description {
+        font-family: "Open Sans", sans-serif;
+        font-weight: 400;
+        font-size: 0.85em;
+        color: #555;
+        margin-bottom: 1rem;
+      }
+    }
+
+    & div.clip-container {
+      margin-left: 2rem;
+      box-shadow: 15px 15px 0px rebeccapurple;
+    }
+  }
+}
+
 .skeets-container {
   display: flex;
   flex-direction: row;

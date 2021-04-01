@@ -20,16 +20,32 @@
     <div id="search-area">
       <i class="fas fa-search"></i>
       <%= d = form_for :search, Routes.clip_index_path(@socket, :index), phx_change: "change_search", class: "search-form" %>
-        <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
-      </form>
-    </div>
-
-    <p class="sort-by">viewing:</p>
-    <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
-      <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
+      <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
     </form>
   </div>
+
+  <p class="sort-by">viewing:</p>
+  <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
+  <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
+</form>
 </div>
+</div>
+
+<%= if @live_action in [:show] do %>
+  <div class="show-clip">
+    <p class="hero">A CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
+    <div>
+      <div class="video-area">
+        <p class="featured-in">FEATURED IN</p>
+        <%= link title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title" %>
+        <p class="description"><%= @clip.video.description %></p>
+      </div>
+      <div class="clip-area">
+        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <div id="clipss" class="timeline-container" phx-update="replace">
   <%= if Enum.empty?(@clips) do %>
