@@ -59,18 +59,27 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
     published_after_date =
       DateTime.utc_now()
-      |> DateTime.add(-1 * one_day * 700, :second)
+      |> DateTime.add(-1 * one_day * 60, :second)
+      |> DateTime.to_iso8601()
+
+    published_before_date =
+      DateTime.utc_now()
+      |> DateTime.add(-1 * one_day * 29, :second)
       |> DateTime.to_iso8601()
 
     published_after =
       %{"publishedAfter" => published_after_date}
       |> URI.encode_query()
 
+    published_before =
+      %{"publishedBefore" => published_before_date}
+      |> URI.encode_query()
+
     key = "key=" <> System.get_env("YOUTUBE_DATA_KEY")
 
     base = @youtube_api_base <> @search_endpoint
 
-    endpoint = "?#{part}&#{channel_id}&#{published_after}&#{max_results}&#{key}"
+    endpoint = "?#{part}&#{channel_id}&#{published_before}&#{published_after}&#{max_results}&#{key}"
 
     url = base <> endpoint
 
