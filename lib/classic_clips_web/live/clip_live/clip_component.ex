@@ -45,6 +45,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
           <p class="tags-text"><%= get_tags(@clip) %></p>
         </div>
     </div>
+    </div>
     """
   end
 
@@ -102,16 +103,15 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
 
   defp get_tags(%Clip{tags: tags}) do
     tag_count = Enum.count(tags)
+
     case tag_count > 4 do
       true ->
         tag_list = Enum.take(tags, 4) |> tags_string()
         "#{tag_list}, and #{tag_count - 4} more tags"
 
-
       false ->
         tags_string(tags)
     end
-
   end
 
   defp tags_string(tags) do
