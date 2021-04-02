@@ -9,6 +9,7 @@ defmodule ClassicClips.ClassicsServer do
 
   @impl true
   def init(state) do
+    fetch_videos()
     :timer.send_interval(1000_000, :work)
     {:ok, state}
   end
