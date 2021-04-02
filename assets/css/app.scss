@@ -1124,9 +1124,13 @@ footer {
     }
   }
 
+  & a {
+    font-size: 0.8em;
+  }
+
   & p {
     margin: 1.5rem auto;
-    font-size: 0.95em;
+    font-size: 0.8em;
     font-weight: 300;
     text-align: center;
     color: #444;
@@ -1138,14 +1142,16 @@ div#about-page {
   margin: 0 auto;
 
   & > h2 {
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-top: 2rem;
+    color: #555;
+    font-size: 1.15em;
   }
 
   & p {
-    font-size: 1.25em;
+    font-size: 0.98em;
   }
 
   & div.turn-up {
@@ -1852,7 +1858,7 @@ div.classics-container {
           & p {
             color: #fff;
             margin: 0.35rem 1rem;
-            font-size: 0.85em;
+            font-size: 0.8em;
             text-transform: uppercase;
           }
         }
@@ -1876,7 +1882,7 @@ div.classics-container {
             color: blue;
             opacity: 0.8;
             font-weight: 600;
-            font-size: 1em;
+            font-size: 0.9em;
             text-decoration: underline;
             text-underline-offset: 3px;
           }
@@ -2073,7 +2079,7 @@ div.classics-container {
           border: none;
           border-radius: 0;
           padding: 0.25rem 0.25rem;
-          font-size: 1.05em;
+          font-size: 1em;
           height: auto;
           margin: 0;
         }
@@ -2095,7 +2101,7 @@ div.classics-container {
       padding-left: 0.1rem;
       margin: 0 3rem 0 0.5rem;
       color: rgb(233, 52, 215);
-      font-size: 1em;
+      font-size: 0.95em;
 
       @media (max-width: 40rem) {
         margin: 0 0 0 0.5rem;
