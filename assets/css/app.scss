@@ -221,6 +221,8 @@ div.clip-edit-button {
   width: 100%;
   overflow: hidden;
   max-width: 100%;
+  display: block;
+  position: relative;
 }
 
 .tas-image {
@@ -918,7 +920,7 @@ div.pagination {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: 1rem auto;
+  margin: 2rem auto;
 
   & div {
     margin: 0.55rem;
@@ -928,22 +930,22 @@ div.pagination {
   }
 
   & div.left {
-    border-top: 1.5rem solid transparent;
-    border-bottom: 1.5rem solid transparent;
+    border-top: 1.2rem solid transparent;
+    border-bottom: 1.2rem solid transparent;
 
-    border-right: 2.25rem solid rgb(233, 52, 215);
+    border-right: 1.75rem solid rgb(233, 52, 215);
   }
 
   & div.right {
-    border-top: 1.5rem solid transparent;
-    border-bottom: 1.5rem solid transparent;
+    border-top: 1.2rem solid transparent;
+    border-bottom: 1.2rem solid transparent;
 
-    border-left: 2.25rem solid rgb(233, 52, 215);
+    border-left: 1.75rem solid rgb(233, 52, 215);
   }
 
   p.pagination-text {
     margin: 0 1rem;
-    font-size: 1.4em;
+    font-size: 1.25em;
     font-weight: 500;
     letter-spacing: 0.1rem;
   }
@@ -1102,7 +1104,7 @@ body {
 }
 
 footer {
-  margin: 5rem auto;
+  margin: 3rem auto;
   max-width: 110rem;
   width: 100%;
   border-top: 1px solid #999;
@@ -1128,12 +1130,12 @@ footer {
   }
 
   & a {
-    font-size: 0.8em;
+    font-size: 0.85em;
   }
 
   & p {
     margin: 1.5rem auto;
-    font-size: 0.8em;
+    font-size: 0.85em;
     font-weight: 300;
     text-align: center;
     color: #444;
