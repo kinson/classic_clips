@@ -7,47 +7,42 @@
     user: @user,
     return_to: Routes.clip_index_path(@socket, :index) %>
 <% end %>
-
 <%= if @show_signup_message do %>
   <div class="show-signup-message" phx-click="hide_signup_message">
     <p>Sign up or login to submit, vote, and save clips.</p>
   </div>
 <% end %>
-
 <%= if @live_action in [:show] do %>
   <div class="show-clip">
-    <p class="hero">CLASSIC CLIP FROM <%= publish_date(@clip.video) %></p>
     <div>
       <div class="video-area">
         <p class="featured-in">FEATURED IN</p>
         <%= link title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title" %>
         <p class="description"><%= @clip.video.description %></p>
-        <%= link "See More Clips From This Video", to: Routes.clip_index_path(@socket, :index, video_id: @clip.video.id) %>
+        <%= link "More Clips From This Video", to: Routes.clip_index_path(@socket, :index, video_id: @clip.video.id) %><br />
+        <%= link "All Clips", to: Routes.clip_index_path(@socket, :index) %>
       </div>
       <div class="clip-area">
         <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: "show-" <> @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
       </div>
     </div>
   </div>
-<% end %>
-
-<div class="skeets-container">
-  <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>
-  <div class="swimup-bar-loooking-good">
-    <div id="search-area">
-      <i class="fas fa-search"></i>
-      <%= d = form_for :search, Routes.clip_index_path(@socket, :index), phx_change: "change_search", class: "search-form" %>
-      <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
-    </form>
-  </div>
-
-  <p class="sort-by">viewing:</p>
-  <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
-  <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
-</form>
+<% else %>
+  <div class="skeets-container">
+    <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>
+    <div class="swimup-bar-loooking-good">
+      <div id="search-area">
+        <i class="fas fa-search"></i>
+        <%= d = form_for :search, Routes.clip_index_path(@socket, :index), phx_change: "change_search", class: "search-form" %>
+        <%= text_input d, :term, phx_debounce: "250", placeholder: "Search" %>
+      </form>
+    </div>
+    <p class="sort-by">viewing:</p>
+    <%= f = form_for :sort, Routes.clip_index_path(@socket, :index), "phx-change": "change_sort", class: "sort-form" %>
+    <%= select f, :timeframe, ["NEWEST": "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", "GOAT": "goat"], selected: @category %>
+  </form>
 </div>
 </div>
-
 <div id="clipss" class="timeline-container" phx-update="replace">
   <%= if Enum.empty?(@clips) do %>
     <div class="empty-clips">
@@ -59,11 +54,11 @@
     <% end %>
   <% end %>
 </div>
-
 <%= if Enum.count(@clips) > 0 do %>
   <div class="pagination">
     <div class="page-arrow left" phx-click="dec_page"></div>
     <p class="pagination-text"><%= Access.get(@pagination, :current_page) %> / <%= Access.get(@pagination, :total_pages) %></p>
     <div class="page-arrow right" phx-click="inc_page"></div>
   </div>
+<% end %>
 <% end %>
