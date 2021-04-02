@@ -544,8 +544,9 @@ header {
       }
 
       & p.username {
-        font-weight: 300;
         & a {
+          font-weight: 400;
+          font-family: "Open Sans", sans-serif;
           text-decoration: underline;
           color: #fff;
           font-size: 0.98em;
@@ -554,6 +555,7 @@ header {
 
       & p.votes {
         color: #fff;
+        font-family: "Open Sans", sans-serif;
         font-weight: 300;
         font-size: 0.78em;
         opacity: 0.75;

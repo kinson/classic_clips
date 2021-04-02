@@ -4,11 +4,22 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Search, share, and save your favorite clips from No Dunks classics">
+    <meta name="og:description" content="Search, share, and save your favorite clips from No Dunks"/>
+    <meta name="keywords" content="Big, Beef, No Dunks, Classics, Clips, Classic">
+    <meta name="author" content="Sam H">
+    <meta name="url" content="http://www.classicclipsinc.com">
+    <meta name="og:url" content="http://www.classicclipsinc.com"/>
+    <meta name="title" content="Classic Clips"/>
+    <meta name="og:title" content="Classic Clips"/>
+    <meta name="og:image" content="https://beef-tracker-assets.s3.amazonaws.com/classic_clips_meta_image.png"/>
+    <meta name="image" content="https://beef-tracker-assets.s3.amazonaws.com/classic_clips_meta_image.png"/>
+    <meta name="twitter:card" content="summary_large_image" />
     <%= csrf_meta_tag() %>
     <%= live_title_tag assigns[:page_title] || "Classic Clips" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&family=Teko:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <script defer src="https://kit.fontawesome.com/52e2b7ce67.js" crossorigin="anonymous"></script>
   </head>
