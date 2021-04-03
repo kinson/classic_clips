@@ -11,4 +11,12 @@ defmodule ClassicClipsWeb.GoogleAuthController do
     put_session(conn, :profile, profile)
     |> redirect(to: "/")
   end
+
+  def index(conn, _params) do
+    Sentry.Event.create_event(message: "Auth controller without code")
+    |> Sentry.send_event()
+
+    put_flash(conn, :error, "Failed to login with Google")
+    |> redirect(to: "/")
+  end
 end
