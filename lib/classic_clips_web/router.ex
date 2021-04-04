@@ -74,7 +74,7 @@ defmodule ClassicClipsWeb.Router do
 
     scope "/admin" do
       pipe_through [:browser, :dash]
-      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry
+      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
     end
   end
 end
