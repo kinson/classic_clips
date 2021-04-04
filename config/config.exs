@@ -34,6 +34,13 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :classic_clips,
+       :dash_pass,
+       System.get_env("DASH_PASS") ||
+         raise("""
+         Could not find DASH_PASS environment variable.
+         """)
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
