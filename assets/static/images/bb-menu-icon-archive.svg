@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="179px" viewBox="0 0 200 179" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Shape</title>
+    <g id="Big-Beef-Logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(0.000000, -11.000000)" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
+            <g id="archive-solid" transform="translate(0.000000, 13.000000)">
+                <path d="M12.5,162.5 C12.5,169.414062 18.0859375,175 25,175 L175,175 C181.914062,175 187.5,169.414062 187.5,162.5 L187.5,50 L12.5,50 L12.5,162.5 Z M75,79.6875 C75,77.109375 77.109375,75 79.6875,75 L120.3125,75 C122.890625,75 125,77.109375 125,79.6875 L125,82.8125 C125,85.390625 122.890625,87.5 120.3125,87.5 L79.6875,87.5 C77.109375,87.5 75,85.390625 75,82.8125 L75,79.6875 Z M187.5,0 L12.5,0 C5.5859375,0 0,5.5859375 0,12.5 L0,31.25 C0,34.6875 2.8125,37.5 6.25,37.5 L193.75,37.5 C197.1875,37.5 200,34.6875 200,31.25 L200,12.5 C200,5.5859375 194.414062,0 187.5,0 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>
