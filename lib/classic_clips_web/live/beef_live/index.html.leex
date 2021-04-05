@@ -1,20 +1,32 @@
-<div id="beef-container" class="saucy">
-  <div class="header-row">
-    <img src="<%= Routes.static_path(@socket, "/images/big-beef-logo-1.png") %>" alt="" />
+<div id="page-container">
+  <div id="beef-container" class="saucy">
+    <img src="<%= Routes.static_path(@socket, "/images/big-beef-logo-1.png") %>" id="beef-logo" alt="" />
     <h1>BIG BEEF TRACKER</h1>
-  </div>
-  <%# <p class="lead">Keep an eye on nightly big beef prospects across the league. Hover over (or tap) the beef to see more information. And, catch up on previous big beef in the <a href="/beef/archive">BIG BEEF archives</a>.</p> %>
-  <div class="beef-box">
     <div class="menu-floater">
       <div class="<%= is_active(@page_type, "live") %>" phx-click="select-live">
+        <svg viewBox="0 0 200 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Artboard" transform="translate(0.000000, -42.000000)" stroke="#D71921" stroke-width="3">
+            <path d="M5.10776435,90.1163868 C9.3885939,90.1163868 28.3941017,90.1163868 62.1242877,90.1163868 C62.495999,90.1164185 62.8370359,90.3226011 63.0097526,90.6517489 L78.5842568,120.332233 L78.5842568,120.332233 C97.3524998,83.146404 109.236064,60.1583598 114.23495,51.3681003 C121.733278,38.1827111 130.421228,45.578877 133.501235,51.3681003 C135.554574,55.2275825 142.067003,68.143678 153.038521,90.1163868 C171.753133,90.1163868 184.352667,90.1163868 190.837125,90.1163868 C200.563811,90.1163868 202.161998,111.655495 190.837125,111.655495 C183.287209,111.655495 166.114972,111.655495 139.320414,111.655495 L123.907015,81.3981765 C103.786719,122.271299 92.163113,145.430173 89.0361964,150.874797 C84.3458214,159.041734 72.7387367,159.041734 68.7604653,150.874797 C66.1082844,145.430173 59.8129792,132.357072 49.8745499,111.655495 C24.7982874,111.655495 9.87602557,111.655495 5.10776435,111.655495 C-2.04462748,111.655495 -1.35174268,90.1163868 5.10776435,90.1163868 Z" id="Path-11"></path>
+          </g>
+        </svg>
         <p>Real Time</p>
       </div>
       <div class="<%= is_active(@page_type, "archive") %>" phx-click="select-archive">
+        <svg viewBox="0 0 200 179" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Artboard" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
+            <path d="M12.5,162.5 C12.5,169.414062 18.0859375,175 25,175 L175,175 C181.914062,175 187.5,169.414062 187.5,162.5 L187.5,50 L12.5,50 L12.5,162.5 Z M75,79.6875 C75,77.109375 77.109375,75 79.6875,75 L120.3125,75 C122.890625,75 125,77.109375 125,79.6875 L125,82.8125 C125,85.390625 122.890625,87.5 120.3125,87.5 L79.6875,87.5 C77.109375,87.5 75,85.390625 75,82.8125 L75,79.6875 Z M187.5,0 L12.5,0 C5.5859375,0 0,5.5859375 0,12.5 L0,31.25 C0,34.6875 2.8125,37.5 6.25,37.5 L193.75,37.5 C197.1875,37.5 200,34.6875 200,31.25 L200,12.5 C200,5.5859375 194.414062,0 187.5,0 Z" id="Shape"></path>
+          </g>
+        </svg>
         <p>Archive</p>
       </div>
-      <%# <div>
+      <div class="<%= is_active(@page_type, "stats") %>" phx-click="select-stats">
+        <svg viewBox="0 0 200 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Artboard" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
+            <path d="M155,112.5 L163.75,112.5 C166.25,112.5 168.75,110 168.75,107.5 L168.75,17.5 C168.75,15 166.25,12.5 163.75,12.5 L155,12.5 C152.5,12.5 150,15 150,17.5 L150,107.5 C150,110 152.5,112.5 155,112.5 Z M80,112.5 L88.75,112.5 C91.25,112.5 93.75,110 93.75,107.5 L93.75,30 C93.75,27.5 91.25,25 88.75,25 L80,25 C77.5,25 75,27.5 75,30 L75,107.5 C75,110 77.5,112.5 80,112.5 L80,112.5 Z M117.5,112.5 L126.25,112.5 C128.75,112.5 131.25,110 131.25,107.5 L131.25,55 C131.25,52.5 128.75,50 126.25,50 L117.5,50 C115,50 112.5,52.5 112.5,55 L112.5,107.5 C112.5,110 115,112.5 117.5,112.5 L117.5,112.5 Z M193.75,131.25 L18.75,131.25 L18.75,6.25 C18.75,2.796875 15.953125,0 12.5,0 L6.25,0 C2.796875,0 0,2.796875 0,6.25 L0,137.5 C0,144.402344 5.59765625,150 12.5,150 L193.75,150 C197.203125,150 200,147.203125 200,143.75 L200,137.5 C200,134.046875 197.203125,131.25 193.75,131.25 Z M42.5,112.5 L51.25,112.5 C53.75,112.5 56.25,110 56.25,107.5 L56.25,80 C56.25,77.5 53.75,75 51.25,75 L42.5,75 C40,75 37.5,77.5 37.5,80 L37.5,107.5 C37.5,110 40,112.5 42.5,112.5 L42.5,112.5 Z" id="Shape"></path>
+          </g>
+        </svg>
         <p>Stats</p>
-      </div> %>
+      </div>
     </div>
     <div class="graph-floater <%= is_active(@page_type, "live") %>">
       <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
@@ -95,12 +107,56 @@
             </div>
           </div>
         </div>
+        <div class="stats-beef saucy <%= is_active(@page_type, "stats") %>">
+          <div class="latest">
+            <p class="card-title">LATEST BIG BEEF</p>
+            <div class="card">
+              <img id="player-pic" src="https://cdn.nba.com/headshots/nba/latest/260x190/203516.png">
+              <p class="date">4-21-2021</p>
+              <p class="name">Moses Brown</p>
+              <a href="#">Box Score</a>
+              <a href="#">Highlights</a>
+
+              <p class="total">28 🥩</p>
+            </div>
+          </div>
+          <div class="all-time">
+            <p class="card-title">ALL TIME LEADERS</p>
+            <div class="card">
+              <div class="stat-row">
+                <p class="name">1. Enes Kanter</p>
+                <p class="number">2</p>
+              </div>
+              <div class="stat-row">
+                <p class="name">1. Enes Kanter</p>
+                <p class="number">2</p>
+              </div>
+              <div class="stat-row">
+                <p class="name">1. Enes Kanter</p>
+                <p class="number">2</p>
+              </div>
+              <div class="stat-row">
+                <p class="name">1. Enes Kanter</p>
+                <p class="number">2</p>
+              </div>
+            </div>
+          </div>
+          <div class="single-game">
+            <p class="card-title">SINGLE-GAME LEADERS</p>
+            <div class="card">
+              <div class="stat-row">
+                <p>1. Enes Kanter</p>
+                <p>2</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="beef-footer">
+          <a href="/beef/archive">Big Beef Archive</a>
+          <a href="https://twitter.com/BigBeefTracker">Twitter</a>
+          <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
+            Big Beef Highlights
+          </a>
+        </footer>
       </div>
-      <footer class="beef-footer">
-        <a href="/beef/archive">Big Beef Archive</a>
-        <a href="https://twitter.com/BigBeefTracker">Twitter</a>
-        <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
-          Big Beef Highlights
-        </a>
-      </footer>
     </div>

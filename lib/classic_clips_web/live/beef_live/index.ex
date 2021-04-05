@@ -18,7 +18,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       |> assign(:last_updated, current_datetime())
       |> assign(:active_game_count, active_game_count)
       |> assign(:big_beefs, big_beefs)
-      |> assign(:page_type, "live")
+      |> assign(:page_type, "stats")
 
     {:ok, modified_socket}
   end
@@ -71,6 +71,10 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   def handle_event("select-live", _, socket) do
     {:noreply, assign(socket, :page_type, "live")}
+  end
+
+  def handle_event("select-stats", _, socket) do
+    {:noreply, assign(socket, :page_type, "stats")}
   end
 
   defp list_beefs do
