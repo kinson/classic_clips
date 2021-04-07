@@ -111,11 +111,17 @@ $saucy-bg-gray: rgb(247, 246, 243);
 
 div.empty-clips {
   margin: 4rem auto;
+  grid-row: 1 / 2;
+  grid-column: 1 / 4;
 
   & p {
     font-size: 1.03em;
     color: #777;
     text-align: center;
+  }
+
+  @media (max-width: 40rem) {
+    grid-column: 1 / 2;
   }
 }
 

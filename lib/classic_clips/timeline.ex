@@ -99,7 +99,7 @@ defmodule ClassicClips.Timeline do
         where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
-        order_by: [desc: c.vote_count, desc: c.id]
+        order_by: [desc: c.vote_count, desc: c.inserted_at]
       )
 
     clips_query =
