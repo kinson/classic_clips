@@ -111,43 +111,35 @@
           <div class="latest">
             <p class="card-title">LATEST BIG BEEF</p>
             <div class="card">
-              <img id="player-pic" src="https://cdn.nba.com/headshots/nba/latest/260x190/203516.png">
-              <p class="date">4-21-2021</p>
-              <p class="name">Moses Brown</p>
-              <a href="#">Box Score</a>
-              <a href="#">Highlights</a>
+              <img id="player-pic" src="<%= player_headshot_link(@latest.beef.player) %>">
+              <p class="date"><%= format_time(@latest.beef.date_time) %></p>
+              <p class="name"><%= name(@latest.beef.player) %></p>
+              <a href="<%= bs_link(@latest) %>" target="_blank">Box Score</a>
+              <a href="<%= yt_link(@latest) %>" target="_blank">Highlights</a>
 
-              <p class="total">28 🥩</p>
+              <p class="total"><%= @latest.beef.beef_count %> 🥩</p>
             </div>
           </div>
           <div class="all-time">
             <p class="card-title">ALL TIME LEADERS</p>
             <div class="card">
+              <%= for {rank, first_name, last_name, beef_count} <- with_rank("total", @total_leaders) do %>
               <div class="stat-row">
-                <p class="name">1. Enes Kanter</p>
-                <p class="number">2</p>
+                <p class="name"><%= "#{rank}. #{first_name} #{last_name}" %></p>
+                <p class="number"><%= beef_count %></p>
               </div>
-              <div class="stat-row">
-                <p class="name">1. Enes Kanter</p>
-                <p class="number">2</p>
-              </div>
-              <div class="stat-row">
-                <p class="name">1. Enes Kanter</p>
-                <p class="number">2</p>
-              </div>
-              <div class="stat-row">
-                <p class="name">1. Enes Kanter</p>
-                <p class="number">2</p>
-              </div>
+              <% end %>
             </div>
           </div>
           <div class="single-game">
             <p class="card-title">SINGLE-GAME LEADERS</p>
             <div class="card">
+            <%= for {rank, first_name, last_name, beef_count} <- with_rank("single", @single_game_leaders) do %>
               <div class="stat-row">
-                <p>1. Enes Kanter</p>
-                <p>2</p>
+                <p class="name"><%= "#{rank}. #{first_name} #{last_name}" %></p>
+                <p class="number"><%= beef_count %></p>
               </div>
+              <% end %>
             </div>
           </div>
         </div>

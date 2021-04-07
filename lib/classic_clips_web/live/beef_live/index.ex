@@ -11,6 +11,9 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
     active_game_count = get_active_game_count()
     big_beefs = ClassicClips.BigBeef.list_big_beef_events()
+    latest = ClassicClips.BigBeef.get_latest_big_beef()
+    single_game_leaders = ClassicClips.BigBeef.get_single_game_leaders()
+    total_big_beef_leaders = ClassicClips.BigBeef.get_big_beef_count_leaders()
 
     modified_socket =
       socket
@@ -19,6 +22,9 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       |> assign(:active_game_count, active_game_count)
       |> assign(:big_beefs, big_beefs)
       |> assign(:page_type, "stats")
+      |> assign(:latest, latest)
+      |> assign(:total_leaders, total_big_beef_leaders)
+      |> assign(:single_game_leaders, single_game_leaders)
 
     {:ok, modified_socket}
   end
@@ -99,7 +105,11 @@ defmodule ClassicClipsWeb.BeefLive.Index do
   end
 
   def name(%Player{first_name: first_name, last_name: last_name}) do
-    "#{last_name}, #{first_name}"
+    "#{first_name} #{last_name}"
+  end
+
+  def player_headshot_link(%Player{ext_person_id: ext_person_id}) do
+    "https://cdn.nba.com/headshots/nba/latest/260x190/#{ext_person_id}.png"
   end
 
   def count(%Beef{beef_count: count}), do: count
@@ -137,5 +147,43 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       true -> "show"
       false -> ""
     end
+  end
+
+  def with_rank("total", leaders) do
+    {leaders, _} =
+      Enum.map_reduce(leaders, {0, 0}, fn {_, first_name, last_name, beef_count},
+                                          {rank, current} ->
+        new_rank =
+          case beef_count == current do
+            true -> rank
+            false -> rank + 1
+          end
+
+        {{new_rank, first_name, last_name, beef_count}, {new_rank, beef_count}}
+      end)
+
+    leaders
+  end
+
+  def with_rank("single", leaders) do
+    {leaders, _} =
+      Enum.map_reduce(leaders, {0, 0}, fn %Beef{
+                                            player: %Player{
+                                              first_name: first_name,
+                                              last_name: last_name
+                                            },
+                                            beef_count: beef_count
+                                          },
+                                          {rank, current} ->
+        new_rank =
+          case beef_count == current do
+            true -> rank
+            false -> rank + 1
+          end
+
+        {{new_rank, first_name, last_name, beef_count}, {new_rank, beef_count}}
+      end)
+
+    leaders
   end
 end
