@@ -9,7 +9,10 @@ defmodule ClassicClips.ClassicsServer do
 
   @impl true
   def init(state) do
-    :timer.send_interval(1000_000, :work)
+    if Mix.env() == :prod do
+      IO.puts "STARTING CLASSIC YT POLLING INTERVAL"
+      :timer.send_interval(1200_000, :work)
+    end
     {:ok, state}
   end
 
