@@ -22,6 +22,34 @@ defmodule ClassicClips.BigBeef do
     Repo.all(Beef)
   end
 
+  def get_latest_big_beef() do
+    from(b in ClassicClips.BigBeef.BigBeefEvent,
+      select: b,
+      order_by: [desc: b.inserted_at],
+      limit: 1
+    )
+    |> Repo.one()
+    |> Repo.preload(beef: [:player])
+  end
+
+  def get_single_game_leaders() do
+    from(b in ClassicClips.BigBeef.Beef, select: b, order_by: [desc: b.beef_count], limit: 5)
+    |> Repo.all()
+    |> Repo.preload(:player)
+  end
+
+  def get_big_beef_count_leaders() do
+    from(bb in ClassicClips.BigBeef.BigBeefEvent,
+      join: b in assoc(bb, :beef),
+      join: p in assoc(b, :player),
+      select: {b.player_id, p.first_name, p.last_name, count(b.id)},
+      group_by: [b.player_id, p.first_name, p.last_name],
+      order_by: [desc: count(b.id)],
+      limit: 5
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single beef.
 

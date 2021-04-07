@@ -512,10 +512,14 @@ div.previous-beef.saucy {
 }
 
 div.stats-beef.saucy {
-  display: grid;
+  display: none;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 12rem 1fr;
   grid-gap: 3rem;
+
+  &.show {
+    display: grid;
+  }
 
   & div {
     & p.card-title {
