@@ -21,7 +21,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
       |> assign(:last_updated, current_datetime())
       |> assign(:active_game_count, active_game_count)
       |> assign(:big_beefs, big_beefs)
-      |> assign(:page_type, "stats")
+      |> assign(:page_type, "live")
       |> assign(:latest, latest)
       |> assign(:total_leaders, total_big_beef_leaders)
       |> assign(:single_game_leaders, single_game_leaders)
