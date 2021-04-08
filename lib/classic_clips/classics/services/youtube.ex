@@ -59,12 +59,12 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
     published_after_date =
       DateTime.utc_now()
-      |> DateTime.add(-1 * one_day * 30, :second)
+      |> DateTime.add(-1 * one_day * 202, :second)
       |> DateTime.to_iso8601()
 
     published_before_date =
       DateTime.utc_now()
-      |> DateTime.add(-1 * one_day * 20, :second)
+      |> DateTime.add(-1 * one_day * 195, :second)
       |> DateTime.to_iso8601()
 
     published_after =
