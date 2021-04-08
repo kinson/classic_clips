@@ -1,5 +1,6 @@
 defmodule ClassicClipsWeb.Router do
   use ClassicClipsWeb, :router
+  import Plug.BasicAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,6 +18,12 @@ defmodule ClassicClipsWeb.Router do
   pipeline :beef_web do
     plug :put_root_layout, {ClassicClipsWeb.LayoutView, :beef_root}
     plug :put_layout, {ClassicClipsWeb.LayoutView, :beef_app}
+  end
+
+  pipeline :dash do
+    plug :basic_auth,
+      username: "sam",
+      password: Application.fetch_env!(:classic_clips, :dash_pass)
   end
 
   scope "/", ClassicClipsWeb do
@@ -62,12 +69,12 @@ defmodule ClassicClipsWeb.Router do
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).
-  if Mix.env() in [:dev, :test] do
+  if Mix.env() in [:dev, :test, :prod] do
     import Phoenix.LiveDashboard.Router
 
-    scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry
+    scope "/admin" do
+      pipe_through [:browser, :dash]
+      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
     end
   end
 end

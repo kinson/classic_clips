@@ -99,7 +99,7 @@ defmodule ClassicClips.Timeline do
         where: c.deleted == false,
         limit: ^limit,
         offset: ^offset,
-        order_by: [desc: c.vote_count, desc: c.id]
+        order_by: [desc: c.vote_count, desc: c.inserted_at]
       )
 
     clips_query =
@@ -369,8 +369,11 @@ defmodule ClassicClips.Timeline do
       from(c in Clip, where: c.id == ^clip_id, select: c)
       |> Repo.update_all(inc: [vote_count: 1])
       |> case do
-        {1, [clip]} -> {:ok, Repo.preload(clip, :user)}
-        error -> error
+        {1, [clip]} ->
+          {:ok, Repo.preload(clip, :user) |> Repo.preload(:tags) |> Repo.preload(:video)}
+
+        error ->
+          error
       end
 
     {:ok, vote} =

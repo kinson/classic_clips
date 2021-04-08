@@ -93,7 +93,20 @@ defmodule ClassicClips.Classics.Services.Youtube do
   end
 
   def get_video_id(url) do
-      String.replace(url, "https://youtu.be/", "")
-      |> String.replace(~r/\?t=.*/, "")
+    case String.contains?(url, "https://youtu.be/") do
+      true -> short_url_id(url)
+      false -> standard_url_id(url)
+    end
+  end
+
+  def short_url_id(url) do
+    String.replace(url, "https://youtu.be/", "") |> String.replace(~r/\?t=.*/, "")
+  end
+
+  def standard_url_id(url) do
+    case Regex.run(~r/v=.*?&/, url) do
+      nil -> ""
+      [match] -> String.trim_leading(match, "v=") |> String.trim_trailing("&")
+    end
   end
 end

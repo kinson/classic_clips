@@ -111,11 +111,17 @@ $saucy-bg-gray: rgb(247, 246, 243);
 
 div.empty-clips {
   margin: 4rem auto;
+  grid-row: 1 / 2;
+  grid-column: 1 / 4;
 
   & p {
     font-size: 1.03em;
     color: #777;
     text-align: center;
+  }
+
+  @media (max-width: 40rem) {
+    grid-column: 1 / 2;
   }
 }
 
@@ -266,7 +272,7 @@ div.clip-edit-button {
   color: #fff;
   opacity: 0.75;
   font-weight: 500;
-  font-size: 1em;
+  font-size: 0.9em;
   margin: 0;
   z-index: 3;
   position: absolute;
@@ -544,8 +550,9 @@ header {
       }
 
       & p.username {
-        font-weight: 300;
         & a {
+          font-weight: 400;
+          font-family: "Open Sans", sans-serif;
           text-decoration: underline;
           color: #fff;
           font-size: 0.98em;
@@ -554,6 +561,7 @@ header {
 
       & p.votes {
         color: #fff;
+        font-family: "Open Sans", sans-serif;
         font-weight: 300;
         font-size: 0.78em;
         opacity: 0.75;
