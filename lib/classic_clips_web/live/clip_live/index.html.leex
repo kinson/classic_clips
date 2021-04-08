@@ -23,7 +23,7 @@
         <%= link "All Clips", to: Routes.clip_index_path(@socket, :index) %>
       </div>
       <div class="clip-area">
-        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: "show-" <> @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
+        <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
       </div>
     </div>
   </div>
