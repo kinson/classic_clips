@@ -112,10 +112,14 @@
             <p class="card-title">LATEST BIG BEEF</p>
             <div class="card">
               <img id="player-pic" src="<%= player_headshot_link(@latest.beef.player) %>">
-              <p class="date"><%= format_time(@latest.beef.date_time) %></p>
-              <p class="name"><%= name(@latest.beef.player) %></p>
-              <a href="<%= bs_link(@latest) %>" target="_blank">Box Score</a>
-              <a href="<%= yt_link(@latest) %>" target="_blank">Highlights</a>
+              <div class="group">
+                <p class="date"><%= format_time(@latest.beef.date_time) %></p>
+                <p class="name"><%= name(@latest.beef.player) %></p>
+              </div>
+              <div class="group">
+                <a href="<%= bs_link(@latest) %>" target="_blank">Box Score</a>
+                <a href="<%= yt_link(@latest) %>" target="_blank">Highlights</a>
+              </div>
               <p class="total"><%= @latest.beef.beef_count %> 🥩</p>
             </div>
           </div>
