@@ -83,6 +83,10 @@ defmodule ClassicClipsWeb.BeefLive.Index do
     {:noreply, assign(socket, :page_type, "stats")}
   end
 
+  def handle_event("select-pledge", _, socket) do
+    {:noreply, assign(socket, :page_type, "pledge")}
+  end
+
   defp list_beefs do
     BigBeef.list_beefs()
   end
