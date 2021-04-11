@@ -136,8 +136,8 @@
                 <p class="name"><%= name(@latest.beef.player) %></p>
               </div>
               <div class="group">
-                <a href="<%= bs_link(@latest) %>" target="_blank">Box Score</a>
-                <a href="<%= yt_link(@latest) %>" target="_blank">Highlights</a>
+                <a href="<%= bs_link(@latest) %>" target="_blank"><%= bs_text(@latest) %></a>
+                <a href="<%= yt_link(@latest) %>" target="_blank"><%= yt_text(@latest) %></a>
               </div>
               <div class="total-container">
                 <p><%= @latest.beef.beef_count %> <span>🥩</span></p>
