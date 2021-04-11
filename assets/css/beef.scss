@@ -672,6 +672,15 @@ div.stats-beef.saucy {
   }
 }
 
+div.pledge-beef.saucy {
+  & p {
+    font-family: "Open Sans", sans-serif;
+    width: 80%;
+    max-width: 60rem;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
 div#page-container {
   background-color: #f6f8fa;
 
@@ -794,14 +803,14 @@ div#page-container {
 
           & > svg path {
             fill: $saucy-red;
-            transition: all 0.25s ease-in;
+            transition: all 0.4s ease-in-out;
           }
         }
 
         & > svg {
           margin-left: 1rem;
-          max-height: 1.75rem;
-          max-width: 2.5rem;
+          max-height: 2.25rem;
+          max-width: 3rem;
           fill: #fff;
           opacity: 0.65;
           width: 2.5rem;
@@ -811,7 +820,8 @@ div#page-container {
           font-family: "Rokkitt", serif;
           font-size: 1.04em;
           margin: 0.5rem 1rem;
-          color: #222;
+          color: #444;
+          letter-spacing: 1px;
         }
       }
     }
