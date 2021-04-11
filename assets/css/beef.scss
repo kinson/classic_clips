@@ -928,7 +928,7 @@ div#page-container {
       max-width: 100rem;
       box-shadow: $box-shadow;
       border-radius: $border-radius;
-      overflow: auto;
+      display: grid;
 
       @media (max-width: 40rem) {
         box-shadow: none;
