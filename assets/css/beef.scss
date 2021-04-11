@@ -1,9 +1,23 @@
 $saucy-black: rgb(35, 31, 32);
 $saucy-red: rgb(215, 25, 33);
 $saucy-bg-gray: rgb(247, 246, 243);
+$saucy-red-8: rgba(215, 25, 33, 0.8);
 
 $saucy-red-a: rgba(215, 25, 33, 0.4);
 $saucy-red-b: rgba(215, 25, 33, 0.05);
+
+$border-radius: 2px;
+$box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+
+p.beef-card-label {
+  font-family: "Rokkitt", serif;
+  font-weight: 500;
+  font-size: 0.97em;
+  margin-bottom: 0.25rem;
+  letter-spacing: 1px;
+  color: #444;
+  text-transform: uppercase;
+}
 
 div#page-container {
   background-color: #111;
@@ -91,7 +105,7 @@ div#page-container {
 
     & div#beef-graph {
       position: relative;
-      margin: 1rem auto;
+      margin: 1rem 6rem 1rem auto;
       width: 80%;
       max-width: 100rem;
       height: 50rem;
@@ -242,7 +256,7 @@ div#page-container {
         opacity: 0.75;
         font-size: 1.5em;
         transform: rotate(-90deg);
-        left: -14.5rem;
+        left: -16rem;
         bottom: 42%;
         font-family: "Cutive Mono", monospace;
 
@@ -369,6 +383,8 @@ div.previous-beef {
   @media (max-width: 40rem) {
     grid-row: 3 / 4;
     grid-column: 1 / 3;
+    width: 85%;
+    margin: 0 auto;
   }
 
   &.show {
@@ -376,21 +392,6 @@ div.previous-beef {
   }
 
   & div.results {
-    & h1 {
-      color: #fff;
-      font-family: "Cutive Mono", monospace;
-      font-size: 2.5em;
-      opacity: 0.9;
-      text-decoration: underline;
-      text-decoration-color: green;
-
-      @media (max-width: 40rem) {
-        font-size: 2em;
-        text-align: center;
-        margin-bottom: 1rem;
-      }
-    }
-
     & div.big-beef-list {
       display: flex;
       flex-direction: column;
@@ -398,16 +399,23 @@ div.previous-beef {
       & div.big-beef {
         display: flex;
         flex-direction: row;
-        border-radius: 3px;
+        align-items: center;
+        border-radius: $border-radius;
         margin: 1rem 0;
-        box-shadow: 2px 2px 4px #777;
+        box-shadow: $box-shadow;
         padding: 0.75rem 2rem;
+        background-color: #fff;
+
+        &:first-child {
+          margin-top: 0;
+        }
 
         @media (max-width: 40rem) {
           flex-direction: column;
+          align-items: center;
           padding: 0.75rem 0;
           margin: 1.5rem auto;
-          width: 80%;
+          width: 100%;
         }
 
         & p,
@@ -420,8 +428,7 @@ div.previous-beef {
 
           @media (max-width: 40rem) {
             font-size: 1.08em;
-            margin-top: 0.25rem;
-            margin-bottom: 0.25rem;
+            margin: 0.25rem 0 !important;
           }
         }
 
@@ -436,43 +443,25 @@ div.previous-beef {
 
           @media (max-width: 40rem) {
             opacity: 0.9;
-            margin-left: 1.5rem;
           }
         }
 
         & p.name {
           margin-left: 1rem;
           margin-right: 2rem;
-          width: 31rem;
-
-          @media (max-width: 40rem) {
-            margin-left: 5rem;
-          }
         }
 
         & p.count {
           margin-left: auto;
           margin-right: 1.5rem;
-
-          @media (max-width: 40rem) {
-            margin-left: 5rem;
-          }
         }
 
         & a.highlights {
           margin-right: 1rem;
-
-          @media (max-width: 40rem) {
-            margin-left: 5rem;
-          }
         }
 
         & a.box-score {
           margin-right: 0;
-
-          @media (max-width: 40rem) {
-            margin-left: 5rem;
-          }
         }
       }
     }
@@ -482,27 +471,27 @@ div.previous-beef {
 div.previous-beef.saucy {
   background-color: #f6f8fa;
 
-  & div h1 {
-    font-family: "Rokkitt", serif;
-    font-weight: 700;
-    font-size: 2.75em;
-    color: $saucy-red;
-    text-decoration: none;
-
-    @media (max-width: 40rem) {
-      font-size: 2.2em;
-    }
-  }
-
   & div div.big-beef-list {
     & div.big-beef {
+      padding: 1rem 2rem;
+
       p,
       a {
+        font-family: "Open Sans", sans-serif;
         color: $saucy-black;
+        font-size: 0.9em;
       }
 
       p.name {
-        font-weight: 600;
+        font-weight: 500;
+      }
+
+      p.date {
+        font-size: 0.85em;
+      }
+
+      p.count {
+        font-size: 1.1em;
       }
     }
   }
@@ -511,7 +500,7 @@ div.previous-beef.saucy {
     border-top: 1px solid rgba(15, 15, 15, 0.35);
 
     & a {
-      font-family: "Cutive Mono", monospace;
+      font-family: "Open Sans", sans-serif;
       color: $saucy-black;
       opacity: 0.9;
     }
@@ -522,7 +511,7 @@ div.stats-beef.saucy {
   display: none;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 12rem 1fr;
-  grid-gap: 3rem;
+  grid-gap: 0rem;
 
   @media (max-width: 40rem) {
     width: 85%;
@@ -536,17 +525,11 @@ div.stats-beef.saucy {
   }
 
   & div {
-    & p.card-title {
-      font-family: "Rokkitt", serif;
-      font-weight: 500;
-      font-size: 1.2em;
-      margin: 0.25rem 0;
-    }
-
     & div.card {
       background-color: #fff;
-      box-shadow: 2px 2px 4px #777;
+      box-shadow: $box-shadow;
       padding: 0.5rem;
+      border-radius: $border-radius;
     }
 
     & div.stat-row {
@@ -571,7 +554,8 @@ div.stats-beef.saucy {
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: 1rem 0;
+      padding: 0;
+      overflow: hidden;
 
       & p {
         font-family: "Open Sans", sans-serif;
@@ -600,7 +584,7 @@ div.stats-beef.saucy {
         border-radius: 50%;
         background-color: rgba(231, 231, 231, 0.8);
         padding: 0.15rem;
-        margin: 0.5rem 2rem;
+        margin: 1.25rem 2rem;
         height: 4rem;
         width: 4rem;
         object-fit: contain;
@@ -639,7 +623,7 @@ div.stats-beef.saucy {
       }
 
       & p.name {
-        font-weight: 600;
+        font-weight: 500;
         color: #222;
         margin: 0 3rem;
 
@@ -648,14 +632,28 @@ div.stats-beef.saucy {
         }
       }
 
-      & p.total {
-        font-size: 1.55em;
-        margin-left: auto;
-        margin: 0 2rem 0 auto;
-        font-weight: 500;
+      & div.total-container {
+        height: 100%;
+        margin: 0 -2rem 0 auto;
+        background-color: $saucy-red;
+        width: 14rem;
+        transform: skew(-22deg);
 
-        @media (max-width: 40rem) {
-          font-size: 1.3em;
+        & > p {
+          transform: skew(22deg);
+          font-size: 1.55em;
+          font-weight: 500;
+          color: #fff;
+          margin: 1.5rem auto;
+          text-align: center;
+
+          & > span {
+            text-shadow: 0 0 2px #fff;
+          }
+
+          @media (max-width: 40rem) {
+            font-size: 1.3em;
+          }
         }
       }
     }
@@ -664,20 +662,89 @@ div.stats-beef.saucy {
   & div.all-time {
     grid-row: 2 / 3;
     grid-column: 1 / 2;
+
+    & > div.card,
+    p {
+      margin-right: 1.5rem;
+    }
   }
 
   & div.single-game {
     grid-row: 2 / 3;
     grid-column: 2 / 3;
+
+    & > div.card,
+    p {
+      margin-left: 1.5rem;
+    }
   }
 }
 
 div.pledge-beef.saucy {
-  & p {
-    font-family: "Open Sans", sans-serif;
-    width: 80%;
-    max-width: 60rem;
-    margin: 0 0 1.5rem 0;
+  display: none;
+
+  @media (max-width: 40rem) {
+    width: 85%;
+    margin: 0 auto;
+    grid-column: 1 / 3;
+    grid-gap: 1.5rem;
+  }
+
+  &.show {
+    display: block;
+  }
+
+  & div.pledge-card {
+    background-color: #fff;
+    box-shadow: $box-shadow;
+    padding: 0.5rem;
+    border-radius: $border-radius;
+
+    & p {
+      font-family: "Open Sans", sans-serif;
+      width: 80%;
+      max-width: 60rem;
+      margin: 2rem auto;
+    }
+
+    & > p.cta {
+      font-size: 0.82em;
+      opacity: 0.6;
+    }
+
+    & > div.raised {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      width: 80%;
+      max-width: 60rem;
+      margin: 4rem auto;
+
+      & > p {
+        line-height: 1;
+      }
+
+      & > p.amount {
+        font-family: "Rokkitt", serif;
+        font-weight: 600;
+        font-size: 2.75em;
+        width: unset;
+        margin: 0 0.5rem 0 auto;
+        letter-spacing: 1px;
+        background-color: $saucy-red;
+        color: #fff;
+        padding: 1rem;
+        transform: skew(-10deg);
+      }
+
+      & > p.description {
+        font-family: "Open Sans", sans-serif;
+        font-size: 0.85em;
+        width: unset;
+        opacity: 0.6;
+        margin: 0 auto 0 0.5rem;
+      }
+    }
   }
 }
 
@@ -693,7 +760,7 @@ div#page-container {
 
     @media (max-width: 40rem) {
       grid-template-columns: 5rem 1fr;
-      grid-template-rows: 3rem 13rem 1fr;
+      grid-template-rows: 3rem 16rem 1fr;
       gird-gap: 2rem;
     }
 
@@ -703,6 +770,7 @@ div#page-container {
       font-size: 2.75em;
       color: $saucy-red;
       grid-column: 2 / 3;
+      line-height: 1;
 
       @media (max-width: 40rem) {
         font-size: 1.75em;
@@ -743,8 +811,10 @@ div#page-container {
 
     & p.active-count {
       color: #555;
-      font-family: "Lato", sans-serif;
+      font-family: "Open Sans", sans-serif;
       text-transform: uppercase;
+      font-size: 0.8em;
+      font-weight: 500;
 
       &.active {
         background-color: $saucy-red;
@@ -756,8 +826,8 @@ div#page-container {
       flex-direction: column;
       border: 2px solid $saucy-red;
       height: max-content;
-      border-radius: 3px;
-      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
       grid-row: 2 / 3;
       grid-column: 1 / 2;
 
@@ -826,10 +896,7 @@ div#page-container {
       }
     }
 
-    & div.graph-floater {
-      max-width: 100rem;
-      box-shadow: 2px 2px 4px #777;
-      border-radius: 3px;
+    & div#graph {
       display: none;
       grid-row: 2 / 3;
       grid-column: 2 / 3;
@@ -837,11 +904,21 @@ div#page-container {
       @media (max-width: 40rem) {
         grid-row: 3 / 4;
         grid-column: 1 / 3;
-        box-shadow: none;
       }
 
       &.show {
         display: block;
+      }
+    }
+
+    & div.graph-floater {
+      max-width: 100rem;
+      box-shadow: $box-shadow;
+      border-radius: $border-radius;
+      overflow: auto;
+
+      @media (max-width: 40rem) {
+        box-shadow: none;
       }
     }
 
@@ -897,8 +974,10 @@ div#page-container {
 
       p.last-updated-time {
         color: #444;
-        font-family: "Lato", sans-serif;
+        font-family: "Open Sans", sans-serif;
         text-transform: uppercase;
+        font-size: 0.8em;
+        opacity: 0.8;
       }
 
       div.beef-point {

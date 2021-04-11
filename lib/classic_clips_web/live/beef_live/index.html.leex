@@ -11,14 +11,6 @@
         </svg>
         <p>Real Time</p>
       </div>
-      <div class="<%= is_active(@page_type, "archive") %>" phx-click="select-archive">
-        <svg width="174px" height="161px" viewBox="0 0 174 161" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <g id="Artboard-Copy-4" transform="translate(0.000000, -26.000000)" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
-            <path d="M163.45,166 C167.725,166 172,168.533333 172,171.066667 L172,171.066667 L172,179.933333 C172,182.466667 167.725,185 163.45,185 L163.45,185 L9.55,185 C5.275,185 1,182.466667 1,179.933333 L1,179.933333 L1,171.066667 C1,168.533333 5.275,166 9.55,166 L9.55,166 Z M9.55,120 L163.45,120 C167.725,120 172,122.533333 172,125.066667 L172,125.066667 L172,133.933333 C172,136.466667 167.725,139 163.45,139 L163.45,139 L9.55,139 C5.275,139 1,136.466667 1,133.933333 L1,133.933333 L1,125.066667 C1,122.533333 5.275,120 9.55,120 L9.55,120 Z M9.55,74 L163.45,74 C167.725,74 172,76.5333333 172,79.0666667 L172,79.0666667 L172,87.9333333 C172,90.4666667 167.725,93 163.45,93 L163.45,93 L9.55,93 C5.275,93 1,90.4666667 1,87.9333333 L1,87.9333333 L1,79.0666667 C1,76.5333333 5.275,74 9.55,74 L9.55,74 Z M163.45,28 C167.725,28 172,30.5333333 172,33.0666667 L172,33.0666667 L172,41.9333333 C172,44.4666667 167.725,47 163.45,47 L163.45,47 L9.55,47 C5.275,47 1,44.4666667 1,41.9333333 L1,41.9333333 L1,33.0666667 C1,30.5333333 5.275,28 9.55,28 L9.55,28 Z" id="Combined-Shape"></path>
-          </g>
-        </svg>
-        <p>Archive</p>
-      </div>
       <div class="<%= is_active(@page_type, "stats") %>" phx-click="select-stats">
         <svg viewBox="0 0 200 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="Artboard" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
@@ -26,6 +18,14 @@
           </g>
         </svg>
         <p>Stats</p>
+      </div>
+      <div class="<%= is_active(@page_type, "archive") %>" phx-click="select-archive">
+        <svg width="174px" height="161px" viewBox="0 0 174 161" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g id="Artboard-Copy-4" transform="translate(0.000000, -26.000000)" fill-rule="nonzero" stroke="#D71921" stroke-width="3">
+            <path d="M163.45,166 C167.725,166 172,168.533333 172,171.066667 L172,171.066667 L172,179.933333 C172,182.466667 167.725,185 163.45,185 L163.45,185 L9.55,185 C5.275,185 1,182.466667 1,179.933333 L1,179.933333 L1,171.066667 C1,168.533333 5.275,166 9.55,166 L9.55,166 Z M9.55,120 L163.45,120 C167.725,120 172,122.533333 172,125.066667 L172,125.066667 L172,133.933333 C172,136.466667 167.725,139 163.45,139 L163.45,139 L9.55,139 C5.275,139 1,136.466667 1,133.933333 L1,133.933333 L1,125.066667 C1,122.533333 5.275,120 9.55,120 L9.55,120 Z M9.55,74 L163.45,74 C167.725,74 172,76.5333333 172,79.0666667 L172,79.0666667 L172,87.9333333 C172,90.4666667 167.725,93 163.45,93 L163.45,93 L9.55,93 C5.275,93 1,90.4666667 1,87.9333333 L1,87.9333333 L1,79.0666667 C1,76.5333333 5.275,74 9.55,74 L9.55,74 Z M163.45,28 C167.725,28 172,30.5333333 172,33.0666667 L172,33.0666667 L172,41.9333333 C172,44.4666667 167.725,47 163.45,47 L163.45,47 L9.55,47 C5.275,47 1,44.4666667 1,41.9333333 L1,41.9333333 L1,33.0666667 C1,30.5333333 5.275,28 9.55,28 L9.55,28 Z" id="Combined-Shape"></path>
+          </g>
+        </svg>
+        <p>Archive</p>
       </div>
       <div class="<%= is_active(@page_type, "pledge") %>" phx-click="select-pledge">
         <svg width="154px" height="136px" viewBox="0 0 154 136" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -43,71 +43,75 @@
         <p>Pledge</p>
       </div>
     </div>
-    <div class="graph-floater <%= is_active(@page_type, "live") %>">
-      <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
-          <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
-        </p>
-        <div class="graph-container">
-          <div id="beef-graph">
-            <div class="graph-lines">
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-              <div class="beef-graph-line"></div>
-            </div>
-            <div id="beef-line">
-              <p>BIG BEEF LINE</p>
-            </div>
-            <div id="regulation-end-line"></div>
-            <%= for beef <- @beefs do %>
-              <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
-            <% end %>
-            <div class="x-axis-label oneq">
-              <p>1Q</p>
-            </div>
-            <div class="x-axis-label twoq">
-              <p>2Q</p>
-            </div>
-            <div class="x-axis-label threeq">
-              <p>3Q</p>
-            </div>
-            <div class="x-axis-label fourq">
-              <p>4Q</p>
-            </div>
-            <div class="x-axis-label endreg">
-              <p>Buzzer</p>
-            </div>
-            <div class="x-axis-label twoot">
-              <p>2OT</p>
-            </div>
-            <div class="y-axis-label">
-              <p>5</p>
-            </div>
-            <div class="y-axis-label ten-off">
-              <p>10</p>
-            </div>
-            <div class="y-axis-label fift-off">
-              <p>15</p>
-            </div>
-            <div class="y-axis-label twen-off">
-              <p>20</p>
-            </div>
-            <div class="y-axis-label twefiv-off">
-              <p>25</p>
-            </div>
-            <p class="y-axis-title">BEEF COUNT</p>
-            <p class="x-axis-title">GAME TIME</p>
-            <p class="last-updated-time">last updated: <%= @last_updated %>
+    <div id="graph" class="<%= is_active(@page_type, "live") %>">
+      <p class="beef-card-label">Keep Up With Beefs As They Happen</p>
+      <div class="graph-floater">
+        <p class="active-count"><%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games"%>
+            <span class="<%= if @active_game_count > 0, do: "active"%>"></span>
+          </p>
+          <div class="graph-container">
+            <div id="beef-graph">
+              <div class="graph-lines">
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+                <div class="beef-graph-line"></div>
+              </div>
+              <div id="beef-line">
+                <p>BIG BEEF LINE</p>
+              </div>
+              <div id="regulation-end-line"></div>
+              <%= for beef <- @beefs do %>
+                <%= live_component @socket, ClassicClipsWeb.BeefLive.BeefComponent, beef: beef%>
+              <% end %>
+              <div class="x-axis-label oneq">
+                <p>1Q</p>
+              </div>
+              <div class="x-axis-label twoq">
+                <p>2Q</p>
+              </div>
+              <div class="x-axis-label threeq">
+                <p>3Q</p>
+              </div>
+              <div class="x-axis-label fourq">
+                <p>4Q</p>
+              </div>
+              <div class="x-axis-label endreg">
+                <p>Buzzer</p>
+              </div>
+              <div class="x-axis-label twoot">
+                <p>2OT</p>
+              </div>
+              <div class="y-axis-label">
+                <p>5</p>
+              </div>
+              <div class="y-axis-label ten-off">
+                <p>10</p>
+              </div>
+              <div class="y-axis-label fift-off">
+                <p>15</p>
+              </div>
+              <div class="y-axis-label twen-off">
+                <p>20</p>
+              </div>
+              <div class="y-axis-label twefiv-off">
+                <p>25</p>
+              </div>
+              <p class="y-axis-title">BEEF COUNT</p>
+              <p class="x-axis-title">GAME TIME</p>
+              <p class="last-updated-time">last updated: <%= @last_updated %>
+              </div>
             </div>
           </div>
         </div>
         <div class="previous-beef saucy <%= is_active(@page_type, "archive") %>">
+          <p class="beef-card-label">Previous Big Beefs</p>
           <div class="results">
             <div class="big-beef-list">
               <%= for beef <- @big_beefs do %>
@@ -124,7 +128,7 @@
         </div>
         <div class="stats-beef saucy <%= is_active(@page_type, "stats") %>">
           <div class="latest">
-            <p class="card-title">LATEST BIG BEEF</p>
+            <p class="beef-card-label">LATEST BIG BEEF</p>
             <div class="card">
               <img id="player-pic" src="<%= player_headshot_link(@latest.beef.player) %>">
               <div class="group">
@@ -135,11 +139,13 @@
                 <a href="<%= bs_link(@latest) %>" target="_blank">Box Score</a>
                 <a href="<%= yt_link(@latest) %>" target="_blank">Highlights</a>
               </div>
-              <p class="total"><%= @latest.beef.beef_count %> 🥩</p>
+              <div class="total-container">
+                <p><%= @latest.beef.beef_count %> <span>🥩</span></p>
+              </div>
             </div>
           </div>
           <div class="all-time">
-            <p class="card-title">ALL TIME LEADERS</p>
+            <p class="beef-card-label">ALL TIME LEADERS</p>
             <div class="card">
               <%= for {rank, first_name, last_name, beef_count} <- with_rank("total", @total_leaders) do %>
                 <div class="stat-row">
@@ -150,7 +156,7 @@
             </div>
           </div>
           <div class="single-game">
-            <p class="card-title">SINGLE-GAME LEADERS</p>
+            <p class="beef-card-label">SINGLE-GAME LEADERS</p>
             <div class="card">
               <%= for {rank, first_name, last_name, beef_count} <- with_rank("single", @single_game_leaders) do %>
                 <div class="stat-row">
@@ -162,9 +168,15 @@
           </div>
         </div>
         <div class="pledge-beef saucy <%= is_active(@page_type, "pledge") %>">
-          <p>Big Beef Tracker is giving back by donating to Feeding America to help them alleviate food insecurity across the United States.</p>
-          <p>Beginning 4/10/2021, we will donate $1 for each rebound in a big beef performance through the end of the season.</p>
-          <div class="raised">
+          <p class="beef-card-label">Raising Money to End Food Insecurity</p>
+          <div class="pledge-card">
+            <p>Big Beef Tracker is giving back by donating to <a href="https://www.feedingamerica.org/">Feeding America</a>, an organization trying to put an end to food insecurity across the United States.</p>
+            <p>Starting on April 10th, Big Beef Tracker is pledging $1 for each rebound in a big beef performance through the end of the season (including the playoffs).</p>
+            <div class="raised">
+              <p class="amount">$30</p>
+              <p class="description">raised as of 4/10/2021</p>
+            </div>
+            <p class="cta">Wanna join? Tweet or message <a href="https://twitter.com/BigBeefTracker">@BigBeefTracker</a> when you make a donation to your local or national food bank and it will be added to the total.</p>
           </div>
         </div>
         <footer class="beef-footer">
