@@ -286,10 +286,9 @@ div#page-container {
         font-size: 0.9em;
         right: 0;
         font-family: "Cutive Mono", monospace;
-        top: -4rem;
+        top: -5rem;
 
         @media (max-width: 40rem) {
-          top: -5rem;
           text-align: right;
         }
       }
