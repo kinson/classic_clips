@@ -333,8 +333,8 @@ div#page-container {
 
           & > p {
             color: #fff;
-            margin: 0.25rem 0.5rem;
-            font-size: 0.99em;
+            margin: 0.1rem 0.5rem;
+            font-size: 0.94em;
             text-transform: uppercase;
           }
         }
@@ -719,7 +719,7 @@ div.pledge-beef.saucy {
     }
 
     & > p.cta {
-      font-size: 0.82em;
+      font-size: 0.76em;
       opacity: 0.6;
     }
 
@@ -884,6 +884,7 @@ div#page-container {
 
           & > p {
             font-weight: 600;
+            color: #4a4a4a;
           }
 
           & > svg path {
@@ -903,7 +904,7 @@ div#page-container {
 
         & > p {
           font-family: "Rokkitt", serif;
-          font-size: 1.04em;
+          font-size: 1em;
           margin: 0.5rem 1rem;
           color: #444;
           letter-spacing: 1px;
@@ -963,7 +964,7 @@ div#page-container {
         background-color: #444;
 
         & p {
-          font-family: "Lato", sans-serif;
+          font-family: "Open Sans", sans-serif;
           color: #111;
         }
       }
@@ -972,7 +973,7 @@ div#page-container {
         background-color: #444;
 
         & p {
-          font-family: "Lato", sans-serif;
+          font-family: "Open Sans", sans-serif;
           color: #111;
         }
       }
@@ -1006,7 +1007,7 @@ div#page-container {
 
           & > p {
             color: $saucy-red;
-            font-family: "Lato", sans-serif;
+            font-family: "Open Sans", sans-serif;
             text-transform: uppercase;
           }
         }
