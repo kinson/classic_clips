@@ -384,7 +384,7 @@ div.previous-beef {
   @media (max-width: 40rem) {
     grid-row: 3 / 4;
     grid-column: 1 / 3;
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
   }
 
@@ -513,11 +513,11 @@ div.previous-beef.saucy {
 div.stats-beef.saucy {
   display: none;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 12rem 1fr;
+  grid-template-rows: 13rem 1fr;
   grid-gap: 0rem;
 
   @media (max-width: 40rem) {
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
     grid-column: 1 / 3;
   }
@@ -538,6 +538,7 @@ div.stats-beef.saucy {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+
       & p {
         font-family: "Open Sans", sans-serif;
         font-size: 0.95em;
@@ -553,6 +554,7 @@ div.stats-beef.saucy {
 
     & > div.card {
       width: 100%;
+      height: 8rem;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -604,7 +606,7 @@ div.stats-beef.saucy {
 
         @media (max-width: 40rem) {
           flex-direction: column;
-          margin: 0 0.75rem;
+          margin: 0.75rem;
           align-items: flex-start;
         }
 
@@ -621,6 +623,7 @@ div.stats-beef.saucy {
 
         @media (max-width: 40rem) {
           margin: 0;
+          font-size: 0.75em;
         }
       }
 
@@ -640,6 +643,9 @@ div.stats-beef.saucy {
         background-color: $saucy-red;
         width: 14rem;
         transform: skew(-22deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         @media (max-width: 40rem) {
           width: 10rem;
@@ -650,7 +656,6 @@ div.stats-beef.saucy {
           font-size: 1.55em;
           font-weight: 500;
           color: #fff;
-          margin: 1.5rem auto;
           text-align: center;
 
           & > span {
@@ -658,8 +663,8 @@ div.stats-beef.saucy {
           }
 
           @media (max-width: 40rem) {
-            font-size: 1.3em;
-            margin: 1.75rem auto;
+            font-size: 1.25em;
+            margin: 0 7px 0 0;
           }
         }
       }
@@ -691,7 +696,7 @@ div.pledge-beef.saucy {
   display: none;
 
   @media (max-width: 40rem) {
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
     grid-column: 1 / 3;
     grid-gap: 1.5rem;
@@ -915,7 +920,7 @@ div#page-container {
       @media (max-width: 40rem) {
         grid-row: 3 / 4;
         grid-column: 1 / 3;
-        width: 85%;
+        width: 90%;
         margin: 0 auto;
       }
 
