@@ -134,15 +134,15 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
   def yt_text(%BigBeefEvent{yt_highlight_video_url: url}) do
     case String.contains?(url, "https://") do
-      true -> "Big Beef Highlights"
-      false -> "Coming Soon..."
+      true ->  "Big Beef Highlights"
+      false -> "Highlights Coming Soon..."
     end
   end
 
   def bs_text(%BigBeefEvent{box_score_url: url}) do
     case String.contains?(url, "https://") do
       true -> "Box Score"
-      false -> "Coming Soon..."
+      false -> "Box Score Coming Soon..."
     end
   end
 
