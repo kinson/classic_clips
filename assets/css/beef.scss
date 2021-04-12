@@ -933,8 +933,10 @@ div#page-container {
       box-shadow: $box-shadow;
       border-radius: $border-radius;
       display: grid;
+      background-color: #fff;
 
       @media (max-width: 40rem) {
+        background-color: #f6f8fa;
         box-shadow: none;
       }
     }
