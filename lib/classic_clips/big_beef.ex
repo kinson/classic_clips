@@ -119,6 +119,15 @@ defmodule ClassicClips.BigBeef do
     |> Repo.insert()
   end
 
+  def upsert_beef(%{ext_game_id: ext_game_id, player_id: player_id} = attrs) do
+    case Repo.get_by(Beef, ext_game_id: ext_game_id, player_id: player_id) do
+      nil -> %Beef{}
+      beef -> beef
+    end
+    |> Beef.changeset(attrs)
+    |> Repo.insert_or_update()
+  end
+
   @doc """
   Updates a beef.
 
@@ -335,8 +344,7 @@ defmodule ClassicClips.BigBeef do
         date_time: game_start_time
       })
 
-    create_beef(beef_data)
-    |> delete_old_beef()
+    upsert_beef(beef_data)
   end
 
   def subscribe_new_beef() do
