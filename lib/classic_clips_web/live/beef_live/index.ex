@@ -17,7 +17,7 @@ defmodule ClassicClipsWeb.BeefLive.Index do
 
     modified_socket =
       socket
-      |> assign(:beefs, BigBeef.get_recent_beefs(active_game_count))
+      |> assign(:beefs, BigBeef.get_recent_beefs_cached(active_game_count))
       |> assign(:last_updated, current_datetime())
       |> assign(:active_game_count, active_game_count)
       |> assign(:big_beefs, big_beefs)

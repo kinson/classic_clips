@@ -66,6 +66,15 @@ defmodule ClassicClips.BigBeef do
   """
   def get_beef!(id), do: Repo.get!(Beef, id)
 
+  def get_recent_beefs_cached(offset \\ 12) do
+    alias ClassicClips.BigBeef.RecentBeefCache
+
+    case RecentBeefCache.get_recent_beefs(offset) do
+      nil -> get_recent_beefs(offset) |> RecentBeefCache.apply_cache(offset)
+      beef -> beef
+    end
+  end
+
   # if there are no active games, reach further back for beefs
   def get_recent_beefs(0) do
     get_beefs(24)
