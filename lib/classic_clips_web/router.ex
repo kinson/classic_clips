@@ -1,6 +1,7 @@
 defmodule ClassicClipsWeb.Router do
   use ClassicClipsWeb, :router
   import Plug.BasicAuth
+  import ClassicClipsWeb.ReqReferer
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -9,6 +10,7 @@ defmodule ClassicClipsWeb.Router do
     plug :put_root_layout, {ClassicClipsWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :record
   end
 
   pipeline :api do

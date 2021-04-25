@@ -18,10 +18,14 @@ config :classic_clips, ClassicClipsWeb.Endpoint,
   ]
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :notice
 
 config :logger,
-  backends: [:console, Sentry.LoggerBackend]
+  backends: [:console, Sentry.LoggerBackend, {LoggerFileBackend, :info_log}]
+
+config :logger, :info_log, path: "/var/log/clips/info.log"
+
+config :logger, :console, format: "$time [$level] $message\n"
 
 # ## SSL Support
 #
