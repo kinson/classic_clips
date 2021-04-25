@@ -22,6 +22,19 @@ defmodule ClassicClips.BigBeef do
     Repo.all(Beef)
   end
 
+  def get_unclaimed_big_beefs() do
+    last_six_hours = -1 * 60 * 60 * 6
+    lower_date_limit = DateTime.utc_now() |> DateTime.add(last_six_hours)
+
+    from(b in Beef,
+      left_join: bbe in assoc(b, :big_beef_event),
+      where: b.beef_count >= 20,
+      where: b.inserted_at > ^lower_date_limit,
+      where: is_nil(bbe.id)
+    )
+    |> Repo.all()
+  end
+
   def get_latest_big_beef() do
     from(b in ClassicClips.BigBeef.BigBeefEvent,
       select: b,
@@ -169,14 +182,6 @@ defmodule ClassicClips.BigBeef do
   """
   def delete_beef(%Beef{} = beef) do
     Repo.delete(beef)
-  end
-
-  def delete_old_beef({:ok, %Beef{} = beef}) do
-    Beef.delete_all_but_this_beef(beef)
-  end
-
-  def delete_old_beef({:error, _error} = error) do
-    error
   end
 
   @doc """

@@ -2,7 +2,7 @@ defmodule ClassicClips.BigBeef.RecentBeefCache do
   use GenServer
 
   @table :big_beef
-  @clear_after :timer.seconds(10)
+  @clear_after :timer.seconds(15)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)

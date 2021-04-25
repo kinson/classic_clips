@@ -2,6 +2,7 @@ defmodule ClassicClips.BeefServer do
   use GenServer
 
   alias ClassicClips.{BigBeef, GameData}
+  @polling_interval :timer.seconds(45)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{games: []}, name: MyBeef)
@@ -14,7 +15,7 @@ defmodule ClassicClips.BeefServer do
   @impl true
   def init(state) do
     games = fetch_beef_data(state)
-    :timer.send_interval(50_000, :work)
+    :timer.send_interval(@polling_interval, :work)
     {:ok, %{games: games}}
   end
 
