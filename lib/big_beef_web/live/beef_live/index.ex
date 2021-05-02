@@ -1,5 +1,5 @@
-defmodule ClassicClipsWeb.BeefLive.Index do
-  use ClassicClipsWeb, :live_view
+defmodule BigBeefWeb.BeefLive.Index do
+  use BigBeefWeb, :live_view
 
   alias ClassicClips.BigBeef
   alias ClassicClips.BigBeef.Beef
