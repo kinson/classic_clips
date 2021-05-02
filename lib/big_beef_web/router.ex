@@ -26,6 +26,7 @@ defmodule BigBeefWeb.Router do
   scope "/", BigBeefWeb do
     pipe_through :browser
 
+    get "/beef", RedirectPlug, to: "/"
     live "/", BeefLive.Index, :index
   end
 
