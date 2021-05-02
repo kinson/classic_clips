@@ -28,10 +28,9 @@ defmodule ClassicClipsWeb.Router do
 
     get "/auth/google/callback", GoogleAuthController, :index
     get "/about", AboutController, :index
+    get "/beef", RedirectPlug, external: Application.fetch_env!(:classic_clips, :big_beef_url)
 
     live "/classics", ClassicLive.Index, :index
-
-    # live "/", PageLive, :index
 
     live "/", ClipLive.Index, :index
     live "/clips", ClipLive.Index, :index
@@ -39,9 +38,6 @@ defmodule ClassicClipsWeb.Router do
     live "/clips/:id", ClipLive.Index, :show
     live "/clips/:id/edit", ClipLive.Index, :edit
     live "/clips/:id/delete", ClipLive.Index, :delete
-
-    # live "/clips/:id", ClipLive.Show, :show
-    # live "/clips/:id/show/edit", ClipLive.Show, :edit
 
     live "/user", UserLive.Show, :show
   end
@@ -63,7 +59,10 @@ defmodule ClassicClipsWeb.Router do
 
     scope "/admin" do
       pipe_through [:browser, :dash]
-      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
+
+      live_dashboard "/dashboard",
+        metrics: ClassicClipsWeb.Telemetry,
+        ecto_repos: [ClassicClips.Repo]
     end
   end
 end
