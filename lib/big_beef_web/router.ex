@@ -1,13 +1,13 @@
-defmodule ClassicClipsWeb.Router do
-  use ClassicClipsWeb, :router
+defmodule BigBeefWeb.Router do
+  use BigBeefWeb, :router
   import Plug.BasicAuth
-  import ClassicClipsWeb.ReqReferer
+  import BigBeefWeb.ReqReferer
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {ClassicClipsWeb.LayoutView, :root}
+    plug :put_root_layout, {BigBeefWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :record
@@ -23,31 +23,14 @@ defmodule ClassicClipsWeb.Router do
       password: Application.fetch_env!(:classic_clips, :dash_pass)
   end
 
-  scope "/", ClassicClipsWeb do
+  scope "/", BigBeefWeb do
     pipe_through :browser
 
-    get "/auth/google/callback", GoogleAuthController, :index
-    get "/about", AboutController, :index
-
-    live "/classics", ClassicLive.Index, :index
-
-    # live "/", PageLive, :index
-
-    live "/", ClipLive.Index, :index
-    live "/clips", ClipLive.Index, :index
-    live "/clips/new", ClipLive.Index, :new
-    live "/clips/:id", ClipLive.Index, :show
-    live "/clips/:id/edit", ClipLive.Index, :edit
-    live "/clips/:id/delete", ClipLive.Index, :delete
-
-    # live "/clips/:id", ClipLive.Show, :show
-    # live "/clips/:id/show/edit", ClipLive.Show, :edit
-
-    live "/user", UserLive.Show, :show
+    live "/", BeefLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ClassicClipsWeb do
+  # scope "/api", BigBeefWeb do
   #   pipe_through :api
   # end
 
@@ -63,7 +46,7 @@ defmodule ClassicClipsWeb.Router do
 
     scope "/admin" do
       pipe_through [:browser, :dash]
-      live_dashboard "/dashboard", metrics: ClassicClipsWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
+      live_dashboard "/dashboard", metrics: BigBeefWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
     end
   end
 end

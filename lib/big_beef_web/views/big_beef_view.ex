@@ -1,5 +1,5 @@
-defmodule ClassicClipsWeb.BigBeefView do
-  use ClassicClipsWeb, :view
+defmodule BigBeefWeb.BigBeefView do
+  use BigBeefWeb, :view
 
   alias ClassicClips.BigBeef.{Player, Beef, BigBeefEvent}
 

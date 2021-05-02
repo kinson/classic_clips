@@ -1,5 +1,5 @@
-defmodule ClassicClipsWeb.BeefLive.BeefComponent do
-  use ClassicClipsWeb, :live_component
+defmodule BigBeefWeb.BeefLive.BeefComponent do
+  use BigBeefWeb, :live_component
 
   @impl true
   def mount(socket) do

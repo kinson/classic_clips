@@ -11,10 +11,12 @@ defmodule ClassicClips.Application do
       ClassicClips.Repo,
       # Start the Telemetry supervisor
       ClassicClipsWeb.Telemetry,
+      BigBeefWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: ClassicClips.PubSub},
       # Start the Endpoint (http/https)
       ClassicClipsWeb.Endpoint,
+      BigBeefWeb.Endpoint,
       # Start a worker by calling: ClassicClips.Worker.start_link(arg)
       # {ClassicClips.Worker, arg}
       ClassicClips.BeefServer,
@@ -33,6 +35,7 @@ defmodule ClassicClips.Application do
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
     ClassicClipsWeb.Endpoint.config_change(changed, removed)
+    BigBeefWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end
