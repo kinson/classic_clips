@@ -8,5 +8,6 @@ mix compile
 mix ecto.migrate
 
 kill -9 $(lsof -t -i:4000)
+kill -9 $(lsof -t -i:4001)
 
-PORT=4000 elixir --erl "-detached" -S mix phx.server
+elixir --erl "-detached" -S mix phx.server
