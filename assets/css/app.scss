@@ -234,12 +234,14 @@ div.clip-edit-button {
 }
 
 .tas-text {
+  position: absolute;
+  margin: 0.8rem 2rem;
+  z-index: 3;
+  display: inline-block;
+
   color: #fff;
   font-weight: 700;
   font-size: 1.35em;
-  position: absolute;
-  margin: 1rem 1.5rem;
-  z-index: 3;
   text-align: center;
 
   @media (max-width: 40rem) {
@@ -249,6 +251,21 @@ div.clip-edit-button {
   &:active,
   &:hover {
     color: rgb(218, 255, 79);
+    transition: all 0.2s ease-in;
+
+    svg {
+      transform: scaleX(1.2) scaleY(1.1) translateX(4px);
+
+      g {
+        stroke: rgb(218, 255, 79);
+      }
+    }
+  }
+
+  svg {
+    height: 1.2rem;
+    width: 2rem;
+    transition: all 0.1s ease-in-out;
   }
 }
 

@@ -22,7 +22,18 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
             <% end %>
           </div>
           <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
-          <%= link @clip.title |> String.upcase(), to: @clip.yt_video_url, class: "tas-text", target: "_blank" %>
+          <%= link to: @clip.yt_video_url, class: "tas-text", target: "_blank" do %>
+          <%= @clip.title |> String.upcase() %><span>
+          <svg width="50px" height="53px" viewBox="0 0 93 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="Classic-Clips" stroke="none" stroke-width="5" fill="none" fill-rule="evenodd">
+                <g id="Artboard" transform="translate(-29.000000, -129.000000)" stroke="#fff">
+                    <line x1="42" y1="155" x2="120" y2="155" id="Path"></line>
+                    <polyline id="Rectangle" transform="translate(95.297759, 155) rotate(-315.000000) translate(-95.297759, -155) " points="77.2665364 137.557089 113.328982 137.557089 113.328982 173.619535"></polyline>
+                </g>
+            </g>
+          </svg>
+          </span>
+          <% end %>
           <%= link get_publish_date(@clip.video), to: Routes.clip_index_path(@socket, :show, @clip.id) , class: "tas-date" %>
           <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
             <a href="<%= @clip.yt_video_url %>" target="_blank" class="tas-video-link">
@@ -44,7 +55,7 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
           </div>
           <p class="tags-text"><%= get_tags(@clip) %></p>
         </div>
-    </div>
+      </div>
     </div>
     """
   end
