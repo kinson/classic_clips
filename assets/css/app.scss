@@ -235,9 +235,10 @@ div.clip-edit-button {
 
 .tas-text {
   position: absolute;
-  margin: 0.8rem 2rem;
+  padding: 0.8rem 2rem;
   z-index: 3;
   display: inline-block;
+  width: 100%;
 
   color: #fff;
   font-weight: 700;
