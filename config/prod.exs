@@ -13,7 +13,13 @@ config :classic_clips, ClassicClipsWeb.Endpoint,
   url: [host: "classicclipsinc.com"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   check_orign: [
-    "classicclipsinc.com",
+    "classicclipsinc.com"
+  ]
+
+config :classic_clips, BigBeefWeb.Endpoint,
+  url: [host: "bigbeeftracker.com"],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  check_orign: [
     "bigbeeftracker.com"
   ]
 
