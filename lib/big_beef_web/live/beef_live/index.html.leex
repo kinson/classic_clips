@@ -131,11 +131,11 @@
             <p class="beef-card-label">LATEST BIG BEEF [#<%= Enum.count(@big_beefs) %>]</p>
             <div class="card">
               <img id="player-pic" src="<%= player_headshot_link(@latest.beef.player) %>">
-              <div class="group">
+              <div class="group info">
                 <p class="date"><%= format_time(@latest.beef.date_time) %></p>
                 <p class="name"><%= name(@latest.beef.player) %></p>
               </div>
-              <div class="group">
+              <div class="group links">
                 <a href="<%= bs_link(@latest) %>" target="_blank"><%= bs_text(@latest) %></a>
                 <a href="<%= yt_link(@latest) %>" target="_blank"><%= yt_text(@latest) %></a>
               </div>
