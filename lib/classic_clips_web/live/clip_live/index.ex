@@ -31,7 +31,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     socket = assign(socket, :video_id, nil)
 
     pagination = get_default_pagination()
-    category = "week"
+    category = "goat"
     {clips, pagination} = list_top_clips(socket, category, pagination)
 
     socket
@@ -45,7 +45,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     socket = assign(socket, :video_id, nil)
 
     pagination = get_default_pagination()
-    category = "week"
+    category = "goat"
     {clips, pagination} = list_top_clips(socket, category, pagination)
 
     socket
@@ -77,7 +77,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     category =
       case video_id do
-        nil -> "week"
+        nil -> "goat"
         _ -> "goat"
       end
 
