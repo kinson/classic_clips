@@ -46,7 +46,7 @@ defmodule ClassicClips.BigBeef do
   end
 
   def get_single_game_leaders() do
-    from(b in ClassicClips.BigBeef.Beef, select: b, order_by: [desc: b.beef_count], limit: 10)
+    from(b in ClassicClips.BigBeef.Beef, select: b, order_by: [desc: b.beef_count], limit: 5)
     |> Repo.all()
     |> Repo.preload(:player)
   end
@@ -58,7 +58,7 @@ defmodule ClassicClips.BigBeef do
       select: {b.player_id, p.first_name, p.last_name, count(b.id)},
       group_by: [b.player_id, p.first_name, p.last_name],
       order_by: [desc: count(b.id)],
-      limit: 10
+      limit: 5
     )
     |> Repo.all()
   end
