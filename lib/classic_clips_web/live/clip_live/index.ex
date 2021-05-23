@@ -38,7 +38,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     clip_id =
       case clip do
         nil -> nil
-        clip -> clip.id
+        c -> c.id
       end
 
     socket
@@ -60,6 +60,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> assign(:category, category)
     |> assign(:clips, clips)
     |> assign(:pagination, pagination)
+    |> assign(:clip_id, nil)
     |> assign(:clip, %Clip{})
   end
 
