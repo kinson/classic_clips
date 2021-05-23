@@ -36,22 +36,22 @@ defmodule ClassicClips.MixProject do
       {:elixir_auth_google, "~> 1.3.0"},
       {:sentry, "8.0.0"},
       {:html_entities, "~> 0.5"},
-      {:phoenix, "~> 1.5.7"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:phoenix, "~> 1.5.9"},
+      {:phoenix_ecto, "~> 4.2"},
+      {:ecto_sql, "~> 3.6"},
       {:ecto_psql_extras, "~> 0.6" },
       {:logger_file_backend, "~> 0.0.11"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.15.0"},
+      {:phoenix_live_view, "~> 0.15.5"},
       {:floki, ">= 0.27.0", only: :test},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:jason, "~> 1.2"},
+      {:plug_cowboy, "~> 2.5"}
     ]
   end
 

@@ -321,6 +321,26 @@ defmodule ClassicClips.Timeline do
   def get_clip!(id), do: Repo.get!(Clip, id)
 
   @doc """
+  Gets a single clip. Preloads the user, tags, and video associated.
+
+  Returns `nil` if the Clip does not exist.
+
+  ## Examples
+
+      iex> get_clip(123)
+      %Clip{}
+
+      iex> get_clip(456)
+      nil
+
+  """
+  def get_clip(id) do
+    Repo.get(Clip, id) |> Repo.preload([:user, :tags, :video])
+  rescue
+    Ecto.Query.CastError -> nil
+  end
+
+  @doc """
   Creates a clip.
 
   ## Examples

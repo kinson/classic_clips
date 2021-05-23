@@ -720,6 +720,19 @@ div.show-clip {
   }
 }
 
+.clip-not-found {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+
+  p {
+    font-weight: 500;
+    color: #333;
+    line-height: 2;
+    text-align: center;
+  }
+}
+
 .skeets-container {
   display: flex;
   flex-direction: row;

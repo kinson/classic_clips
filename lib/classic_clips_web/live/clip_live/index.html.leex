@@ -1,6 +1,6 @@
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, ClassicClipsWeb.ClipLive.FormComponent,
-    id: @clip.id || :new,
+    id: @clip_id || :new,
     title: @page_title,
     action: @live_action,
     clip: @clip,
@@ -13,6 +13,11 @@
   </div>
 <% end %>
 <%= if @live_action in [:show] do %>
+  <%= if is_nil(@clip) do %>
+  <div class="clip-not-found">
+    <p> Hmmm, it looks like we couldn't find that clip. Tweet or message <a href="https://twitter.com/bigbeeftracker">@BigBeefTracker</a> if you believe this is a bug!</p>
+  </div>
+  <% else %>
   <div class="show-clip">
     <div>
       <div class="video-area">
@@ -27,6 +32,7 @@
       </div>
     </div>
   </div>
+  <% end %>
 <% else %>
   <div class="skeets-container">
     <%= live_patch "DROP A NEW CLASSIC CLIP", to: Routes.clip_index_path(@socket, :new), class: "skeets-create-classic-clip-button" %>

@@ -33,12 +33,20 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     pagination = get_default_pagination()
     category = "goat"
     {clips, pagination} = list_top_clips(socket, category, pagination)
+    clip = Timeline.get_clip(id)
+
+    clip_id =
+      case clip do
+        nil -> nil
+        clip -> clip.id
+      end
 
     socket
     |> assign(:category, category)
     |> assign(:clips, clips)
     |> assign(:pagination, pagination)
-    |> assign(:clip, Timeline.get_clip!(id))
+    |> assign(:clip, clip)
+    |> assign(:clip_id, clip_id)
   end
 
   defp apply_action(socket, :new, _params) do
@@ -60,13 +68,12 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     pagination = get_default_pagination()
     category = "goat"
-    {clips, pagination} = list_top_clips(socket, category, pagination)
+    clip = Timeline.get_clip(id)
 
     socket
     |> assign(:category, category)
-    |> assign(:clips, clips)
     |> assign(:pagination, pagination)
-    |> assign(:clip, Timeline.get_clip!(id) |> ClassicClips.Repo.preload([:user, :tags, :video]))
+    |> assign(:clip, clip)
   end
 
   defp apply_action(socket, :index, params) do

@@ -6,6 +6,14 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   alias ClassicClips.Classics.{Services, Video}
 
   @impl true
+  def update(%{clip: nil} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:tags, nil)
+     |> assign(:changeset, nil)}
+  end
+
   def update(%{clip: clip} = assigns, socket) do
     changeset = Timeline.change_clip(clip)
 
