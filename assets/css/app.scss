@@ -644,6 +644,8 @@ div.show-signup-message {
 }
 
 div.show-clip {
+  display: flex;
+  flex-direction: column;
   padding: 0rem 0 5rem 0;
   margin: 6rem 0;
 
@@ -657,6 +659,7 @@ div.show-clip {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin-bottom: 2rem;
 
     @media (max-width: 40rem) {
       display: flex;
@@ -716,6 +719,50 @@ div.show-clip {
         margin-left: 0;
         box-shadow: 10px 10px 0px rebeccapurple;
       }
+    }
+  }
+
+  button#share-clip-text-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    height: unset;
+    padding: 0.75rem 0;
+    margin: 5rem auto 2rem auto;
+    width: 90%;
+    max-width: 55rem;
+    border-radius: 0.5rem;
+    background-color: rgb(96, 0, 170);
+    box-shadow: 1px 2px 2px #777;
+    border: none;    
+    transition: background-color 0.15s ease;
+    
+    &:hover {
+      background-color: rgb(233, 52, 215);
+    }
+
+    span {
+      font-size: 1.15em;
+      font-weight: 500;
+      font-family: "Open Sans", sans-serif;
+      margin: 4px 0.7rem 4px 0;
+      line-height: 1.65;
+
+      &.hidden {
+        display: none;
+      }
+    }
+
+    input#clip-link-external {
+      color: #ddd;
+      width: max-content;
+      padding: 0.35rem 0.5rem;
+      height: unset;
+      margin: 4px 0 4px 0.7rem;
+      cursor: pointer;
     }
   }
 }

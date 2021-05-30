@@ -405,4 +405,14 @@ defmodule ClassicClipsWeb.ClipLive.Index do
 
     "#{d.month}/#{d.day}/#{d.year}"
   end
+
+  def short_link(%Clip{id: id}) do
+    slug = String.slice(id, 0..5)
+
+    "https://cclip.art/" <> slug
+  end
+
+  def short_link(_) do
+    "https://cclip.art"
+  end
 end

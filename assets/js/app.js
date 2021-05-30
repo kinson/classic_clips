@@ -34,3 +34,24 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// set up on click listener for copying clip link
+const copyLinkButton = document.getElementById("share-clip-text-button");
+const copyLinkInputField = document.getElementById("clip-link-external");
+
+const copyLinkPTagBefore = document.getElementById("copy-link-p-before");
+const copyLinkPTagAfter = document.getElementById("copy-link-p-after");
+
+copyLinkInputField.addEventListener('click', function(e) {
+    e.preventDefault();
+    copyLinkButton.focus();
+});
+
+copyLinkButton.addEventListener('click', function() {
+    copyLinkInputField.focus();
+    copyLinkInputField.select();
+    document.execCommand('copy');
+
+    copyLinkPTagBefore.classList.add('hidden');
+    copyLinkPTagAfter.classList.remove('hidden');
+    copyLinkButton.focus();
+});

@@ -31,6 +31,11 @@
         <%= live_component @socket, ClassicClipsWeb.ClipLive.ClipComponent, id: @clip.id, clip: @clip, user: @user, votes: @votes, saves: @saves %>
       </div>
     </div>
+    <button type="button" id="share-clip-text-button">
+      <span id="copy-link-p-before">&#128279; Copy Link to This Clip</span>
+      <span id="copy-link-p-after" class="hidden">&#128279; Copied Link to Clip!</span>
+      <input id="clip-link-external" type="text" readonly value="<%= short_link(@clip) %>"/>
+    </button>
   </div>
   <% end %>
 <% else %>
