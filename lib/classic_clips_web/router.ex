@@ -30,6 +30,9 @@ defmodule ClassicClipsWeb.Router do
     get "/about", AboutController, :index
     get "/beef", RedirectPlug, external: Application.fetch_env!(:classic_clips, :big_beef_url)
 
+    get "/short/:slug", ShortLinkController, :index
+    get "/short", ShortLinkController, :index
+
     live "/classics", ClassicLive.Index, :index
 
     live "/", ClipLive.Index, :index
