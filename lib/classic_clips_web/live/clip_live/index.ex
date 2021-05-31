@@ -17,7 +17,7 @@ defmodule ClassicClipsWeb.ClipLive.Index do
       |> assign(:votes, get_user_votes(user))
       |> assign(:saves, get_user_saves(user))
       |> assign(:thumbs_up_total, get_user_thumbs_up(user))
-      |> assign(:gooogle_auth_url, generate_oauth_url())
+      |> assign(:google_auth_url, generate_oauth_url())
 
     {:ok, modified_socket}
   end
@@ -62,19 +62,6 @@ defmodule ClassicClipsWeb.ClipLive.Index do
     |> assign(:pagination, pagination)
     |> assign(:clip_id, nil)
     |> assign(:clip, %Clip{})
-  end
-
-  defp apply_action(socket, :show, %{"id" => id}) do
-    socket = assign(socket, :video_id, nil)
-
-    pagination = get_default_pagination()
-    category = "goat"
-    clip = Timeline.get_clip(id)
-
-    socket
-    |> assign(:category, category)
-    |> assign(:pagination, pagination)
-    |> assign(:clip, clip)
   end
 
   defp apply_action(socket, :index, params) do

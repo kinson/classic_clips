@@ -8,15 +8,15 @@
     <meta name="author" content="Sam H"/>
     <meta name="description" content="Search, share, and save your favorite clips from No Dunks classics"/>
     <meta name="og:description" content="Search, share, and save your favorite clips from No Dunks"/>
-    <meta name="url" content="http://www.classicclipsinc.com"/>
-    <meta name="og:url" content="http://www.classicclipsinc.com"/>
-    <meta name="title" content="Classic Clips"/>
-    <meta name="og:title" content="Classic Clips"/>
-    <meta name="og:image" content="https://beef-tracker-assets.s3.amazonaws.com/classic_clips_meta_image.png"/>
-    <meta name="image" content="https://beef-tracker-assets.s3.amazonaws.com/classic_clips_meta_image.png"/>
+    <meta name="url" content="<%= assigns[:metadata_url] || "" %>"/>
+    <meta name="og:url" content="<%= assigns[:metadata_url] || "" %>"/>
+    <meta name="title" content="<%= assigns[:metadata_title] || "" %>"/>
+    <meta name="og:title" content="<%= assigns[:metadata_title] || "" %>"/>
+    <meta name="og:image" content="<%= assigns[:metadata_image] || "" %>"/>
+    <meta name="image" content="<%= assigns[:metadata_image] || "" %>"/>
     <meta name="twitter:card" content="summary_large_image" />
     <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Classic Clips" %>
+    <%= live_title_tag assigns[:metadata_title] || "Classic Clips" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">

@@ -16,7 +16,7 @@ defmodule ClassicClipsWeb.UserLive.Show do
 
     modifed_socket =
       assign(socket, :user, user)
-      |> assign(:gooogle_auth_url, generate_oauth_url())
+      |> assign(:google_auth_url, generate_oauth_url())
       |> assign(:pagination, pagination)
       |> assign(:clips, clips)
       |> assign(:votes, get_user_votes(user))

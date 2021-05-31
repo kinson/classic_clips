@@ -14,7 +14,7 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
     modifed_socket =
       socket
       |> assign(:user, user)
-      |> assign(:gooogle_auth_url, generate_oauth_url())
+      |> assign(:google_auth_url, generate_oauth_url())
       |> assign(:thumbs_up_total, get_user_thumbs_up(user))
       |> assign(:pagination, pagination)
       |> assign(:classics, classics)

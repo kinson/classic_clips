@@ -1,0 +1,38 @@
+<header>
+  <div class="title">
+    <div class="big-ass-name">
+      <%= link "CLASSIC", to: "/", class: "classic" %>
+      <%= link "CLIPS", to: "/", class: "clips" %>
+      <%= link "[?]", to: "/about", class: "header-about" %>
+    </div>
+    <%= if is_nil(@user) do %>
+      <div class="auth">
+        <div class="signup">
+          <img src="<%= Routes.static_path(@conn, "/images/google_logo.png") %>" alt="Google Sign In" />
+          <%= link "Sign In", to: @google_auth_url %>
+        </div>
+      </div>
+    <% else %>
+      <div id="user-header-area">
+        <a href="https://twitter.com/leighellis/status/1182013826507694082" target="_blank">
+          <img src="<%= Routes.static_path(@conn, "/images/leigh_thumbs_2.jpg") %>" alt="Leigh Ellis Thumbs Up Drawing" />
+        </a>
+        <div class="user-info">
+          <p class="username"><a href="/user"><%= @user.username || @user.email %></a></p>
+          <p class="votes"><%= @thumbs_up_total %> THUMBS UP</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="menu-bar">
+    <div class="options">
+      <%= link to: "/" do %>
+        <p class="<%= clips(@page_title) %>">CLIPS</p>
+      <% end %>
+      <p class="slash">//</p>
+      <%= link to: "/classics" do %>
+        <p class="<%= classics(@page_title) %>">CLASSICS</p>
+      <% end %>
+    </div>
+  </div>
+</header>

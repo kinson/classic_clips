@@ -12,7 +12,7 @@ defmodule ClassicClipsWeb.AboutController do
 
     conn
     |> assign(:user, user)
-    |> assign(:gooogle_auth_url, generate_oauth_url())
+    |> assign(:google_auth_url, generate_oauth_url())
     |> assign(:thumbs_up_total, get_user_thumbs_up(user))
     |> assign(:page_title, "About Classic Clips")
     |> render(:index)
