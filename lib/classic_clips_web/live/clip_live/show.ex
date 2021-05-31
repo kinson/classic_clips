@@ -139,6 +139,7 @@ defmodule ClassicClipsWeb.ClipLive.Show do
     |> assign(:metadata_title, clip.title)
     |> assign(:metadata_url, short_link(clip))
     |> assign(:metadata_image, clip.yt_thumbnail_url)
+    |> assign(:metadata_description, Clip.description(clip))
   end
 
   def page_metadata(socket), do: socket

@@ -2,6 +2,9 @@ defmodule ClassicClips.Timeline.Clip do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias ClassicClips.Timeline.{Clip}
+  alias ClassicClips.Classics.{Video}
+
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "clips" do
     field :clip_length, :integer
@@ -32,5 +35,49 @@ defmodule ClassicClips.Timeline.Clip do
       message: "Must be a Youtube link with a timestamp"
     )
     |> validate_number(:clip_length, greater_than: 0, less_than: 2000)
+  end
+
+  def description(%Clip{video: %Video{} = video}) do
+    {:ok, dt, 0} = DateTime.from_iso8601(video.publish_date)
+    date = format_video_date(dt)
+    "From a Classic on #{date}: #{video.title}"
+  end
+
+  defp format_video_date(time) do
+    six_hour_back_offset = -1 * 60 * 60 * 6
+
+    d =
+      time
+      |> DateTime.add(six_hour_back_offset, :second)
+      |> DateTime.to_date()
+
+    month = d.month
+    day = d.day
+    year = d.year
+
+    month =
+      case month do
+        1 -> "January"
+        2 -> "February"
+        3 -> "March"
+        4 -> "April"
+        5 -> "May"
+        6 -> "June"
+        7 -> "July"
+        8 -> "August"
+        9 -> "September"
+        10 -> "October"
+        11 -> "November"
+        12 -> "December"
+      end
+
+      day_th = case day do
+        n  when n in [1,  21,  31] -> "st"
+        n when n in [2, 22] -> "nd"
+        n when n in [3, 23] -> "rd"
+        _ -> "th"
+      end
+
+    "#{month} #{day}#{day_th}, #{year}"
   end
 end
