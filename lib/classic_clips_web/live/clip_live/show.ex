@@ -134,6 +134,8 @@ defmodule ClassicClipsWeb.ClipLive.Show do
     "https://cclip.art"
   end
 
+  def page_metadata(%{assigns: %{clip: nil}} = socket), do: socket
+
   def page_metadata(%{assigns: %{clip: clip}} = socket) do
     socket
     |> assign(:metadata_title, clip.title)
