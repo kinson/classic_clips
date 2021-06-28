@@ -744,6 +744,26 @@ div.pledge-beef.saucy {
       opacity: 0.7;
     }
 
+    & > div.playoff-bonus {
+      margin: 3rem 0;
+
+      & p.top {
+        color: $saucy-red;
+        font-size: 1em;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      & p {
+        margin: 0.15rem auto;
+      }
+
+      span {
+        color: $saucy-red;
+      }
+    }
+
     & > div.raised {
       display: flex;
       flex-direction: row;
