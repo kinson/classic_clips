@@ -142,13 +142,13 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
     "#{day_of_week} #{d.month}/#{d.day}/#{d.year}"
   end
 
-  defp weekday(0), do: "Sunday"
   defp weekday(1), do: "Monday"
   defp weekday(2), do: "Tuesday"
   defp weekday(3), do: "Wednesday"
   defp weekday(4), do: "Thursday"
   defp weekday(5), do: "Friday"
   defp weekday(6), do: "Saturday"
+  defp weekday(7), do: "Sunday"
 
   def has_clips?(%Video{clips: []}), do: false
   def has_clips?(%Video{clips: _}), do: true
