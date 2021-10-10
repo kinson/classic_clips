@@ -7,7 +7,11 @@ defmodule ClassicClips.TimelineTest do
     alias ClassicClips.Timeline.Clip
 
     @valid_attrs %{clip_length: 42, title: "some title", yt_video_url: "some yt_video_url"}
-    @update_attrs %{clip_length: 43, title: "some updated title", yt_video_url: "some updated yt_video_url"}
+    @update_attrs %{
+      clip_length: 43,
+      title: "some updated title",
+      yt_video_url: "some updated yt_video_url"
+    }
     @invalid_attrs %{clip_length: nil, title: nil, yt_video_url: nil}
 
     def clip_fixture(attrs \\ %{}) do
@@ -133,7 +137,11 @@ defmodule ClassicClips.TimelineTest do
     alias ClassicClips.Timeline.Vote
 
     @valid_attrs %{"clip_id,": "some clip_id,", up: true, "user_id,": "some user_id,"}
-    @update_attrs %{"clip_id,": "some updated clip_id,", up: false, "user_id,": "some updated user_id,"}
+    @update_attrs %{
+      "clip_id,": "some updated clip_id,",
+      up: false,
+      "user_id,": "some updated user_id,"
+    }
     @invalid_attrs %{"clip_id,": nil, up: nil, "user_id,": nil}
 
     def vote_fixture(attrs \\ %{}) do
@@ -157,9 +165,9 @@ defmodule ClassicClips.TimelineTest do
 
     test "create_vote/1 with valid data creates a vote" do
       assert {:ok, %Vote{} = vote} = Timeline.create_vote(@valid_attrs)
-      assert vote.clip_id, == "some clip_id,"
+      assert vote.clip_id == "some clip_id,"
       assert vote.up == true
-      assert vote.user_id, == "some user_id,"
+      assert vote.user_id == "some user_id,"
     end
 
     test "create_vote/1 with invalid data returns error changeset" do
@@ -169,9 +177,9 @@ defmodule ClassicClips.TimelineTest do
     test "update_vote/2 with valid data updates the vote" do
       vote = vote_fixture()
       assert {:ok, %Vote{} = vote} = Timeline.update_vote(vote, @update_attrs)
-      assert vote.clip_id, == "some updated clip_id,"
+      assert vote.clip_id == "some updated clip_id,"
       assert vote.up == false
-      assert vote.user_id, == "some updated user_id,"
+      assert vote.user_id == "some updated user_id,"
     end
 
     test "update_vote/2 with invalid data returns error changeset" do
@@ -350,7 +358,10 @@ defmodule ClassicClips.TimelineTest do
 
     test "update_clips_tags/2 with valid data updates the clips_tags" do
       clips_tags = clips_tags_fixture()
-      assert {:ok, %ClipsTags{} = clips_tags} = Timeline.update_clips_tags(clips_tags, @update_attrs)
+
+      assert {:ok, %ClipsTags{} = clips_tags} =
+               Timeline.update_clips_tags(clips_tags, @update_attrs)
+
       assert clips_tags.clip_id == "some updated clip_id"
       assert clips_tags.tag_id == "some updated tag_id"
     end

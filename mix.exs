@@ -39,7 +39,7 @@ defmodule ClassicClips.MixProject do
       {:phoenix, "~> 1.5.9"},
       {:phoenix_ecto, "~> 4.2"},
       {:ecto_sql, "~> 3.6"},
-      {:ecto_psql_extras, "~> 0.6" },
+      {:ecto_psql_extras, "~> 0.6"},
       {:logger_file_backend, "~> 0.0.11"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_view, "~> 0.15.5"},

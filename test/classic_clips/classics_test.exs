@@ -6,9 +6,33 @@ defmodule ClassicClips.ClassicsTest do
   describe "videos" do
     alias ClassicClips.Classics.Video
 
-    @valid_attrs %{description: "some description", publish_date: "some publish_date", title: "some title", type: "some type", yt_thumbnail_url: "some yt_thumbnail_url", yt_video_id: "some yt_video_id", yt_video_url: "some yt_video_url"}
-    @update_attrs %{description: "some updated description", publish_date: "some updated publish_date", title: "some updated title", type: "some updated type", yt_thumbnail_url: "some updated yt_thumbnail_url", yt_video_id: "some updated yt_video_id", yt_video_url: "some updated yt_video_url"}
-    @invalid_attrs %{description: nil, publish_date: nil, title: nil, type: nil, yt_thumbnail_url: nil, yt_video_id: nil, yt_video_url: nil}
+    @valid_attrs %{
+      description: "some description",
+      publish_date: "some publish_date",
+      title: "some title",
+      type: "some type",
+      yt_thumbnail_url: "some yt_thumbnail_url",
+      yt_video_id: "some yt_video_id",
+      yt_video_url: "some yt_video_url"
+    }
+    @update_attrs %{
+      description: "some updated description",
+      publish_date: "some updated publish_date",
+      title: "some updated title",
+      type: "some updated type",
+      yt_thumbnail_url: "some updated yt_thumbnail_url",
+      yt_video_id: "some updated yt_video_id",
+      yt_video_url: "some updated yt_video_url"
+    }
+    @invalid_attrs %{
+      description: nil,
+      publish_date: nil,
+      title: nil,
+      type: nil,
+      yt_thumbnail_url: nil,
+      yt_video_id: nil,
+      yt_video_url: nil
+    }
 
     def video_fixture(attrs \\ %{}) do
       {:ok, video} =

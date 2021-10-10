@@ -127,8 +127,9 @@ defmodule BigBeefWeb.BeefLive.Index do
         12 -> "December"
       end
 
-      day_th = case day do
-        n  when n in [1,  21,  31] -> "st"
+    day_th =
+      case day do
+        n when n in [1, 21, 31] -> "st"
         n when n in [2, 22] -> "nd"
         n when n in [3, 23] -> "rd"
         _ -> "th"

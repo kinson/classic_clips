@@ -6,7 +6,11 @@ defmodule ClassicClipsWeb.BeefLiveTest do
   alias ClassicClips.BigBeef
 
   @create_attrs %{beef_count: 42, date_time: "some date_time", player: "some player"}
-  @update_attrs %{beef_count: 43, date_time: "some updated date_time", player: "some updated player"}
+  @update_attrs %{
+    beef_count: 43,
+    date_time: "some updated date_time",
+    player: "some updated player"
+  }
   @invalid_attrs %{beef_count: nil, date_time: nil, player: nil}
 
   defp fixture(:beef) do

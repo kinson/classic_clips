@@ -95,7 +95,6 @@ beef_3 = %{
 # Beef.changeset(%Beef{}, beef_3)
 # |> Repo.insert!()
 
-
 box_scores_4 = [
   %{
     id: "0022000435",

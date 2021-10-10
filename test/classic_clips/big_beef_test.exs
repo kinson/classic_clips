@@ -7,7 +7,11 @@ defmodule ClassicClips.BigBeefTest do
     alias ClassicClips.BigBeef.Beef
 
     @valid_attrs %{beef_count: 42, date_time: "some date_time", player: "some player"}
-    @update_attrs %{beef_count: 43, date_time: "some updated date_time", player: "some updated player"}
+    @update_attrs %{
+      beef_count: 43,
+      date_time: "some updated date_time",
+      player: "some updated player"
+    }
     @invalid_attrs %{beef_count: nil, date_time: nil, player: nil}
 
     def beef_fixture(attrs \\ %{}) do
@@ -69,8 +73,18 @@ defmodule ClassicClips.BigBeefTest do
   describe "players" do
     alias ClassicClips.BigBeef.Player
 
-    @valid_attrs %{first_name: "some first_name", last_name: "some last_name", number: 42, team: "some team"}
-    @update_attrs %{first_name: "some updated first_name", last_name: "some updated last_name", number: 43, team: "some updated team"}
+    @valid_attrs %{
+      first_name: "some first_name",
+      last_name: "some last_name",
+      number: 42,
+      team: "some team"
+    }
+    @update_attrs %{
+      first_name: "some updated first_name",
+      last_name: "some updated last_name",
+      number: 43,
+      team: "some updated team"
+    }
     @invalid_attrs %{first_name: nil, last_name: nil, number: nil, team: nil}
 
     def player_fixture(attrs \\ %{}) do
@@ -134,8 +148,16 @@ defmodule ClassicClips.BigBeefTest do
   describe "big_beef_events" do
     alias ClassicClips.BigBeef.BigBeefEvent
 
-    @valid_attrs %{beef_id: "some beef_id", box_score_url: "some box_score_url", yt_highlight_video_url: "some yt_highlight_video_url"}
-    @update_attrs %{beef_id: "some updated beef_id", box_score_url: "some updated box_score_url", yt_highlight_video_url: "some updated yt_highlight_video_url"}
+    @valid_attrs %{
+      beef_id: "some beef_id",
+      box_score_url: "some box_score_url",
+      yt_highlight_video_url: "some yt_highlight_video_url"
+    }
+    @update_attrs %{
+      beef_id: "some updated beef_id",
+      box_score_url: "some updated box_score_url",
+      yt_highlight_video_url: "some updated yt_highlight_video_url"
+    }
     @invalid_attrs %{beef_id: nil, box_score_url: nil, yt_highlight_video_url: nil}
 
     def big_beef_event_fixture(attrs \\ %{}) do
@@ -170,7 +192,10 @@ defmodule ClassicClips.BigBeefTest do
 
     test "update_big_beef_event/2 with valid data updates the big_beef_event" do
       big_beef_event = big_beef_event_fixture()
-      assert {:ok, %BigBeefEvent{} = big_beef_event} = BigBeef.update_big_beef_event(big_beef_event, @update_attrs)
+
+      assert {:ok, %BigBeefEvent{} = big_beef_event} =
+               BigBeef.update_big_beef_event(big_beef_event, @update_attrs)
+
       assert big_beef_event.beef_id == "some updated beef_id"
       assert big_beef_event.box_score_url == "some updated box_score_url"
       assert big_beef_event.yt_highlight_video_url == "some updated yt_highlight_video_url"
@@ -178,7 +203,10 @@ defmodule ClassicClips.BigBeefTest do
 
     test "update_big_beef_event/2 with invalid data returns error changeset" do
       big_beef_event = big_beef_event_fixture()
-      assert {:error, %Ecto.Changeset{}} = BigBeef.update_big_beef_event(big_beef_event, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               BigBeef.update_big_beef_event(big_beef_event, @invalid_attrs)
+
       assert big_beef_event == BigBeef.get_big_beef_event!(big_beef_event.id)
     end
 

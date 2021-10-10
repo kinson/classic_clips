@@ -25,7 +25,15 @@ defmodule ClassicClips.Timeline.Clip do
   @doc false
   def changeset(clip, attrs) do
     clip
-    |> cast(attrs, [:yt_video_url, :yt_thumbnail_url, :clip_length, :title, :user_id, :deleted, :video_id])
+    |> cast(attrs, [
+      :yt_video_url,
+      :yt_thumbnail_url,
+      :clip_length,
+      :title,
+      :user_id,
+      :deleted,
+      :video_id
+    ])
     |> validate_required([:yt_video_url, :title, :user_id])
     |> unique_constraint([:title, :user_id],
       message: "Cannot create two clips with the same title"
@@ -71,8 +79,9 @@ defmodule ClassicClips.Timeline.Clip do
         12 -> "December"
       end
 
-      day_th = case day do
-        n  when n in [1,  21,  31] -> "st"
+    day_th =
+      case day do
+        n when n in [1, 21, 31] -> "st"
         n when n in [2, 22] -> "nd"
         n when n in [3, 23] -> "rd"
         _ -> "th"

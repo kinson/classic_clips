@@ -48,12 +48,12 @@ config :classic_clips,
          Could not find DASH_PASS environment variable.
          """)
 
-         config :classic_clips,
-         :big_beef_url,
-         System.get_env("BIG_BEEF_URL") ||
-           raise("""
-           Could not find BIG_BEEF_URL environment variable.
-           """)
+config :classic_clips,
+       :big_beef_url,
+       System.get_env("BIG_BEEF_URL") ||
+         raise("""
+         Could not find BIG_BEEF_URL environment variable.
+         """)
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

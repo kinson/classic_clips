@@ -5,7 +5,6 @@ defmodule ClassicClipsWeb.AboutController do
   alias ClassicClips.Timeline.User
 
   def index(conn, _params) do
-
     {:ok, user} =
       Plug.Conn.get_session(conn, :profile)
       |> get_or_create_user()
