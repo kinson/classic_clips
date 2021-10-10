@@ -38,7 +38,11 @@ defmodule ClassicClipsWeb.Router do
     live "/", ClipLive.Index, :index
     live "/clips", ClipLive.Index, :index
     live "/clips/new", ClipLive.Index, :new
-    live "/clips/:id", ClipLive.Show, :show, layout: {ClassicClipsWeb.LayoutView, :show_root}
+    # TODO can we wrap all these routes?
+    live_session :clip_session, root_layout: {ClassicClipsWeb.LayoutView, :show_root} do
+      live "/clips/:id", ClipLive.Show, :show
+    end
+
     live "/clips/:id/edit", ClipLive.Index, :edit
     live "/clips/:id/delete", ClipLive.Index, :delete
 
