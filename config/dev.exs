@@ -29,7 +29,10 @@ config :classic_clips, ClassicClipsWeb.Endpoint,
       "--postcss",
       "--watch",
       cd: Path.expand("../assets", __DIR__)
-    ]
+    ],
+    sass:
+      {DartSass, :install_and_run,
+       [:default, ~w(--embed-source-map --source-map-urls=absolute --watch)]}
   ]
 
 config :classic_clips, BigBeefWeb.Endpoint,
@@ -47,7 +50,10 @@ config :classic_clips, BigBeefWeb.Endpoint,
       "--postcss",
       "--watch",
       cd: Path.expand("../assets", __DIR__)
-    ]
+    ],
+    sass:
+      {DartSass, :install_and_run,
+       [:default, ~w(--embed-source-map --source-map-urls=absolute --watch)]}
   ]
 
 # ## SSL Support

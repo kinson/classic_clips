@@ -266,6 +266,7 @@ div.clip-edit-button {
     height: 1.2rem;
     width: 2rem;
     transition: all 0.1s ease-in-out;
+    display: inline;
   }
 }
 
@@ -762,6 +763,7 @@ div.show-clip {
       height: unset;
       margin: 4px 0 4px 0.7rem;
       cursor: pointer;
+      line-height: 1.15;
     }
   }
 }
@@ -806,7 +808,7 @@ div.show-clip {
     display: block;
     text-decoration: underline;
     text-underline-offset: 3px;
-    line-height: 2.5em;
+    line-height: 2.75em;
     letter-spacing: 0.07em;
     font-size: 0.95em;
     font-weight: 500;
@@ -865,6 +867,12 @@ div.show-clip {
         font-size: 1em;
         height: auto;
         margin: 0;
+        line-height: 1.1;
+
+        &::placeholder {
+          color: black;
+          opacity: 0.65;
+        }
       }
     }
   }
@@ -885,6 +893,8 @@ div.show-clip {
     margin: 0 3rem 0 0.5rem;
     color: rgb(233, 52, 215);
     font-size: 0.95em;
+    line-height: 1.1;
+    padding-bottom: 0.25rem;
 
     @media (max-width: 40rem) {
       margin: 0 0 0 0.5rem;

@@ -46,7 +46,12 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-config :dart_sass, version: "1.39.0"
+config :dart_sass,
+  version: "1.39.0",
+  default: [
+    args: ~w(css/app.scss ../priv/static/assets/lib.css),
+    cd: Path.expand("../assets", __DIR__)
+  ]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
