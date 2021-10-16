@@ -66,11 +66,10 @@ defmodule ClassicClips.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
-      "sass.translate": "sass default assets/css/app.scss priv/static/assets/lib.css",
       "assets.deploy": [
         "cmd --cd assets npm run deploy",
         "esbuild default --minify",
-        "sass.translate",
+        "sass default",
         "phx.digest"
       ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],

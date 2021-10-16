@@ -1381,6 +1381,12 @@ div.classics-container {
           font-size: 1.05em;
           height: auto;
           margin: 0;
+          line-height: 1.1;
+
+          &::placeholder {
+            color: black;
+            opacity: 0.65;
+          }
         }
       }
     }
@@ -1395,12 +1401,13 @@ div.classics-container {
       border-radius: 0;
 
       height: auto;
-      padding-bottom: 0;
+      padding-bottom: 0.25rem;
       padding-top: 0;
       padding-left: 0.1rem;
       margin: 0 3rem 0 0.5rem;
       color: rgb(233, 52, 215);
       font-size: 1em;
+      line-height: 1.1;
 
       @media (max-width: 45rem) {
         margin: 0 0 0 0.5rem;
