@@ -17,5 +17,6 @@ defmodule ClassicClips.Repo.Migrations.MakeSeasons do
 
     create index(:beefs, :season_id)
     create unique_index(:seasons, :name)
+    create unique_index(:seasons, [:year_start, :year_end])
   end
 end

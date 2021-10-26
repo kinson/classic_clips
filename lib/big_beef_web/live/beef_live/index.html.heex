@@ -1,0 +1,18 @@
+<div id="page-container">
+  <div id="beef-container" class="saucy">
+    <img src={Routes.static_path(@socket, "/images/big-beef-logo-1.png")} id="beef-logo" alt="" />
+    <h1>BIG BEEF TRACKER</h1>
+    <%= live_component BigBeefWeb.BeefLive.MenuComponent, id: "menu", page_type: @page_type %>
+    <%= live_component BigBeefWeb.BeefLive.GraphComponent, id: "graph-component", page_type: @page_type, active_game_count: @active_game_count, beefs: @beefs, last_updated: @last_updated %>
+    <%= live_component BigBeefWeb.BeefLive.StatsComponent, id: "stats-component", page_type: @page_type, big_beefs: @big_beefs, latest: @latest, total_leaders: @total_leaders, single_game_leaders: @single_game_leaders %>
+    <%= live_component BigBeefWeb.BeefLive.PreviousBeefComponent, id: "previous-beef-component", page_type: @page_type, big_beefs: @big_beefs %>
+    <%= live_component BigBeefWeb.BeefLive.PledgeComponent, id: "pledge-component", page_type: @page_type %>
+    <footer class="beef-footer">
+      <a href="https://twitter.com/BigBeefTracker">Twitter</a>
+      <a href="https://www.youtube.com/playlist?list=PL2edJvwt3KvPESvRDoGweLWPgf4C93nbI">
+        Big Beef Highlights
+      </a>
+      <a href="/">Classic Clips</a>
+    </footer>
+  </div>
+</div>

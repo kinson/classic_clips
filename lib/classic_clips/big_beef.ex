@@ -6,7 +6,7 @@ defmodule ClassicClips.BigBeef do
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
-  alias ClassicClips.BigBeef.Beef
+  alias ClassicClips.BigBeef.{Beef, Season}
   alias ClassicClips.GameData
 
   @doc """
@@ -350,12 +350,15 @@ defmodule ClassicClips.BigBeef do
         %Player{} = p -> {:ok, p}
       end
 
+    current_season = Repo.get_by!(Season, year_start: 2021, year_end: 2022)
+
     beef_data =
       Map.merge(player_data, %{
         player_id: player.id,
         game_time: game_time,
         ext_game_id: game_id,
-        date_time: game_start_time
+        date_time: game_start_time,
+        season_id: current_season.id
       })
 
     upsert_beef(beef_data)

@@ -28,6 +28,7 @@ defmodule BigBeefWeb.Router do
 
     get "/beef", RedirectPlug, to: "/"
     live "/", BeefLive.Index, :index
+    live "/history", BeefLive.History, :history
   end
 
   # Other scopes may use custom stacks.
