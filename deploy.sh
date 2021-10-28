@@ -1,9 +1,7 @@
 source .env
 export MIX_ENV=prod
 
-npm run deploy --prefix ./assets/
-mix phx.digest
-
+mix assets.deploy
 mix compile
 mix ecto.migrate
 
