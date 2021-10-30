@@ -691,7 +691,7 @@ div.stats-beef.saucy {
     }
   }
 
-  & div.all-time {
+  & div.season-all-time {
     grid-row: 2 / 3;
     grid-column: 1 / 2;
 
@@ -701,8 +701,28 @@ div.stats-beef.saucy {
     }
   }
 
-  & div.single-game {
+  & div.season-single-game {
     grid-row: 2 / 3;
+    grid-column: 2 / 3;
+
+    & > div.card,
+    p {
+      margin-left: 1.5rem;
+    }
+  }
+
+  & div.all-time {
+    grid-row: 3 / 4;
+    grid-column: 1 / 2;
+
+    & > div.card,
+    p {
+      margin-right: 1.5rem;
+    }
+  }
+
+  & div.single-game {
+    grid-row: 3 / 4;
     grid-column: 2 / 3;
 
     & > div.card,
@@ -766,11 +786,11 @@ div.pledge-beef.saucy {
 
     & > div.raised {
       display: flex;
-      flex-direction: row;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       width: 80%;
       max-width: 60rem;
-      margin: 4rem auto;
+      margin: 3rem auto;
 
       @media (max-width: 45rem) {
         margin: 3rem auto;
@@ -783,22 +803,22 @@ div.pledge-beef.saucy {
       & > p.amount {
         font-family: "Rokkitt", serif;
         font-weight: 600;
-        font-size: 2.75em;
+        font-size: 6em;
         width: unset;
-        margin: 0 0.5rem 0 auto;
         letter-spacing: 1px;
         background-color: $saucy-red;
         color: #fff;
         padding: 1rem;
+        margin: 1rem auto;
         transform: skew(-10deg);
       }
 
       & > p.description {
         font-family: "Open Sans", sans-serif;
-        font-size: 0.85em;
-        width: unset;
+        font-size: 0.95em;
         opacity: 0.6;
-        margin: 0 auto 0 0.25rem;
+        text-transform: uppercase;
+        text-align: center;
       }
     }
 

@@ -10,10 +10,12 @@ defmodule BigBeefWeb.BeefLive.Index do
     if connected?(socket), do: BigBeef.subscribe_new_beef()
 
     active_game_count = get_active_game_count()
-    big_beefs = ClassicClips.BigBeef.list_big_beef_events()
+    big_beefs = ClassicClips.BigBeef.get_big_beefs_by_season()
     latest = ClassicClips.BigBeef.get_latest_big_beef()
     single_game_leaders = ClassicClips.BigBeef.get_single_game_leaders()
     total_big_beef_leaders = ClassicClips.BigBeef.get_big_beef_count_leaders()
+    season_single_game_leaders = ClassicClips.BigBeef.get_season_single_game_leaders()
+    season_total_big_beef_leaders = ClassicClips.BigBeef.get_season_big_beef_count_leaders()
 
     modified_socket =
       socket
@@ -24,7 +26,9 @@ defmodule BigBeefWeb.BeefLive.Index do
       |> assign(:page_type, "live")
       |> assign(:latest, latest)
       |> assign(:total_leaders, total_big_beef_leaders)
+      |> assign(:season_total_leaders, season_total_big_beef_leaders)
       |> assign(:single_game_leaders, single_game_leaders)
+      |> assign(:season_single_game_leaders, season_single_game_leaders)
 
     {:ok, modified_socket}
   end

@@ -51,10 +51,37 @@ defmodule ClassicClips.BigBeef do
     |> Repo.preload(:player)
   end
 
+  def get_season_single_game_leaders() do
+    from(b in ClassicClips.BigBeef.Beef,
+      select: b,
+      join: s in assoc(b, :season),
+      where: s.current,
+      where: b.beef_count >= 20,
+      order_by: [desc: b.beef_count],
+      limit: 5
+    )
+    |> Repo.all()
+    |> Repo.preload(:player)
+  end
+
   def get_big_beef_count_leaders() do
     from(bb in ClassicClips.BigBeef.BigBeefEvent,
       join: b in assoc(bb, :beef),
       join: p in assoc(b, :player),
+      select: {b.player_id, p.first_name, p.last_name, count(b.id)},
+      group_by: [b.player_id, p.first_name, p.last_name],
+      order_by: [desc: count(b.id)],
+      limit: 5
+    )
+    |> Repo.all()
+  end
+
+  def get_season_big_beef_count_leaders() do
+    from(bb in ClassicClips.BigBeef.BigBeefEvent,
+      join: b in assoc(bb, :beef),
+      join: p in assoc(b, :player),
+      join: s in assoc(b, :season),
+      where: s.current,
       select: {b.player_id, p.first_name, p.last_name, count(b.id)},
       group_by: [b.player_id, p.first_name, p.last_name],
       order_by: [desc: count(b.id)],
@@ -390,7 +417,13 @@ defmodule ClassicClips.BigBeef do
       select: bbe
     )
     |> Repo.all()
-    |> Repo.preload(beef: [:player])
+    |> Repo.preload(beef: [:player, :season])
+  end
+
+  def get_big_beefs_by_season() do
+    list_big_beef_events()
+    |> Enum.group_by(& &1.beef.season.year_start)
+    |> Enum.sort(fn {year_a, _}, {year_b, _} -> year_a >= year_b end)
   end
 
   @doc """

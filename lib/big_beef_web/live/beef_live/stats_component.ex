@@ -23,8 +23,30 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
           </div>
         </div>
       </div>
+      <div class="season-all-time">
+        <p class="beef-card-label">SEASON BIG BEEF GAME LEADERS [TOP 5]</p>
+        <div class="card">
+          <%= for {rank, first_name, last_name, beef_count} <- with_rank("total", @season_total_leaders) do %>
+            <div class="stat-row">
+              <p class="name"><%= "#{rank}. #{first_name} #{last_name}" %></p>
+              <p class="number"><%= beef_count %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="season-single-game">
+        <p class="beef-card-label">SEASON SINGLE-GAME BEEF LEADERS [TOP 5]</p>
+        <div class="card">
+          <%= for {rank, first_name, last_name, beef_count} <- with_rank("single", @season_single_game_leaders) do %>
+            <div class="stat-row">
+              <p class="name"><%= "#{rank}. #{first_name} #{last_name}" %></p>
+              <p class="number"><%= beef_count %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
       <div class="all-time">
-        <p class="beef-card-label">ALL TIME LEADERS [TOP 5]</p>
+        <p class="beef-card-label">ALL TIME BIG BEEF GAME LEADERS [TOP 5]</p>
         <div class="card">
           <%= for {rank, first_name, last_name, beef_count} <- with_rank("total", @total_leaders) do %>
             <div class="stat-row">
