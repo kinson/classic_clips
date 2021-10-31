@@ -23,6 +23,13 @@ config :classic_clips, BigBeefWeb.Endpoint,
     "bigbeeftracker.com"
   ]
 
+config :classic_clips, PickEmWeb.Endpoint,
+  url: [host: "ndpickem.com"],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  check_orign: [
+    "ndpickem.com"
+  ]
+
 # Do not print debug messages in production
 config :logger, level: :notice
 
