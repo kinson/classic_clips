@@ -1,0 +1,50 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-white text-center font-open-sans font-extrabold text-nd-pink text-7xl py-6 my-0">PICK EM</h1>
+
+  <div>
+    <p class="text-center text-white bg-nd-pink text-nd-yellow w-max mx-auto px-3 my-4 rounded-xl font-open-sans font-medium tracking-widest">Matchup</p>
+    <p class="text-white text-center font-open-sans font-semibold my-0"><%= get_matchup_title(@matchup) %></p>
+  </div>
+
+  <div>
+    <p class="text-center text-white bg-nd-pink text-nd-yellow w-max mx-auto px-3 mb-4 mt-14 rounded-xl font-open-sans font-medium tracking-widest">No Dunks Crew Picks</p>
+
+    <div class="grid grid-cols-4 text-white mx-auto max-w-xs my-2 font-bold">
+      <p class="col-span-3 my-2">TAS</p>
+      <p class="my-2"><%= get_ndc_pick("tas", @ndc_pick) %></p>
+      <p class="col-span-3 my-2">SKEETS</p>
+      <p class="my-2"><%= get_ndc_pick("skeets", @ndc_pick) %></p>
+      <p class="col-span-3 my-2">LEIGH</p>
+      <p class="my-2"><%= get_ndc_pick("leigh", @ndc_pick) %></p>
+      <p class="col-span-3 my-2">TREY</p>
+      <p class="my-2"><%= get_ndc_pick("trey", @ndc_pick) %></p>
+    </div>
+  </div>
+
+  <div class="mx-auto">
+    <p class="text-center text-white bg-nd-pink text-nd-yellow w-max mx-auto px-3 mb-2 mt-14 rounded-xl font-open-sans font-medium tracking-widest">Your Pick</p>
+    <p class="w-max mx-auto text-white font-open-sans font-light"><%= get_time_left(@matchup) %></p>
+  </div>
+
+  <div class="flex flex-col justify-center">
+    <div class="flex flex-col md:flex-row items-center md:justify-center">
+      <button type="button" phx-click="away-click" class={get_team_button_style(@selected_team, @matchup.away_team)}>
+        <%= @matchup.away_team.location %>
+      </button>
+      <button type="button" phx-click="home-click" class={get_team_button_style(@selected_team, @matchup.home_team)}>
+        <%= @matchup.home_team.location %>
+      </button>
+    </div>
+    <%= if @user do %>
+      <button type="button" phx-click="save-click" class="text-white rounded-lg bg-nd-pink w-max border-0 shadow-lg mx-auto my-6 hover:bg-nd-pink focus:bg-nd-pink">
+        <%= if @selection_saved, do: "Update Your Pick", else: "Lock It In" %>
+      </button>
+    <% end %>
+    <%= unless @user do %>
+      <div class="flex flex-row rounded-2xl shadow-xl bg-white items-center w-max mx-auto px-4 py-2 my-6">
+        <img class="w-14 mr-4" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
+        <%= link "Sign In To Pick!", to: @google_auth_url, class: "underline font-bold font-open-sans text-2xl" %>
+      </div>
+    <% end %>
+  </div>
+</div>

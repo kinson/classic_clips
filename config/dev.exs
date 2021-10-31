@@ -56,6 +56,24 @@ config :classic_clips, BigBeefWeb.Endpoint,
        [:default, ~w(--embed-source-map --source-map-urls=absolute --watch)]}
   ]
 
+config :classic_clips, PickEmWeb.Endpoint,
+  http: [port: 4002],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  watchers: [
+    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    npx: [
+      "tailwindcss",
+      "--input=css/app.css",
+      "--output=../priv/static/assets/app.css",
+      "--postcss",
+      "--watch",
+      cd: Path.expand("../assets", __DIR__)
+    ],
+  ]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -98,6 +116,16 @@ config :classic_clips, BigBeefWeb.Endpoint,
       ~r"priv/gettext/.*(po)$",
       ~r"lib/big_beef_web/(live|views)/.*(ex)$",
       ~r"lib/big_beef_web/templates/.*(eex)$"
+    ]
+  ]
+
+config :classic_clips, PickEmWeb.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/gettext/.*(po)$",
+      ~r"lib/pick_em_web/(live|views)/.*(ex)$",
+      ~r"lib/pick_em_web/templates/.*(eex)$"
     ]
   ]
 

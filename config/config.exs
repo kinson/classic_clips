@@ -25,6 +25,13 @@ config :classic_clips, BigBeefWeb.Endpoint,
   pubsub_server: ClassicClips.PubSub,
   live_view: [signing_salt: "ISFu52hQ"]
 
+config :classic_clips, PickEmWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "ZaWIHgxKEl5jFFtPd3SNSpFGLbCR3XLm8nYdwW5pq+QDIJ7WKrHsKrQXaqSKffGB",
+  render_errors: [view: PickEmWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: ClassicClips.PubSub,
+  live_view: [signing_salt: "ISFu52hQ"]
+
 config :sentry,
   dsn: System.get_env("SENTRY_DSN"),
   environment_name: Mix.env(),
