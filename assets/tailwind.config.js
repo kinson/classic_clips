@@ -4,7 +4,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-          'beef-red': 'rgb(215, 25, 33)'
+          'beef-red': 'rgb(215, 25, 33)',
+          'nd-yellow': '#DAFF4F',
+          'nd-pink': '#E934D7',
+          'nd-purple': '#6000AA'
+        },
+        fontFamily: {
+          'open-sans': ['Open Sans', 'sans-serif']
         }
       }
   },

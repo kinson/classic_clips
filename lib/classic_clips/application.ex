@@ -17,6 +17,7 @@ defmodule ClassicClips.Application do
       # Start the Endpoint (http/https)
       ClassicClipsWeb.Endpoint,
       BigBeefWeb.Endpoint,
+      PickEmWeb.Endpoint,
       # Start a worker by calling: ClassicClips.Worker.start_link(arg)
       # {ClassicClips.Worker, arg}
       ClassicClips.BeefServer,
