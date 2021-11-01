@@ -71,7 +71,7 @@ config :classic_clips, PickEmWeb.Endpoint,
       "--postcss",
       "--watch",
       cd: Path.expand("../assets", __DIR__)
-    ],
+    ]
   ]
 
 # ## SSL Support

@@ -24,10 +24,10 @@ config :classic_clips, BigBeefWeb.Endpoint,
   ]
 
 config :classic_clips, PickEmWeb.Endpoint,
-  url: [host: "ndpickem.com"],
+  url: [host: "pickem.classicclipsinc.com"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   check_orign: [
-    "ndpickem.com"
+    "pickem.classicclipsinc.com"
   ]
 
 # Do not print debug messages in production

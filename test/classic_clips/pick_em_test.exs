@@ -21,7 +21,11 @@ defmodule ClassicClips.PickEmTest do
     end
 
     test "create_team/1 with valid data creates a team" do
-      valid_attrs = %{abbreviation: "some abbreviation", location: "some location", name: "some name"}
+      valid_attrs = %{
+        abbreviation: "some abbreviation",
+        location: "some location",
+        name: "some name"
+      }
 
       assert {:ok, %Team{} = team} = PickEm.create_team(valid_attrs)
       assert team.abbreviation == "some abbreviation"
@@ -35,7 +39,12 @@ defmodule ClassicClips.PickEmTest do
 
     test "update_team/2 with valid data updates the team" do
       team = team_fixture()
-      update_attrs = %{abbreviation: "some updated abbreviation", location: "some updated location", name: "some updated name"}
+
+      update_attrs = %{
+        abbreviation: "some updated abbreviation",
+        location: "some updated location",
+        name: "some updated name"
+      }
 
       assert {:ok, %Team{} = team} = PickEm.update_team(team, update_attrs)
       assert team.abbreviation == "some updated abbreviation"
@@ -79,7 +88,13 @@ defmodule ClassicClips.PickEmTest do
     end
 
     test "create_match_up/1 with valid data creates a match_up" do
-      valid_attrs = %{date: ~D[2021-10-30], month: "some month", score: "some score", spread: "some spread", tip_time: ~T[14:00:00]}
+      valid_attrs = %{
+        date: ~D[2021-10-30],
+        month: "some month",
+        score: "some score",
+        spread: "some spread",
+        tip_time: ~T[14:00:00]
+      }
 
       assert {:ok, %MatchUp{} = match_up} = PickEm.create_match_up(valid_attrs)
       assert match_up.date == ~D[2021-10-30]
@@ -95,7 +110,14 @@ defmodule ClassicClips.PickEmTest do
 
     test "update_match_up/2 with valid data updates the match_up" do
       match_up = match_up_fixture()
-      update_attrs = %{date: ~D[2021-10-31], month: "some updated month", score: "some updated score", spread: "some updated spread", tip_time: ~T[15:01:01]}
+
+      update_attrs = %{
+        date: ~D[2021-10-31],
+        month: "some updated month",
+        score: "some updated score",
+        spread: "some updated spread",
+        tip_time: ~T[15:01:01]
+      }
 
       assert {:ok, %MatchUp{} = match_up} = PickEm.update_match_up(match_up, update_attrs)
       assert match_up.date == ~D[2021-10-31]

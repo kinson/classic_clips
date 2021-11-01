@@ -58,9 +58,7 @@ defmodule ClassicClips.PickEmFixtures do
   def ndc_pick_fixture(attrs \\ %{}) do
     {:ok, ndc_pick} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> ClassicClips.PickEm.create_ndc_pick()
 
     ndc_pick
