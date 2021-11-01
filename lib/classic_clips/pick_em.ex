@@ -37,4 +37,8 @@ defmodule ClassicClips.PickEm do
     UserPick.changeset(user_pick, %{picked_team_id: selected_team.id})
     |> Repo.update()
   end
+
+  def get_pick_count_for_matchup(%MatchUp{id: id}) do
+    from(up in UserPick, select: count(up.id), where: up.matchup_id == ^id) |> Repo.one()
+  end
 end
