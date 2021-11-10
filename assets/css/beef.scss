@@ -519,8 +519,8 @@ div.previous-beef.saucy {
 div.stats-beef.saucy {
   display: none;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 13rem 1fr;
-  grid-gap: 0rem;
+  grid-auto-rows: max-content;
+  grid-row-gap: 2.5rem;
 
   @media (max-width: 45rem) {
     width: 100%;
