@@ -34,7 +34,8 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:selection_saved, selection_saved)
      |> assign(:can_save_pick?, can_save_pick?)
      |> assign(:total_picks_today, total_picks_today)
-     |> assign(:google_auth_url, generate_oauth_url())}
+     |> assign(:google_auth_url, generate_oauth_url())
+     |> assign(:editing_profile, false)}
   end
 
   @impl true
@@ -119,7 +120,7 @@ defmodule PickEmWeb.PickEmLive.Index do
   def get_save_button_text(true, _), do: "Update Your Pick"
 
   def maybe_disable(class_string, false), do: class_string <> " opacity-60"
-  def maybe_disable(class_string, _), do: class_string <> " shadow-lg"
+  def maybe_disable(class_string, _), do: class_string <> " shadow-brutal"
 
   def get_team_button_style(nil, _) do
     get_team_button_class("not selected")
@@ -134,11 +135,11 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   def get_team_button_class("selected") do
-    "bg-nd-pink text-nd-yellow leading-none border-2 border-white hover:border-white focus:border-white md:mx-2 hover:bg-nd-pink focus:bg-nd-pink"
+    "bg-nd-pink text-nd-yellow leading-none border-2 rounded-none font-open-sans font-bold text-2xl border-white hover:border-white focus:border-white hover:bg-nd-pink focus:bg-nd-pink"
   end
 
   def get_team_button_class(_) do
-    "bg-white text-nd-purple leading-none border-0 md:mx-2 hover:bg-nd-pink focus:bg-nd-pink"
+    "bg-white text-nd-purple leading-none rounded-none font-open-sans font-bold text-2xl border-0 hover:bg-nd-pink focus:bg-nd-pink"
   end
 
   defp get_selected_team(nil), do: {nil, false}

@@ -28,6 +28,8 @@ defmodule PickEmWeb.Router do
     get "/auth/google/callback", GoogleAuthController, :index
 
     live "/", PickEmLive.Index, :index
+    live "/leaders", PickEmLive.Leaders, :leaders
+    live "/profile", PickEmLive.Profile, :profile
   end
 
   # Other scopes may use custom stacks.
