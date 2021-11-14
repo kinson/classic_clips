@@ -250,4 +250,62 @@ defmodule ClassicClips.PickEmTest do
       assert %Ecto.Changeset{} = PickEm.change_ndc_pick(ndc_pick)
     end
   end
+
+  describe "user_records" do
+    alias ClassicClips.PickEm.UserRecord
+
+    import ClassicClips.PickEmFixtures
+
+    @invalid_attrs %{lossses: nil, month: nil, wins: nil}
+
+    test "list_user_records/0 returns all user_records" do
+      user_record = user_record_fixture()
+      assert PickEm.list_user_records() == [user_record]
+    end
+
+    test "get_user_record!/1 returns the user_record with given id" do
+      user_record = user_record_fixture()
+      assert PickEm.get_user_record!(user_record.id) == user_record
+    end
+
+    test "create_user_record/1 with valid data creates a user_record" do
+      valid_attrs = %{lossses: 42, month: "some month", wins: 42}
+
+      assert {:ok, %UserRecord{} = user_record} = PickEm.create_user_record(valid_attrs)
+      assert user_record.lossses == 42
+      assert user_record.month == "some month"
+      assert user_record.wins == 42
+    end
+
+    test "create_user_record/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = PickEm.create_user_record(@invalid_attrs)
+    end
+
+    test "update_user_record/2 with valid data updates the user_record" do
+      user_record = user_record_fixture()
+      update_attrs = %{lossses: 43, month: "some updated month", wins: 43}
+
+      assert {:ok, %UserRecord{} = user_record} = PickEm.update_user_record(user_record, update_attrs)
+      assert user_record.lossses == 43
+      assert user_record.month == "some updated month"
+      assert user_record.wins == 43
+    end
+
+    test "update_user_record/2 with invalid data returns error changeset" do
+      user_record = user_record_fixture()
+      assert {:error, %Ecto.Changeset{}} = PickEm.update_user_record(user_record, @invalid_attrs)
+      assert user_record == PickEm.get_user_record!(user_record.id)
+    end
+
+    test "delete_user_record/1 deletes the user_record" do
+      user_record = user_record_fixture()
+      assert {:ok, %UserRecord{}} = PickEm.delete_user_record(user_record)
+      assert_raise Ecto.NoResultsError, fn -> PickEm.get_user_record!(user_record.id) end
+    end
+
+    test "change_user_record/1 returns a user_record changeset" do
+      user_record = user_record_fixture()
+      assert %Ecto.Changeset{} = PickEm.change_user_record(user_record)
+    end
+  end
 end

@@ -63,4 +63,20 @@ defmodule ClassicClips.PickEmFixtures do
 
     ndc_pick
   end
+
+  @doc """
+  Generate a user_record.
+  """
+  def user_record_fixture(attrs \\ %{}) do
+    {:ok, user_record} =
+      attrs
+      |> Enum.into(%{
+        lossses: 42,
+        month: "some month",
+        wins: 42
+      })
+      |> ClassicClips.PickEm.create_user_record()
+
+    user_record
+  end
 end

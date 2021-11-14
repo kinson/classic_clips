@@ -2,7 +2,7 @@ defmodule ClassicClips.PickEm do
   import Ecto.Query, warn: false
 
   alias ClassicClips.Repo
-  alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick}
+  alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord}
   alias ClassicClips.Timeline.User
 
   def get_current_matchup() do
@@ -40,5 +40,11 @@ defmodule ClassicClips.PickEm do
 
   def get_pick_count_for_matchup(%MatchUp{id: id}) do
     from(up in UserPick, select: count(up.id), where: up.matchup_id == ^id) |> Repo.one()
+  end
+
+  def get_leaders() do
+    from(ur in UserRecord, where: ur.month == "November", order_by: [desc: ur.wins], limit: 10)
+    |> Repo.all()
+    |> Repo.preload(:user)
   end
 end

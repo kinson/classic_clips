@@ -1,0 +1,7 @@
+<div class="max-w-2xl mx-auto mb-20">
+  <h1 class="text-white text-center font-open-sans font-extrabold text-nd-pink text-7xl mt-6 mb-0">PICK &apos;EM</h1>
+  <p class="text-white font-open-sans text-center mt-0 mb-12 text-xl"><%= @total_picks_today + 5 %> Picks Made Today</p>
+  <%= live_component PickEmWeb.PickEmLive.NavComponent, id: "nav-component", active: "profile" %> 
+  <p class="text-center text-white bg-nd-pink text-nd-yellow w-max mx-auto px-3 mb-6 mt-14 rounded-lg font-open-sans font-medium tracking-widest">Your Profile</p>
+   <%= live_component PickEmWeb.PickEmLive.AccountInfoComponent, id: "account-info-component", socket: @socket, user: @user %> 
+</div>

@@ -11,8 +11,14 @@ module.exports = {
         },
         fontFamily: {
           'open-sans': ['Open Sans', 'sans-serif']
+        },
+        width: {
+          '14/12': '116%'
+        },
+        boxShadow: {
+          'brutal': '4px 5px 0px #111'
         }
-      }
+    }
   },
   variants: {
     extend: {},
