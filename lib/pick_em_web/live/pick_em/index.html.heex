@@ -1,20 +1,20 @@
 <div class="max-w-2xl mx-auto mb-20 box-border">
   <div class="w-max mx-auto">
     <h1 class="text-white text-center font-open-sans font-extrabold italic text-nd-pink text-9xl mt-10 mb-0">PICK &apos;EM</h1>
-    <div class="h-10 w-14/12 bg-nd-yellow -mt-14 px-6"></div>
+    <div class="h-10 w-13/12 md:w-14/12 bg-nd-yellow -mt-14 px-6"></div>
   </div>
 
-   <%= live_component PickEmWeb.PickEmLive.NavComponent, id: "nav-component", active: "home" %> 
+   <%= live_component PickEmWeb.PickEmLive.NavComponent, id: "nav-component", active: "home", user: @user %>
   
-   <div class="border-nd-yellow border-l-2">
-     <div class="ml-20">
+   <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
+     <div class="ml-10 md:ml-20">
       <p class="text-center text-nd-pink w-max mb-4 mt-14 font-open-sans font-bold text-4xl">Matchup</p>
       <p class="text-5xl text-nd-yellow font-open-sans font-bold mb-0"><%=@matchup.away_team.abbreviation %> @ <%= @matchup.home_team.abbreviation %> (<%= @matchup.favorite_team.abbreviation %> <%= @matchup.spread %>)</p>
      </div>
 
      <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
 
-     <div class="ml-20">
+     <div class="ml-10 md:ml-20">
       <p class="text-center text-nd-pink w-max mb-4 font-open-sans font-bold text-4xl">No Dunks Crew Picks</p>
 
       <div class="grid grid-cols-4 text-white max-w-xs my-2 font-bold">
@@ -31,7 +31,7 @@
 
      <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
 
-    <div class="ml-20">
+    <div class="ml-10 md:ml-20">
       <div>
         <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">Your Pick</p>
         <p class="text-white font-open-sans text-2xl font-light my-0"><%= get_time_left(@matchup) %></p>
@@ -58,7 +58,7 @@
           </button>
         <% end %>
         <%= unless @user do %>
-          <div class="flex flex-row rounded-2xl shadow-xl bg-white items-center w-max mx-auto px-4 py-2 my-6">
+          <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
             <img class="w-14 mr-4" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
             <%= link "Sign In To Pick!", to: @google_auth_url, class: "underline font-bold font-open-sans text-2xl" %>
           </div>

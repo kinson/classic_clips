@@ -135,11 +135,11 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   def get_team_button_class("selected") do
-    "bg-nd-pink text-nd-yellow leading-none border-2 rounded-none font-open-sans font-bold text-2xl border-white hover:border-white focus:border-white hover:bg-nd-pink focus:bg-nd-pink"
+    "bg-nd-pink text-nd-yellow leading-none border-2 rounded-none font-open-sans font-bold text-2xl border-white hover:border-white focus:border-white hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0"
   end
 
   def get_team_button_class(_) do
-    "bg-white text-nd-purple leading-none rounded-none font-open-sans font-bold text-2xl border-0 hover:bg-nd-pink focus:bg-nd-pink"
+    "bg-white text-nd-purple leading-none rounded-none font-open-sans font-bold text-2xl border-0 hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0"
   end
 
   defp get_selected_team(nil), do: {nil, false}
