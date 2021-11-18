@@ -6,11 +6,13 @@ defmodule PickEmWeb.PickEmLive.Profile do
 
   @impl true
   def mount(_params, session, socket) do
-    # get user
     {:ok, user} = get_or_create_user(session)
 
-    socket = socket |> assign(:total_picks_today, 0) |> assign(:user, user)
-    {:ok, socket}
+    if is_nil(user) do
+      {:ok, push_redirect(socket, to: "/")}
+    else
+      {:ok, socket |> assign(:total_picks_today, 0) |> assign(:user, user)}
+    end
   end
 
   def get_or_create_user(%{"profile" => profile}) do
@@ -20,5 +22,9 @@ defmodule PickEmWeb.PickEmLive.Profile do
       nil -> User.create_user(profile)
       %User{} = user -> {:ok, user}
     end
+  end
+
+  def get_or_create_user(_) do
+    {:ok, nil}
   end
 end

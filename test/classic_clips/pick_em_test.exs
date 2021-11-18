@@ -285,7 +285,9 @@ defmodule ClassicClips.PickEmTest do
       user_record = user_record_fixture()
       update_attrs = %{lossses: 43, month: "some updated month", wins: 43}
 
-      assert {:ok, %UserRecord{} = user_record} = PickEm.update_user_record(user_record, update_attrs)
+      assert {:ok, %UserRecord{} = user_record} =
+               PickEm.update_user_record(user_record, update_attrs)
+
       assert user_record.lossses == 43
       assert user_record.month == "some updated month"
       assert user_record.wins == 43

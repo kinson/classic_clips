@@ -13,7 +13,8 @@ module.exports = {
           'open-sans': ['Open Sans', 'sans-serif']
         },
         width: {
-          '14/12': '116%'
+          '14/12': '116%',
+          '13/12': '108%'
         },
         boxShadow: {
           'brutal': '4px 5px 0px #111'
