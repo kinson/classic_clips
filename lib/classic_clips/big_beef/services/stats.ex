@@ -81,8 +81,8 @@ defmodule ClassicClips.BigBeef.Services.Stats do
 
   def extract_team_stats(%{
         "game" => %{
-          "homeTeam" => %{"players" => home_players, "teamName" => home_team_name},
-          "awayTeam" => %{"players" => away_players, "teamName" => away_team_name},
+          "homeTeam" => %{"players" => home_players, "teamName" => home_team_name, "score" => home_score},
+          "awayTeam" => %{"players" => away_players, "teamName" => away_team_name, "score" => away_score},
           "period" => period,
           "gameClock" => game_clock,
           "gameStatusText" => game_status,
@@ -91,8 +91,8 @@ defmodule ClassicClips.BigBeef.Services.Stats do
         }
       }) do
     %{
-      home: %{name: home_team_name, players: home_players},
-      away: %{name: away_team_name, players: away_players},
+      home: %{name: home_team_name, players: home_players, score: home_score},
+      away: %{name: away_team_name, players: away_players, score: away_score},
       game_status: game_status,
       game_time: parse_game_time(game_clock, period),
       game_start_time: game_start_time,

@@ -11,6 +11,7 @@ defmodule ClassicClips.Timeline.User do
     field :email, :string
     field :username, :string
     field :google_id, :string
+    field :config, :map
 
     timestamps()
   end
