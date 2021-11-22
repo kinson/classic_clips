@@ -232,6 +232,7 @@ defmodule ClassicClips.BigBeef do
       |> Enum.map(&get_game_data/1)
       |> Enum.filter(&(not is_nil(&1)))
       |> Enum.map(fn game ->
+        IO.inspect(game)
         %{
           home: home,
           away: away,

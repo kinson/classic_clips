@@ -30,6 +30,7 @@ defmodule PickEmWeb.Router do
     live "/", PickEmLive.Index, :index
     live "/leaders", PickEmLive.Leaders, :leaders
     live "/profile", PickEmLive.Profile, :profile
+    live "/settings", PickEmLive.Settings, :settings
   end
 
   # Other scopes may use custom stacks.
