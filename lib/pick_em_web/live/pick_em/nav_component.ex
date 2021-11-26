@@ -3,9 +3,9 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-row justify-center mt-10 mb-16">
+    <div class="flex flex-row justify-center gap-6 mt-10 mb-16">
       <a href="/" class={get_class("home", @active)}>Home</a>
-      <a href="/leaders" class={get_class("leaders", @active)}>Leader Board</a>
+      <a href="/leaders" class={get_class("leaders", @active)}>Leaders</a>
       <%= if @user do %>
         <a href="/profile" class={get_class("profile", @active)}>Your Profile</a>
       <% end %>
@@ -21,5 +21,5 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
     do: base_class() <> "text-white active:text-white hover:text-white"
 
   def base_class(),
-    do: "underline my-0 mx-2 font-open-sans font-bold text-3xl tracking-wider" <> " "
+    do: "underline my-0 font-open-sans font-bold text-2xl tracking-wider" <> " "
 end

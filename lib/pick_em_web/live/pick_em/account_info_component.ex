@@ -4,7 +4,7 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="w-full ml-20 p-4 bg-gray-100 shadow-lg rounded-lg flex flex-row">
+    <div class="w-auto md:w-full ml-10 md:ml-20 p-4 bg-gray-100 shadow-lg rounded-lg flex flex-row">
      <img class="max-h-20 mr-8 ml-2 my-2" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
      <div class="flex flex-col">
        <div class="flex flex-row mt-2 mb-4">
@@ -28,6 +28,7 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
     """
   end
 
+  @impl true
   def mount(socket) do
     {:ok, assign(socket, :editing_profile, false)}
   end

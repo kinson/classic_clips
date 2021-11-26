@@ -1,0 +1,12 @@
+<main role="main" class="pick-em-container">
+  <div class="max-w-2xl mx-auto mb-20">
+    <div class="w-max mx-auto">
+      <h1 class="text-white text-center font-open-sans font-extrabold italic text-nd-pink text-9xl mt-10 mb-0">PICK &apos;EM</h1>
+      <div class="h-10 w-13/12 md:w-14/12 bg-nd-yellow -mt-14 px-6"></div>
+    </div>
+    <%= live_component PickEmWeb.PickEmLive.NavComponent, id: "nav-component", active: @page, user: @user %>
+    <%= unless is_nil(@theme) do %>
+      <%= @inner_content %>
+    <% end %>
+  </div>
+</main>
