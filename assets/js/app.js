@@ -2,9 +2,21 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let Hooks = {}
+Hooks.PickEmThemeData = {
+  updated() {
+    window.localStorage.setItem("theme", this.el.attributes.value.value);
+  },
+};
 
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let liveSocket = new LiveSocket("/live", Socket, {
+  params: {
+    theme: window.localStorage.getItem("theme"),
+    _csrf_token: csrfToken
+  },
+  hooks: Hooks
+})
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
