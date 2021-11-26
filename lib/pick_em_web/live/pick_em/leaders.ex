@@ -8,8 +8,18 @@ defmodule PickEmWeb.PickEmLive.Leaders do
   def mount(_params, session, socket) do
     {:ok, user} = get_or_create_user(session)
 
+    connection_params = get_connect_params(socket) || %{}
+
+    theme =
+      case Map.get(connection_params, "theme") do
+        nil -> nil
+        data -> Jason.decode!(data)
+      end
+
     {:ok,
      socket
+     |> assign(:page, "leaders")
+     |> assign(:theme, theme)
      |> assign(:total_picks_today, 0)
      |> assign(:leaders, get_leaders())
      |> assign(:user, user)}

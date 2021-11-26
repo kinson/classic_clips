@@ -42,6 +42,7 @@ defmodule ClassicClips.MatchupServer do
 
     Stats.get_boxscore_for_game(nba_game_id)
     |> Stats.extract_team_stats()
+
     # |> IO.inspect()
   end
 end

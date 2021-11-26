@@ -1,69 +1,60 @@
-<div class="max-w-2xl mx-auto mb-20 box-border">
-  <div class="w-max mx-auto">
-    <h1 class="text-white text-center font-open-sans font-extrabold italic text-nd-pink text-9xl mt-10 mb-0">PICK &apos;EM</h1>
-    <div class="h-10 w-13/12 md:w-14/12 bg-nd-yellow -mt-14 px-6"></div>
+<div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
+ <div class="ml-10 md:ml-20">
+  <p class="text-center text-nd-pink w-max mb-4 mt-14 font-open-sans font-bold text-4xl">Matchup</p>
+  <p class="text-4xl text-nd-yellow font-open-sans font-bold mb-0"><%= get_emoji_for_team(@matchup.away_team, @theme) %> <%= @matchup.away_team.abbreviation %> @ <%= get_emoji_for_team(@matchup.home_team, @theme) %> <%= @matchup.home_team.abbreviation %> (<%= @matchup.favorite_team.abbreviation %> <%= @matchup.spread %>)</p>
+ </div>
+
+ <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
+
+ <div class="ml-10 md:ml-20">
+  <p class="text-center text-nd-pink w-max mb-4 font-open-sans font-bold text-4xl">No Dunks Crew Picks</p>
+
+  <div class="grid grid-cols-4 text-white max-w-xs my-2 font-bold">
+    <p class="col-span-3 my-1">TAS</p>
+    <p class="my-1"><%= get_ndc_pick("tas", @ndc_pick) %></p>
+    <p class="col-span-3 my-1">SKEETS</p>
+    <p class="my-1"><%= get_ndc_pick("skeets", @ndc_pick) %></p>
+    <p class="col-span-3 my-1">LEIGH</p>
+    <p class="my-1"><%= get_ndc_pick("leigh", @ndc_pick) %></p>
+    <p class="col-span-3 my-1">TREY</p>
+    <p class="my-1"><%= get_ndc_pick("trey", @ndc_pick) %></p>
+  </div>
+</div>
+
+ <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
+
+<div class="ml-10 md:ml-20">
+  <div>
+    <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">Your Pick</p>
+    <p class="text-white font-open-sans text-2xl font-light my-0"><%= get_time_left(@matchup) %></p>
   </div>
 
-   <%= live_component PickEmWeb.PickEmLive.NavComponent, id: "nav-component", active: "home", user: @user %>
-  
-   <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
-     <div class="ml-10 md:ml-20">
-      <p class="text-center text-nd-pink w-max mb-4 mt-14 font-open-sans font-bold text-4xl">Matchup</p>
-      <p class="text-5xl text-nd-yellow font-open-sans font-bold mb-0"><%=@matchup.away_team.abbreviation %> @ <%= @matchup.home_team.abbreviation %> (<%= @matchup.favorite_team.abbreviation %> <%= @matchup.spread %>)</p>
-     </div>
-
-     <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
-
-     <div class="ml-10 md:ml-20">
-      <p class="text-center text-nd-pink w-max mb-4 font-open-sans font-bold text-4xl">No Dunks Crew Picks</p>
-
-      <div class="grid grid-cols-4 text-white max-w-xs my-2 font-bold">
-        <p class="col-span-3 my-1">TAS</p>
-        <p class="my-1"><%= get_ndc_pick("tas", @ndc_pick) %></p>
-        <p class="col-span-3 my-1">SKEETS</p>
-        <p class="my-1"><%= get_ndc_pick("skeets", @ndc_pick) %></p>
-        <p class="col-span-3 my-1">LEIGH</p>
-        <p class="my-1"><%= get_ndc_pick("leigh", @ndc_pick) %></p>
-        <p class="col-span-3 my-1">TREY</p>
-        <p class="my-1"><%= get_ndc_pick("trey", @ndc_pick) %></p>
-      </div>
+  <div class="flex flex-col mt-10">
+      <%= if assigns[:error_message] do %>
+        <p class="text-red-500 font-open-sans font-light text-2xl mb-2 mt-0"><%= @error_message %></p>
+      <% end %>
+      <%= if assigns[:success_message] && assigns[:error_message] == nil do %>
+        <p class="text-nd-yellow font-open-sans font-light text-2xl mb-2 mt-0"><%= @success_message %></p>
+      <% end %>
+    <div class="flex flex-col md:flex-row gap-6">
+      <button type="button" phx-click="away-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.away_team) |> maybe_disable(@can_save_pick?)}>
+        <%= get_emoji_for_team(@matchup.away_team, @theme) %> <%= @matchup.away_team.location %>
+      </button>
+      <button type="button" phx-click="home-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.home_team) |> maybe_disable(@can_save_pick?)}>
+        <%= get_emoji_for_team(@matchup.home_team, @theme) %> <%= @matchup.home_team.location %>
+      </button>
     </div>
-
-     <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
-
-    <div class="ml-10 md:ml-20">
-      <div>
-        <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">Your Pick</p>
-        <p class="text-white font-open-sans text-2xl font-light my-0"><%= get_time_left(@matchup) %></p>
+    <%= if @user do %>
+      <button type="button" phx-click="save-click" phx-value-enabled={"#{@can_save_pick?}"} class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}>
+        <%= get_save_button_text(@selection_saved, @can_save_pick?) %>
+      </button>
+    <% end %>
+    <%= unless @user do %>
+      <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
+        <img class="w-14 mr-4" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
+        <%= link "Sign In To Pick!", to: @google_auth_url, class: "underline font-bold font-open-sans text-2xl" %>
       </div>
-
-      <div class="flex flex-col mt-10">
-          <%= if assigns[:error_message] do %>
-            <p class="text-red-500 font-open-sans font-light text-2xl mb-2 mt-0"><%= @error_message %></p>
-          <% end %>
-          <%= if assigns[:success_message] && assigns[:error_message] == nil do %>
-            <p class="text-nd-yellow font-open-sans font-light text-2xl mb-2 mt-0"><%= @success_message %></p>
-          <% end %>
-        <div class="flex flex-col md:flex-row gap-6">
-          <button type="button" phx-click="away-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.away_team) |> maybe_disable(@can_save_pick?)}>
-            <%= @matchup.away_team.location %>
-          </button>
-          <button type="button" phx-click="home-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.home_team) |> maybe_disable(@can_save_pick?)}>
-            <%= @matchup.home_team.location %>
-          </button>
-        </div>
-        <%= if @user do %>
-          <button type="button" phx-click="save-click" phx-value-enabled={"#{@can_save_pick?}"} class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}>
-            <%= get_save_button_text(@selection_saved, @can_save_pick?) %>
-          </button>
-        <% end %>
-        <%= unless @user do %>
-          <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
-            <img class="w-14 mr-4" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
-            <%= link "Sign In To Pick!", to: @google_auth_url, class: "underline font-bold font-open-sans text-2xl" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
   </div>
+</div>
 </div>

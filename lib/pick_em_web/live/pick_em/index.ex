@@ -24,8 +24,18 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     total_picks_today = ClassicClips.PickEm.get_pick_count_for_matchup(matchup)
 
+    connection_params = get_connect_params(socket) || %{}
+
+    theme =
+      case Map.get(connection_params, "theme") do
+        nil -> nil
+        data -> Jason.decode!(data)
+      end
+
     {:ok,
      socket
+     |> assign(:page, "home")
+     |> assign(:theme, theme)
      |> assign(:matchup, matchup)
      |> assign(:ndc_pick, ndc_pick)
      |> assign(:user, user)
@@ -146,5 +156,11 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp get_selected_team(%UserPick{picked_team: picked_team}) do
     {picked_team, true}
+  end
+
+  def get_emoji_for_team(team, nil), do: team.default_emoji
+
+  def get_emoji_for_team(team, theme) do
+    Map.get(theme, team.id, team.default_emoji)
   end
 end
