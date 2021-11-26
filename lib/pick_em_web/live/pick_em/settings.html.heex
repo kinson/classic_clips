@@ -9,6 +9,7 @@
       <p class="text-nd-pink mb-6 mt-14 ml-20 font-open-sans font-bold text-4xl">Enable Custom Emojis</p>
 
       <input class="ml-20" type="checkbox" />
+      <input type="hidden" id="theme-data-input" value={@theme_data} phx-hook="PickEmThemeData" />
       <div class="flex flex-row items-center gap-6 mb-6 mt-14 ml-20">
         <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Team Emojis</p>
         <%= if @is_editing_teams do %>
@@ -24,9 +25,9 @@
             <%= for team <- @east_teams do %>
               <div class="flex flex-row gap-2 items-end gap-8 my-3">
                 <%= if @is_editing_teams do %>
-                  <%= text_input String.to_atom(team.abbreviation), team.id, class: "text-white !w-12 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto", value: team.default_emoji %>
+                  <%= text_input String.to_atom(team.abbreviation), team.id, class: "text-white !w-12 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto", value: get_emoji_for_team(team, @theme) %>
                 <% else %>
-                  <p class="text-white py-1 px-2 my-0"><%= team.default_emoji %></p>
+                  <p class="text-white py-1 px-2 my-0"><%= get_emoji_for_team(team, @theme) %></p>
                 <% end %>
                 <p class="text-white mx-0 my-0"><%= team.name %></p>
               </div>

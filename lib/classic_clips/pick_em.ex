@@ -83,7 +83,7 @@ defmodule ClassicClips.PickEm do
     from(t in Team, where: t.conference == ^conference) |> Repo.all()
   end
 
-  def save_user_team_emojis(emojis, teams) do
+  def get_custom_team_emojis(emojis, teams) do
     # emojis %{"CHA" => %{"sadkasd9" => "emoji"}}
     # [%{"saddasd" => "emoji"}]
     # %{"dkdkdksd" => "emoji"} 
