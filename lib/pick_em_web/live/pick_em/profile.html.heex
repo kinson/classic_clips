@@ -4,4 +4,33 @@
   <%= live_component PickEmWeb.PickEmLive.AccountInfoComponent, id: "account-info-component", socket: @socket, user: @user %>
 
   <p class="text-nd-pink mb-6 mt-14 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
+  <div class="flex flex-col gap-16">
+    <%= for pick <- @picks do %>
+      <div class="ml-10 md:ml-20 flex flex-col gap-4">
+        <div class="flex flex-row gap-4">
+          <p class="font-open-sans text-white text-3xl font-bold my-0"><%= get_matchup_date(pick) %></p>
+          <p class="font-open-sans text-nd-pink text-3xl font-bold my-0">[<%= get_matchup_outcome(pick) %>]</p>
+          <div class="flex flex-row gap-3">
+            <p class="font-open-sans text-white text-3xl font-bold my-0">PICKED:</p>
+            <%= render_team_abbreviation(pick.picked_team, @theme, "text-nd-yellow font-open-sans font-bold text-3xl") %>
+          </div>
+        </div>
+        <div class="flex flex-row gap-4 ml-2 md:ml-4">
+          <p class="text-white font-open-sans text-2xl font-bold opacity-80 my-0">LINE:</p>
+          <%= render_team_abbreviation(pick.matchup.away_team, @theme, "text-2xl text-white font-open-sans font-bold mb-0") %>
+          <p class="text-2xl text-white font-open-sans font-bold mb-0">@</p>
+          <%= render_team_abbreviation(pick.matchup.home_team, @theme, "text-2xl text-white font-open-sans font-bold mb-0") %>
+          <p class="text-2xl text-white font-open-sans font-bold mb-0">(<%= pick.matchup.favorite_team.abbreviation %> <%= pick.matchup.spread %>)</p>
+        </div>
+        <%= if pick.matchup.winning_team_id do %>
+          <div class="flex flex-row gap-4 ml-2 md:ml-4">
+            <p class="text-white font-open-sans text-2xl font-bold opacity-80 my-0">RESULT:</p>
+            <%= render_team_location(pick.matchup.winning_team, @theme, "text-2xl text-white font-open-sans font-bold mb-0 uppercase") %>
+            <p class="text-white font-open-sans text-2xl font-bold">WINS</p>
+            <p class="text-white font-open-sans text-2xl font-bold"><%= pick.matchup.score %></p>
+          </div>
+          <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

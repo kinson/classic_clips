@@ -79,6 +79,29 @@ defmodule PickEmWeb.PickEmLive.Settings do
      |> assign(:theme_data, Jason.encode!(theme))}
   end
 
+  # TODO: Cleanup this logic 
+  def handle_event(
+        "toggle_emojis",
+        %{
+          "emoji_settings" => %{
+            "enable_emojis" => enable_emojis
+          }
+        },
+        socket
+      ) do
+    theme =
+      socket.assigns.theme
+      |> Map.merge(%{
+        "enable_emojis" => enable_emojis == "true"
+      })
+
+    {:noreply,
+     socket
+     |> assign(:is_editing_teams, false)
+     |> assign(:theme, theme)
+     |> assign(:theme_data, Jason.encode!(theme))}
+  end
+
   def get_or_create_user(%{"profile" => profile}) do
     alias ClassicClips.Timeline.User
 
@@ -103,7 +126,7 @@ defmodule PickEmWeb.PickEmLive.Settings do
   def get_emoji_for_team(team, nil), do: team.default_emoji
 
   def get_emoji_for_team(team, theme) do
-    Map.get(theme, :emoji_overrides, %{})
+    Map.get(theme, "emoji_overrides", %{})
     |> Map.get(team.id, team.default_emoji)
   end
 
