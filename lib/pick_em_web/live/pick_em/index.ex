@@ -1,6 +1,8 @@
 defmodule PickEmWeb.PickEmLive.Index do
   use PickEmWeb, :live_view
 
+  import PickEmWeb.PickEmLive.Emoji
+
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
 
@@ -108,10 +110,10 @@ defmodule PickEmWeb.PickEmLive.Index do
     "#{away_team.abbreviation} @ #{home_team.abbreviation} (#{favorite_team.abbreviation} #{spread})"
   end
 
-  def get_ndc_pick("skeets", %NdcPick{skeets_pick_team: team}), do: team.abbreviation
-  def get_ndc_pick("tas", %NdcPick{tas_pick_team: team}), do: team.abbreviation
-  def get_ndc_pick("leigh", %NdcPick{leigh_pick_team: team}), do: team.abbreviation
-  def get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team.abbreviation
+  def get_ndc_pick("skeets", %NdcPick{skeets_pick_team: team}), do: team
+  def get_ndc_pick("tas", %NdcPick{tas_pick_team: team}), do: team
+  def get_ndc_pick("leigh", %NdcPick{leigh_pick_team: team}), do: team
+  def get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team
 
   def get_time_left(%MatchUp{tip_datetime: tip_datetime} = matchup) do
     if can_save_pick?(matchup) do
@@ -145,11 +147,15 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   def get_team_button_class("selected") do
-    "bg-nd-pink text-nd-yellow leading-none border-2 rounded-none font-open-sans font-bold text-2xl border-white hover:border-white focus:border-white hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0"
+    "#{base_button_class()} bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white"
   end
 
   def get_team_button_class(_) do
-    "bg-white text-nd-purple leading-none rounded-none font-open-sans font-bold text-2xl border-0 hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0"
+    "#{base_button_class()} bg-white text-nd-purple border-0"
+  end
+
+  def base_button_class do
+    "leading-none rounded-none font-open-sans font-bold text-2xl hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0 flex justify-center items-center"
   end
 
   defp get_selected_team(nil), do: {nil, false}

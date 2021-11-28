@@ -1,7 +1,9 @@
 defmodule PickEmWeb.PickEmLive.Profile do
   use PickEmWeb, :live_view
 
-  alias ClassicClips.Repo
+  import PickEmWeb.PickEmLive.Emoji
+
+  alias ClassicClips.{Repo, PickEm}
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
 
   @impl true
@@ -23,7 +25,7 @@ defmodule PickEmWeb.PickEmLive.Profile do
        socket
        |> assign(:page, "profile")
        |> assign(:theme, theme)
-       |> assign(:total_picks_today, 0)
+       |> assign(:picks, PickEm.get_picks_for_user(user))
        |> assign(:user, user)}
     end
   end
@@ -39,5 +41,25 @@ defmodule PickEmWeb.PickEmLive.Profile do
 
   def get_or_create_user(_) do
     {:ok, nil}
+  end
+
+  @new_york_offset -1 * 5 * 60 * 60
+
+  def get_matchup_date(%UserPick{matchup: matchup}) do
+    %{day: day, month: month, year: year} = DateTime.add(matchup.tip_datetime, @new_york_offset)
+
+    "#{month}/#{day}/#{year}"
+  end
+
+  def get_matchup_outcome(%UserPick{result: :win}) do
+    "WIN"
+  end
+
+  def get_matchup_outcome(%UserPick{result: :loss}) do
+    "LOSS"
+  end
+
+  def get_matchup_outcome(_) do
+    "PENDING"
   end
 end

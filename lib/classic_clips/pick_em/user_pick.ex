@@ -4,7 +4,7 @@ defmodule ClassicClips.PickEm.UserPick do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "user_picks" do
-    field :result, :string
+    field :result, Ecto.Enum, values: [:win, :loss]
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
     belongs_to :matchup, ClassicClips.PickEm.MatchUp, type: :binary_id

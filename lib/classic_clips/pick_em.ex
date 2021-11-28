@@ -100,4 +100,17 @@ defmodule ClassicClips.PickEm do
     end)
     |> Enum.into(%{})
   end
+
+  def get_picks_for_user(%User{id: user_id}) do
+    from(up in UserPick,
+      where: up.user_id == ^user_id,
+      order_by: [desc: up.inserted_at],
+      limit: 10
+    )
+    |> Repo.all()
+    |> Repo.preload([
+      :picked_team,
+      matchup: [:away_team, :home_team, :favorite_team, :winning_team]
+    ])
+  end
 end
