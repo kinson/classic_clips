@@ -17,7 +17,10 @@ defmodule ClassicClips.Timeline.User do
   end
 
   def create_user(attrs) do
-    changeset(%User{}, attrs)
+    [username, _rest] = String.split(attrs.email, "@")
+    email_as_initial_user_name = Map.put(attrs, :username, username)
+
+    changeset(%User{}, email_as_initial_user_name)
     |> Repo.insert(returning: true)
   end
 
