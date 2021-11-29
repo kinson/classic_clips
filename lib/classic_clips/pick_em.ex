@@ -1,12 +1,17 @@
 defmodule ClassicClips.PickEm do
   import Ecto.Query, warn: false
 
+  require Logger
+
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team}
   alias ClassicClips.Timeline.User
 
   def get_current_matchup() do
-    from(m in MatchUp, order_by: [desc: m.tip_datetime], limit: 1)
+    from(m in MatchUp,
+      order_by: [desc: m.tip_datetime],
+      limit: 1
+    )
     |> Repo.one()
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
@@ -43,39 +48,132 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_leaders() do
-    from(ur in UserRecord, where: ur.month == "November", order_by: [desc: ur.wins], limit: 10)
+    from(ur in UserRecord, where: ur.month == "november", order_by: [desc: ur.wins], limit: 10)
     |> Repo.all()
     |> Repo.preload(:user)
   end
 
   def update_user_picks_with_matchup_result(game_data, matchup) do
-    user_picks = from(up in UserPick, where: up.matchup_id == ^matchup.id) |> Repo.all()
+    user_picks =
+      from(up in UserPick, where: up.matchup_id == ^matchup.id)
+      |> Repo.all()
+      |> Repo.preload([:picked_team])
 
-    winning_team = winning_team_id(game_data, matchup)
+    game_winning_team_id = get_game_winning_team_id(game_data, matchup)
+    spread_winning_team_id = get_spread_winning_team_id(game_data, matchup)
+
+    update_matchup_with_winner(matchup, game_winning_team_id, game_data)
 
     user_picks
     |> Enum.map(fn pick ->
-      case pick.picked_team do
-        ^winning_team -> UserPick.changeset(pick, %{result: "win"})
-        _ -> UserPick.changeset(pick, %{result: "loss"})
+      case pick.picked_team.id do
+        ^spread_winning_team_id -> UserPick.changeset(pick, %{result: :win})
+        _ -> UserPick.changeset(pick, %{result: :loss})
       end
     end)
     |> Enum.map(&Repo.update/1)
+
+    season = Repo.get_by!(ClassicClips.BigBeef.Season, current: true)
+
+    user_picks
+    |> Enum.map(fn pick ->
+      if pick.picked_team_id == spread_winning_team_id do
+        create_or_update_user_record(pick.user_id, season.id, 1, 0)
+      else
+        create_or_update_user_record(pick.user_id, season.id, 0, 1)
+      end
+    end)
+
+    Logger.debug("Updated #{Enum.count(user_picks)} user picks")
   end
 
-  def winning_team_id(
-        %{away_team: %{score: away_team_score}, home_team: %{score: home_team_score}},
+  def get_game_winning_team_id(
+        %{away: %{score: away_team_score}, home: %{score: home_team_score}},
         %{
           home_team_id: home_team_id,
-          away_team_id: away_team_id,
-          spread: spread,
-          favorite_team_id: favorite_team_id
+          away_team_id: away_team_id
         }
       ) do
     if away_team_score > home_team_score do
       away_team_id
     else
       home_team_id
+    end
+  end
+
+  defp get_spread_winning_team_id(
+         %{away: %{score: away_team_score}, home: %{score: home_team_score}},
+         %{
+           home_team_id: home_team_id,
+           away_team_id: away_team_id,
+           spread: spread,
+           favorite_team_id: favorite_team_id
+         }
+       )
+       when home_team_id == favorite_team_id do
+    case spread_winner(home_team_score, away_team_score, spread) do
+      :favorite_team -> home_team_id
+      :other_team -> away_team_id
+    end
+  end
+
+  defp get_spread_winning_team_id(
+         %{away: %{score: away_team_score}, home: %{score: home_team_score}},
+         %{
+           home_team_id: home_team_id,
+           away_team_id: away_team_id,
+           spread: spread,
+           favorite_team_id: favorite_team_id
+         }
+       )
+       when away_team_id == favorite_team_id do
+    case spread_winner(away_team_score, home_team_score, spread) do
+      :favorite_team -> away_team_id
+      :other_team -> home_team_id
+    end
+  end
+
+  def spread_winner(favorite_team_score, other_team_score, spread_string) do
+    spread =
+      spread_string
+      |> String.replace("-", "")
+      |> String.to_float()
+
+    if favorite_team_score - other_team_score > spread do
+      :favorite_team
+    else
+      :other_team
+    end
+  end
+
+  defp update_matchup_with_winner(matchup, winning_team_id, %{
+         away: %{score: away_team_score},
+         home: %{score: home_team_score}
+       }) do
+    game_score = "#{away_team_score} - #{home_team_score}"
+
+    MatchUp.changeset(matchup, %{winning_team_id: winning_team_id, score: game_score})
+    |> Repo.update()
+  end
+
+  defp create_or_update_user_record(user_id, season_id, win_increment, loss_increment) do
+    case Repo.get_by(UserRecord, user_id: user_id, month: "november") do
+      nil ->
+        UserRecord.changeset(%UserRecord{}, %{
+          wins: 0 + win_increment,
+          losses: 0 + loss_increment,
+          user_id: user_id,
+          month: "november",
+          season_id: season_id
+        })
+        |> Repo.insert()
+
+      user_record ->
+        UserRecord.changeset(user_record, %{
+          wins: user_record.wins + win_increment,
+          losses: user_record.losses + loss_increment
+        })
+        |> Repo.update()
     end
   end
 
