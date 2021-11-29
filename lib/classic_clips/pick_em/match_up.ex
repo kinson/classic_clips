@@ -10,6 +10,7 @@ defmodule ClassicClips.PickEm.MatchUp do
     field :score, :string
     field :spread, :string
     field :tip_datetime, :utc_datetime
+    field :nba_game_id, :string
 
     belongs_to :away_team, Team, type: :binary_id
     belongs_to :home_team, Team, type: :binary_id
@@ -22,7 +23,25 @@ defmodule ClassicClips.PickEm.MatchUp do
   @doc false
   def changeset(match_up, attrs) do
     match_up
-    |> cast(attrs, [:date, :tip_time, :spread, :score, :month])
-    |> validate_required([:date, :tip_time, :spread, :score, :month])
+    |> cast(attrs, [
+      :tip_datetime,
+      :spread,
+      :score,
+      :month,
+      :away_team_id,
+      :home_team_id,
+      :nba_game_id,
+      :favorite_team_id,
+      :winning_team_id
+    ])
+    |> validate_required([
+      :tip_datetime,
+      :spread,
+      :month,
+      :nba_game_id,
+      :away_team_id,
+      :home_team_id,
+      :favorite_team_id
+    ])
   end
 end

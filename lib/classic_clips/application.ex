@@ -23,7 +23,8 @@ defmodule ClassicClips.Application do
       ClassicClips.BeefServer,
       ClassicClips.ClassicsServer,
       ClassicClips.BigBeef.RecentBeefCache,
-      ClassicClips.BigBeef.BigBeefWaiterServer
+      ClassicClips.BigBeef.BigBeefWaiterServer,
+      ClassicClips.MatchupServer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
