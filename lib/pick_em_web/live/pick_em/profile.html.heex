@@ -5,6 +5,10 @@
 
   <p class="text-nd-pink mb-6 mt-14 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
   <div class="flex flex-col gap-16">
+    <%= if @picks == [] do %>
+          <p class="font-open-sans text-white text-2xl font-bold my-0 ml-10 md:ml-20">No picks yet</p>
+    <% end %>
+
     <%= for pick <- @picks do %>
       <div class="ml-10 md:ml-20 flex flex-col gap-4">
         <div class="flex flex-row gap-4">
