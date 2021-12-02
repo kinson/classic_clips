@@ -169,4 +169,10 @@ defmodule PickEmWeb.PickEmLive.Index do
   def get_emoji_for_team(team, theme) do
     Map.get(theme, team.id, team.default_emoji)
   end
+
+  def get_time_for_game(%MatchUp{tip_datetime: tip_datetime}) do
+    DateTime.add(tip_datetime, -1 * 5 * 60 * 60)
+    |> DateTime.to_time()
+    |> Timex.format!("{h12}:{0m} {AM}")
+  end
 end

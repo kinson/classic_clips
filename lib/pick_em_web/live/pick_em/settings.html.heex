@@ -1,18 +1,18 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
   <.form let={f} for={:emoji_settings} phx-change="toggle_emojis" class="mb-0">
-    <div class="flex flex-row items-baseline gap-6 mb-16 ml-10 md:ml-20">
+    <div class="flex flex-row items-baseline gap-6 mb-10 ml-10 md:ml-20">
       <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Team Emojis</p>
       <%= checkbox :emoji_settings, :enable_emojis, value: get_emojis_enabled(@theme), class: "my-0" %>
     </div>
 
-    <div class="flex flex-row items-baseline my-8 gap-6 my-16 ml-10 md:ml-20">
+    <div class="flex flex-row items-baseline my-8 gap-6 my-10 ml-10 md:ml-20">
       <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Emoji Only Mode</p>
       <%= checkbox :emoji_settings, :enable_emoji_only, value: get_emoji_only_enabled(@theme), class: "my-0", disabled: get_emojis_enabled(@theme) == false %>
     </div>
   </.form>
 
   <input type="hidden" id="theme-data-input" value={@theme_data} phx-hook="PickEmThemeData" />
-  <div class="flex flex-row items-center gap-6 mb-6 mt-16 ml-10 md:ml-20">
+  <div class="flex flex-row items-center gap-6 mb-2 mt-10 ml-10 md:ml-20">
     <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Team Emojis</p>
     <%= if @is_editing_teams do %>
       <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="cancel">cancel</p>
@@ -20,7 +20,11 @@
       <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="edit">edit</p>
     <% end %>
   </div>
-  
+
+  <%= if @is_editing_teams do %>
+    <p class="text-white text-2xl font-open-sans font-light mb-6 mt-4 ml-10 md:ml-20">Customize emojis by replacing them with your favorites.</p>
+  <% end %>
+
   <.form let={f} for={:team_emojis} phx-submit="save_emojis">
     <div class="flex flex-row ml-10 md:ml-20">
       <div class="flex flex-col flex-1">

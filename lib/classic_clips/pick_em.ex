@@ -178,7 +178,7 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_teams_for_conference(conference) do
-    from(t in Team, where: t.conference == ^conference) |> Repo.all()
+    from(t in Team, where: t.conference == ^conference, order_by: [asc: t.location]) |> Repo.all()
   end
 
   def get_custom_team_emojis(emojis, teams) do

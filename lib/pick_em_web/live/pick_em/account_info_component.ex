@@ -5,10 +5,10 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
   def render(assigns) do
     ~H"""
     <div class="w-auto md:w-full ml-10 md:ml-20 py-4 px-8 bg-gray-100 shadow-lg rounded-lg flex flex-row">
-     <img class="max-h-20 mr-8 ml-0 my-2" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
+     <img class="max-h-24 mr-8 ml-0 my-2" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
      <div class="flex flex-col w-full">
-       <div class="flex flex-row mt-2 mb-4">
-         <p class="my-0 mr-2 text-white bg-nd-purple text-2xl leading-normal rounded-md px-3 font-open-sans font-light tracking-wide">username</p>
+       <div class="flex flex-row my-2">
+         <p class="my-0 mr-2 text-nd-pink text-3xl leading-normal font-open-sans font-bold tracking-wide">username</p>
          <%= if @editing_profile do %>
            <p class="my-0 ml-2 underline cursor-pointer" phx-click="cancel" phx-target={@myself}>cancel</p>
          <% else %>
@@ -17,11 +17,11 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
         </div>
         <%= if @editing_profile do %>
           <.form let={f} for={:user} phx-submit="save" phx-target={@myself} class="mb-0">
-            <%= text_input f, :username, value: @user.username, class: "!w-full block" %>
+            <%= text_input f, :username, value: @user.username, class: "!w-full block font-open-sans font-medium tracking-wide" %>
             <%= submit "Save", class: "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 w-full" %>
           </.form>
         <% else %>
-          <p class="m-0 w-72 tracking-wide truncate font-semibold font-open-sans"><%= @user.username %></p>
+          <p class="m-0 w-72 tracking-wide truncate font-medium font-open-sans tracking-wide"><%= @user.username %></p>
         <% end %>
        </div>
      </div>

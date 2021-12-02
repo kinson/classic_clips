@@ -21,5 +21,5 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
     do: base_class() <> "text-white active:text-white hover:text-white"
 
   def base_class(),
-    do: "underline my-0 font-open-sans font-bold text-2xl tracking-wider" <> " "
+    do: "underline my-0 font-open-sans font-bold text-2xl md:text-3xl tracking-wider" <> " "
 end
