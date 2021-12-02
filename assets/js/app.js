@@ -9,10 +9,12 @@ Hooks.PickEmThemeData = {
   },
 };
 
+const defaultTheme = JSON.stringify({"enable_emojis": false, "enable_emoji_only": false, "emoji_overrides": {}})
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   params: {
-    theme: window.localStorage.getItem("theme"),
+    theme: window.localStorage.getItem("theme") || defaultTheme,
     _csrf_token: csrfToken
   },
   hooks: Hooks
