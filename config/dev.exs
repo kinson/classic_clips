@@ -129,6 +129,8 @@ config :classic_clips, PickEmWeb.Endpoint,
     ]
   ]
 
+config :classic_clips, :classics_server_enabled, true
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

@@ -84,7 +84,7 @@ defmodule ClassicClips.PickEm do
       end
     end)
 
-    Logger.debug("Updated #{Enum.count(user_picks)} user picks")
+    Logger.notice("Updated #{Enum.count(user_picks)} user picks")
   end
 
   def get_game_winning_team_id(

@@ -30,6 +30,8 @@ config :classic_clips, PickEmWeb.Endpoint,
     "pickem.classicclipsinc.com"
   ]
 
+config :classic_clips, :classics_server_enabled, true
+
 # Do not print debug messages in production
 config :logger, level: :notice
 
@@ -76,4 +78,3 @@ config :logger, :console, format: "$time [$level] $message\n"
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-import_config "prod.secret.exs"

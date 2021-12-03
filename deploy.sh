@@ -2,10 +2,9 @@ source .env
 export MIX_ENV=prod
 
 mix assets.deploy
-mix compile
+mix release
 mix ecto.migrate
 
-kill -9 $(lsof -t -i:4000)
-kill -9 $(lsof -t -i:4001)
+_build/prod/rel/classic_clips/bin/classic_clips stop
 
-elixir --erl "-detached" -S mix phx.server
+_build/prod/rel/classic_clips/bin/classic_clips daemon

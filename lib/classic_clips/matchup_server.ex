@@ -6,7 +6,7 @@ defmodule ClassicClips.MatchupServer do
   alias ClassicClips.PickEm
   alias ClassicClips.PickEm.MatchUp
 
-  @interval :timer.seconds(5)
+  @interval :timer.minutes(2)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -22,13 +22,13 @@ defmodule ClassicClips.MatchupServer do
     # query for matchup in db 
     case PickEm.get_current_matchup() do
       nil ->
-        Logger.debug("No matchup to monitor")
+        Logger.notice("No matchup to monitor")
         {:noreply, state, @interval}
 
       matchup ->
         %{away_team: away_team, home_team: home_team} = matchup
 
-        Logger.debug(
+        Logger.notice(
           "Found new matchup to watch: #{away_team.abbreviation} @ #{home_team.abbreviation}"
         )
 
@@ -37,6 +37,7 @@ defmodule ClassicClips.MatchupServer do
   end
 
   def handle_info(:timeout, %{matchup: %MatchUp{winning_team_id: nil} = matchup} = state) do
+    IO.puts "made it maybe?"
     two_hours_ago = -1 * 60 * 60 * 2
     lower_date_limit = DateTime.utc_now() |> DateTime.add(two_hours_ago)
 
@@ -45,7 +46,7 @@ defmodule ClassicClips.MatchupServer do
       matchup = check_game_data(matchup)
       {:noreply, %{state | matchup: matchup}, @interval}
     else
-      Logger.debug(
+      Logger.notice(
         "Too early to check game data, checking in #{DateTime.diff(matchup.tip_datetime, lower_date_limit)} seconds"
       )
 
@@ -59,7 +60,7 @@ defmodule ClassicClips.MatchupServer do
   end
 
   defp check_game_data(matchup) do
-    Logger.debug("Fetching matchup data from nba")
+    Logger.notice("Fetching matchup data from nba")
     game_data = get_game_data(matchup.nba_game_id)
 
     case game_data.game_status do
@@ -71,7 +72,7 @@ defmodule ClassicClips.MatchupServer do
         nil
 
       _ ->
-        Logger.debug("Matchup still in progress")
+        Logger.notice("Matchup still in progress")
         matchup
     end
   end
