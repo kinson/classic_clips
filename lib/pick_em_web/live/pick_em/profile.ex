@@ -43,10 +43,9 @@ defmodule PickEmWeb.PickEmLive.Profile do
     {:ok, nil}
   end
 
-  @new_york_offset -1 * 5 * 60 * 60
-
   def get_matchup_date(%UserPick{matchup: matchup}) do
-    %{day: day, month: month, year: year} = DateTime.add(matchup.tip_datetime, @new_york_offset)
+    %{day: day, month: month, year: year} =
+      DateTime.add(matchup.tip_datetime, -1 * PickEm.get_est_offset_seconds())
 
     "#{month}/#{day}/#{year}"
   end

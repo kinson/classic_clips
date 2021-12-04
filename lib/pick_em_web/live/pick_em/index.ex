@@ -116,12 +116,21 @@ defmodule PickEmWeb.PickEmLive.Index do
   def get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team
 
   def get_time_left(%MatchUp{tip_datetime: tip_datetime} = matchup) do
+    time_left =
+      tip_datetime
+      |> DateTime.diff(DateTime.utc_now())
+      |> div(60)
+      |> get_time_left_to_pick_string()
+
     if can_save_pick?(matchup) do
-      "#{div(DateTime.diff(tip_datetime, DateTime.utc_now()), 60)} minutes left to pick"
+      "#{time_left} left to pick"
     else
       "The time to pick has passed"
     end
   end
+
+  defp get_time_left_to_pick_string(minutes) when minutes > 120, do: "#{div(minutes, 60)} hours"
+  defp get_time_left_to_pick_string(minutes), do: "#{minutes} minutes"
 
   def can_save_pick?(%MatchUp{tip_datetime: tip_datetime}) do
     DateTime.compare(DateTime.utc_now(), tip_datetime) == :lt
@@ -155,7 +164,7 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   def base_button_class do
-    "leading-none rounded-none font-open-sans font-bold text-2xl hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-5/12 px-0 flex justify-center items-center"
+    "leading-none rounded-none font-open-sans font-bold text-2xl hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-11/24 px-0 flex justify-center items-center"
   end
 
   defp get_selected_team(nil), do: {nil, false}

@@ -128,7 +128,6 @@ scores =
     Enum.concat(Stats.extract_player_stats(home), Stats.extract_player_stats(away))
     |> Enum.map(&BigBeef.get_or_create_player(&1, game_time, game_id, game_start_time))
   end)
-  |> IO.inspect()
 
 big_beefs =
   box_scores_5

@@ -1,11 +1,11 @@
 <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
  <div class="ml-10 md:ml-20">
-  <p class="text-center text-nd-pink w-max mb-4 mt-14 font-open-sans font-bold text-4xl">Today&apos;s Matchup</p>
+  <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">Today&apos;s Matchup</p>
   <div class="flex flex-row gap-4">
-    <%= render_team_abbreviation(@matchup.away_team, @theme, "text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
-    <p class="text-4xl text-nd-yellow font-open-sans font-bold mb-0">@</p>
-    <%= render_team_abbreviation(@matchup.home_team, @theme, "text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
-    <p class="text-4xl text-nd-yellow font-open-sans font-bold mb-0">(<%= @matchup.favorite_team.abbreviation %> <%= @matchup.spread %>)</p>
+    <%= render_team_abbreviation(@matchup.away_team, @theme, "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
+    <p class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0">@</p>
+    <%= render_team_abbreviation(@matchup.home_team, @theme, "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
+    <p class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0">(<%= @matchup.favorite_team.abbreviation %> <%= @matchup.spread %>)</p>
     </div>
     <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-4">Tip @ <%= get_time_for_game(@matchup) %> EST</p>
  </div>

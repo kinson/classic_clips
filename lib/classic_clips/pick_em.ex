@@ -7,6 +7,8 @@ defmodule ClassicClips.PickEm do
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team}
   alias ClassicClips.Timeline.User
 
+  @new_york_offset 5 * 60 * 60
+
   def get_current_matchup() do
     from(m in MatchUp,
       order_by: [desc: m.tip_datetime],
@@ -48,7 +50,9 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_leaders() do
-    from(ur in UserRecord, where: ur.month == "november", order_by: [desc: ur.wins], limit: 10)
+    current_month = get_current_month_name()
+
+    from(ur in UserRecord, where: ur.month == ^current_month, order_by: [desc: ur.wins], limit: 10)
     |> Repo.all()
     |> Repo.preload(:user)
   end
@@ -157,13 +161,15 @@ defmodule ClassicClips.PickEm do
   end
 
   defp create_or_update_user_record(user_id, season_id, win_increment, loss_increment) do
-    case Repo.get_by(UserRecord, user_id: user_id, month: "november") do
+    current_month = get_current_month_name()
+
+    case Repo.get_by(UserRecord, user_id: user_id, month: current_month) do
       nil ->
         UserRecord.changeset(%UserRecord{}, %{
           wins: 0 + win_increment,
           losses: 0 + loss_increment,
           user_id: user_id,
-          month: "november",
+          month: current_month,
           season_id: season_id
         })
         |> Repo.insert()
@@ -210,5 +216,29 @@ defmodule ClassicClips.PickEm do
       :picked_team,
       matchup: [:away_team, :home_team, :favorite_team, :winning_team]
     ])
+  end
+
+  def get_current_month_name do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * get_est_offset_seconds())
+    |> Map.get(:month)
+    |> get_month_name()
+  end
+
+  def get_month_name(1), do: "january"
+  def get_month_name(2), do: "february"
+  def get_month_name(3), do: "march"
+  def get_month_name(4), do: "april"
+  def get_month_name(5), do: "may"
+  def get_month_name(6), do: "june"
+  def get_month_name(7), do: "july"
+  def get_month_name(8), do: "august"
+  def get_month_name(9), do: "september"
+  def get_month_name(10), do: "october"
+  def get_month_name(11), do: "november"
+  def get_month_name(12), do: "december"
+
+  def get_est_offset_seconds do
+    @new_york_offset
   end
 end

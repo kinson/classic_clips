@@ -13,6 +13,7 @@ module.exports = {
           'open-sans': ['Open Sans', 'sans-serif']
         },
         width: {
+          '11/24': '45.83%',
           '14/12': '116%',
           '13/12': '108%'
         },

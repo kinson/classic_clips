@@ -37,7 +37,6 @@ defmodule ClassicClips.MatchupServer do
   end
 
   def handle_info(:timeout, %{matchup: %MatchUp{winning_team_id: nil} = matchup} = state) do
-    IO.puts "made it maybe?"
     two_hours_ago = -1 * 60 * 60 * 2
     lower_date_limit = DateTime.utc_now() |> DateTime.add(two_hours_ago)
 

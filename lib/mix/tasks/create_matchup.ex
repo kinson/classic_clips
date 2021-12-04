@@ -4,11 +4,9 @@ defmodule Mix.Tasks.CreateMatchup do
   alias ClassicClips.{PickEm, Repo}
   alias ClassicClips.PickEm.{MatchUp, Team, NdcPick}
 
-  @new_york_offset 5 * 60 * 60
-
   @impl Mix.Task
   def run(args) do
-    Application.ensure_all_started(:classic_clips)
+    Mix.Task.run("app.start")
 
     create_matchup(args)
   end
@@ -36,12 +34,16 @@ defmodule Mix.Tasks.CreateMatchup do
     # 17:30 ->  2021-11-29 00:00:00Z
     [hour, minute] = String.split(game_tip_time_est, ":")
     tip_time = Time.new!(String.to_integer(hour), String.to_integer(minute), 0)
-    tip_date = Date.utc_today()
+
+    tip_date =
+      DateTime.utc_now()
+      |> DateTime.add(-1 * PickEm.get_est_offset_seconds())
+      |> DateTime.to_date()
 
     tip_datetime_est = DateTime.new!(tip_date, tip_time)
-    tip_datetime_utc = DateTime.add(tip_datetime_est, @new_york_offset)
+    tip_datetime_utc = DateTime.add(tip_datetime_est, PickEm.get_est_offset_seconds())
 
-    month = get_month_name(tip_datetime_est.month)
+    month = PickEm.get_month_name(tip_datetime_est.month)
 
     matchup =
       MatchUp.changeset(%MatchUp{}, %{
@@ -73,19 +75,6 @@ defmodule Mix.Tasks.CreateMatchup do
     mix create_matchup UTA PHX UTA -1.5 00394938 17:30 UTA PHX PHX UTA\n
     """
   end
-
-  def get_month_name(1), do: "january"
-  def get_month_name(2), do: "february"
-  def get_month_name(3), do: "march"
-  def get_month_name(4), do: "april"
-  def get_month_name(5), do: "may"
-  def get_month_name(6), do: "june"
-  def get_month_name(7), do: "july"
-  def get_month_name(8), do: "august"
-  def get_month_name(9), do: "september"
-  def get_month_name(10), do: "october"
-  def get_month_name(11), do: "november"
-  def get_month_name(12), do: "december"
 
   defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),
     do: away_team.id
