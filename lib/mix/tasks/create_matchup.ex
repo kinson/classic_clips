@@ -1,8 +1,6 @@
 defmodule Mix.Tasks.CreateMatchup do
   use Mix.Task
 
-  import Ecto.Query
-
   alias ClassicClips.{PickEm, Repo}
   alias ClassicClips.PickEm.{MatchUp, Team, NdcPick}
 
@@ -10,7 +8,7 @@ defmodule Mix.Tasks.CreateMatchup do
 
   @impl Mix.Task
   def run(args) do
-    Mix.Task.run("app.start")
+    Application.ensure_all_started(:classic_clips)
 
     create_matchup(args)
   end
@@ -21,7 +19,11 @@ defmodule Mix.Tasks.CreateMatchup do
          favorite_abbreviation,
          spread,
          game_id,
-         game_tip_time_est
+         game_tip_time_est,
+         leigh_pick_team,
+         skeets_pick_team,
+         tas_pick_team,
+         trey_pick_team
        ]) do
     # get away team
     away_team = Repo.get_by!(Team, abbreviation: away_abbreviation)
@@ -55,10 +57,10 @@ defmodule Mix.Tasks.CreateMatchup do
 
     NdcPick.changeset(%NdcPick{}, %{
       matchup_id: matchup.id,
-      skeets_pick_team_id: favorite_team.id,
-      tas_pick_team_id: favorite_team.id,
-      trey_pick_team_id: favorite_team.id,
-      leigh_pick_team_id: favorite_team.id
+      skeets_pick_team_id: get_ndc_team_id(away_team, home_team, skeets_pick_team),
+      tas_pick_team_id: get_ndc_team_id(away_team, home_team, tas_pick_team),
+      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team),
+      leigh_pick_team_id: get_ndc_team_id(away_team, home_team, leigh_pick_team)
     })
     |> Repo.insert!()
   end
@@ -66,8 +68,9 @@ defmodule Mix.Tasks.CreateMatchup do
   defp create_matchup(_) do
     raise """
     Invalid args. Could not create matchup.
-    Use format:
-    mix create_matchup UTA PHX UTA -1.5 00394938 17:30
+    Use format:\n
+                        a   h   f    l   gameid    t    L   S   T   Trey
+    mix create_matchup UTA PHX UTA -1.5 00394938 17:30 UTA PHX PHX UTA\n
     """
   end
 
@@ -83,4 +86,10 @@ defmodule Mix.Tasks.CreateMatchup do
   def get_month_name(10), do: "october"
   def get_month_name(11), do: "november"
   def get_month_name(12), do: "december"
+
+  defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),
+    do: away_team.id
+
+  defp get_ndc_team_id(_, %Team{abbreviation: home_team_abbrev} = home_team, home_team_abbrev),
+    do: home_team.id
 end
