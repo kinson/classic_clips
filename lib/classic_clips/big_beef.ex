@@ -413,7 +413,7 @@ defmodule ClassicClips.BigBeef do
   def list_big_beef_events do
     from(bbe in BigBeefEvent,
       join: b in assoc(bbe, :beef),
-      order_by: [desc: b.date_time],
+      order_by: [desc: b.inserted_at],
       select: bbe
     )
     |> Repo.all()

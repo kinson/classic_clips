@@ -7,7 +7,7 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
     ~H"""
     <div class={"stats-beef saucy #{is_active(@page_type, "stats")}"}>
       <div class="latest">
-        <p class="beef-card-label">LATEST BIG BEEF [#<%= Enum.count(@big_beefs) %>]</p>
+        <p class="beef-card-label">LATEST BIG BEEF [#<%= get_season_beef_count(@big_beefs) %>]</p>
         <div class="card">
           <img id="player-pic" src={player_headshot_link(@latest.beef.player)}>
           <div class="group info">
@@ -69,5 +69,9 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
       </div>
     </div>
     """
+  end
+
+  def get_season_beef_count([{_, big_beefs} | _]) do
+    Enum.count(big_beefs)
   end
 end
