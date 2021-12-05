@@ -14,6 +14,7 @@ defmodule ClassicClips.MatchupServer do
 
   @impl true
   def init(state) do
+    Logger.notice("Starting #{__MODULE__}")
     {:ok, Map.put(state, :matchup, nil), @interval}
   end
 
@@ -42,6 +43,7 @@ defmodule ClassicClips.MatchupServer do
 
     # don't check on games that started less than two hours ago
     if matchup.tip_datetime < lower_date_limit do
+      Logger.notice("Fetching matchup data from nba")
       matchup = check_game_data(matchup)
       {:noreply, %{state | matchup: matchup}, @interval}
     else
@@ -54,12 +56,12 @@ defmodule ClassicClips.MatchupServer do
   end
 
   def handle_info(:timeout, state) do
+    Logger.notice("Nothing to do in #{__MODULE__}")
     # no game to look forward to
     {:noreply, state, @interval}
   end
 
   defp check_game_data(matchup) do
-    Logger.notice("Fetching matchup data from nba")
     game_data = get_game_data(matchup.nba_game_id)
 
     case game_data.game_status do
