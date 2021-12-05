@@ -73,10 +73,14 @@ defmodule BigBeefWeb.BeefLive.Helpers do
     end
   end
 
+  def yt_text(%BigBeefEvent{yt_highlight_video_url: "none"}), do: "No Beef Highlights"
+
+  def yt_text(%BigBeefEvent{yt_highlight_video_url: "notyet"}), do: "Highlights Coming Soon..."
+
   def yt_text(%BigBeefEvent{yt_highlight_video_url: url}) do
     case String.contains?(url, "https://") do
       true -> "Big Beef Highlights"
-      false -> "Highlights Coming Soon..."
+      false -> "Highlights Not Available"
     end
   end
 
