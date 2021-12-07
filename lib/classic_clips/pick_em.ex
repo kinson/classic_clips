@@ -197,9 +197,7 @@ defmodule ClassicClips.PickEm do
         Map.put(acc, id, team.default_emoji)
       end)
 
-    Map.values(emojis)
-    |> Enum.flat_map(&Enum.into(&1, []))
-    |> Enum.filter(fn {id, emoji} ->
+    Enum.filter(emojis, fn {id, emoji} ->
       Map.fetch!(emoji_teams_by_id, id) != emoji
     end)
     |> Enum.into(%{})

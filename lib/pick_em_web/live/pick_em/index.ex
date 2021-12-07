@@ -5,6 +5,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
+  alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
@@ -15,7 +16,7 @@ defmodule PickEmWeb.PickEmLive.Index do
     ndc_pick = ClassicClips.PickEm.get_ndc_pick_for_matchup(matchup)
 
     # get user
-    {:ok, user} = get_or_create_user(session)
+    {:ok, user} = User.get_or_create_user(session)
 
     # get user pick
     user_pick = ClassicClips.PickEm.get_user_pick_for_matchup(user, matchup)
@@ -26,13 +27,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     total_picks_today = ClassicClips.PickEm.get_pick_count_for_matchup(matchup)
 
-    connection_params = get_connect_params(socket) || %{}
-
-    theme =
-      case Map.get(connection_params, "theme") do
-        nil -> nil
-        data -> Jason.decode!(data)
-      end
+    theme = Theme.get_theme_from_session(session)
 
     {:ok,
      socket
@@ -86,19 +81,6 @@ defmodule PickEmWeb.PickEmLive.Index do
   def generate_oauth_url do
     %{host: PickEmWeb.Endpoint.host(), port: System.get_env("PORT", "4002")}
     |> ElixirAuthGoogle.generate_oauth_url()
-  end
-
-  def get_or_create_user(%{"profile" => profile}) do
-    alias ClassicClips.Timeline.User
-
-    case Repo.get_by(User, email: profile.email) do
-      nil -> User.create_user(profile)
-      %User{} = user -> {:ok, user}
-    end
-  end
-
-  def get_or_create_user(_) do
-    {:ok, nil}
   end
 
   def get_matchup_title(%MatchUp{
@@ -171,12 +153,6 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp get_selected_team(%UserPick{picked_team: picked_team}) do
     {picked_team, true}
-  end
-
-  def get_emoji_for_team(team, nil), do: team.default_emoji
-
-  def get_emoji_for_team(team, theme) do
-    Map.get(theme, team.id, team.default_emoji)
   end
 
   def get_time_for_game(%MatchUp{tip_datetime: tip_datetime}) do

@@ -4,19 +4,14 @@ defmodule PickEmWeb.PickEmLive.Profile do
   import PickEmWeb.PickEmLive.Emoji
 
   alias ClassicClips.{Repo, PickEm}
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
+  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick}
+  alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
-    {:ok, user} = get_or_create_user(session)
+    {:ok, user} = User.get_or_create_user(session)
 
-    connection_params = get_connect_params(socket) || %{}
-
-    theme =
-      case Map.get(connection_params, "theme") do
-        nil -> nil
-        data -> Jason.decode!(data)
-      end
+    theme = Theme.get_theme_from_session(session)
 
     if is_nil(user) do
       {:ok, push_redirect(socket, to: "/")}
@@ -28,19 +23,6 @@ defmodule PickEmWeb.PickEmLive.Profile do
        |> assign(:picks, PickEm.get_picks_for_user(user))
        |> assign(:user, user)}
     end
-  end
-
-  def get_or_create_user(%{"profile" => profile}) do
-    alias ClassicClips.Timeline.User
-
-    case Repo.get_by(User, email: profile.email) do
-      nil -> User.create_user(profile)
-      %User{} = user -> {:ok, user}
-    end
-  end
-
-  def get_or_create_user(_) do
-    {:ok, nil}
   end
 
   def get_matchup_date(%UserPick{matchup: matchup}) do

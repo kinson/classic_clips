@@ -1,20 +1,14 @@
 defmodule PickEmWeb.PickEmLive.Leaders do
   use PickEmWeb, :live_view
 
-  alias ClassicClips.{Repo, PickEm}
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, Team}
+  alias ClassicClips.PickEm
+  alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
-    {:ok, user} = get_or_create_user(session)
+    {:ok, user} = User.get_or_create_user(session)
 
-    connection_params = get_connect_params(socket) || %{}
-
-    theme =
-      case Map.get(connection_params, "theme") do
-        nil -> nil
-        data -> Jason.decode!(data)
-      end
+    theme = Theme.get_theme_from_session(session)
 
     {:ok,
      socket
@@ -27,18 +21,5 @@ defmodule PickEmWeb.PickEmLive.Leaders do
 
   def get_leaders() do
     PickEm.get_leaders()
-  end
-
-  def get_or_create_user(%{"profile" => profile}) do
-    alias ClassicClips.Timeline.User
-
-    case Repo.get_by(User, email: profile.email) do
-      nil -> User.create_user(profile)
-      %User{} = user -> {:ok, user}
-    end
-  end
-
-  def get_or_create_user(_) do
-    {:ok, nil}
   end
 end
