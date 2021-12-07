@@ -9,6 +9,10 @@ defmodule ClassicClips.PickEm do
 
   @new_york_offset 5 * 60 * 60
 
+  def get_cached_current_matchup() do
+    Fiat.CacheServer.fetch_object(:current_matchup, &get_current_matchup/0, 300)
+  end
+
   def get_current_matchup() do
     from(m in MatchUp,
       order_by: [desc: m.tip_datetime],
@@ -16,6 +20,14 @@ defmodule ClassicClips.PickEm do
     )
     |> Repo.one()
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
+  end
+
+  def get_cached_ndc_pick_for_matchup(%MatchUp{id: id} = matchup) do
+    Fiat.CacheServer.fetch_object(
+      {:ndc_pick, id},
+      fn -> get_ndc_pick_for_matchup(matchup) end,
+      300
+    )
   end
 
   def get_ndc_pick_for_matchup(%MatchUp{id: id}) do
@@ -181,6 +193,10 @@ defmodule ClassicClips.PickEm do
         })
         |> Repo.update()
     end
+  end
+
+  def get_cached_teams_for_conference(conference) do
+    Fiat.CacheServer.fetch_object(conference, fn -> get_teams_for_conference(conference) end, 600)
   end
 
   def get_teams_for_conference(conference) do

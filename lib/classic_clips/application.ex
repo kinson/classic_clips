@@ -24,7 +24,9 @@ defmodule ClassicClips.Application do
       ClassicClips.ClassicsServer,
       ClassicClips.BigBeef.RecentBeefCache,
       ClassicClips.BigBeef.BigBeefWaiterServer,
-      ClassicClips.MatchupServer
+      ClassicClips.MatchupServer,
+      # Start Fiat cache
+      Fiat.CacheServer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

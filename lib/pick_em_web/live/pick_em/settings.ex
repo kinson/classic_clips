@@ -50,10 +50,10 @@ defmodule PickEmWeb.PickEmLive.Settings do
   end
 
   def get_east_teams() do
-    PickEm.get_teams_for_conference(:east)
+    PickEm.get_cached_teams_for_conference(:east)
   end
 
   def get_west_teams() do
-    PickEm.get_teams_for_conference(:west)
+    PickEm.get_cached_teams_for_conference(:west)
   end
 end

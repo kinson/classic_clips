@@ -3,17 +3,16 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   import PickEmWeb.PickEmLive.Emoji
 
-  alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
   alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
     # get matchup
-    matchup = ClassicClips.PickEm.get_current_matchup()
+    matchup = ClassicClips.PickEm.get_cached_current_matchup()
 
     # get ndc pick
-    ndc_pick = ClassicClips.PickEm.get_ndc_pick_for_matchup(matchup)
+    ndc_pick = ClassicClips.PickEm.get_cached_ndc_pick_for_matchup(matchup)
 
     # get user
     {:ok, user} = User.get_or_create_user(session)
@@ -24,8 +23,6 @@ defmodule PickEmWeb.PickEmLive.Index do
     {selected_team, selection_saved} = get_selected_team(user_pick)
 
     can_save_pick? = can_save_pick?(matchup)
-
-    total_picks_today = ClassicClips.PickEm.get_pick_count_for_matchup(matchup)
 
     theme = Theme.get_theme_from_session(session)
 
@@ -40,7 +37,6 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:selected_team, selected_team)
      |> assign(:selection_saved, selection_saved)
      |> assign(:can_save_pick?, can_save_pick?)
-     |> assign(:total_picks_today, total_picks_today)
      |> assign(:google_auth_url, generate_oauth_url())
      |> assign(:editing_profile, false)}
   end

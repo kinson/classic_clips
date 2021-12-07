@@ -29,8 +29,8 @@ defmodule PickEmWeb.ThemeController do
   end
 
   def create(conn, %{"custom_emojis" => custom_emojis}) do
-    east_teams = PickEm.get_teams_for_conference(:east)
-    west_teams = PickEm.get_teams_for_conference(:west)
+    east_teams = PickEm.get_cached_teams_for_conference(:east)
+    west_teams = PickEm.get_cached_teams_for_conference(:west)
 
     custom_emojis =
       custom_emojis

@@ -33,6 +33,7 @@ defmodule ClassicClips.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:fiat, "~> 0.1.3"},
       {:elixir_auth_google, "~> 1.6.0"},
       {:sentry, "8.0.0"},
       {:html_entities, "~> 0.5"},
