@@ -1,8 +1,7 @@
 defmodule PickEmWeb.PickEmLive.Settings do
   use PickEmWeb, :live_view
 
-  alias ClassicClips.{Repo, PickEm}
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, Team}
+  alias ClassicClips.{PickEm}
   alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true

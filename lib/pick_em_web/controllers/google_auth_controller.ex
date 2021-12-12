@@ -19,4 +19,10 @@ defmodule PickEmWeb.GoogleAuthController do
     put_flash(conn, :error, "Failed to login with Google")
     |> redirect(to: "/")
   end
+
+  def logout(conn, _) do
+    conn
+    |> clear_session()
+    |> redirect(to: Routes.pick_em_index_path(conn, :index))
+  end
 end

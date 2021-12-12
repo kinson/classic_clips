@@ -4,7 +4,7 @@ defmodule ClassicClips.PickEm do
   require Logger
 
   alias ClassicClips.Repo
-  alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team}
+  alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
   alias ClassicClips.Timeline.User
 
   @new_york_offset 5 * 60 * 60
@@ -33,6 +33,10 @@ defmodule ClassicClips.PickEm do
   def get_ndc_pick_for_matchup(%MatchUp{id: id}) do
     Repo.get_by(NdcPick, matchup_id: id)
     |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :tas_pick_team, :trey_pick_team])
+  end
+
+  def get_current_ndc_record() do
+    Repo.get_by(NdcRecord, month: get_current_month_name())
   end
 
   def get_user_pick_for_matchup(nil, _), do: nil
@@ -102,6 +106,140 @@ defmodule ClassicClips.PickEm do
 
     Logger.notice("Updated #{Enum.count(user_picks)} user picks")
   end
+
+  def update_ndc_records_with_matchup_result(game_data, matchup) do
+    spread_winning_team_id = get_spread_winning_team_id(game_data, matchup)
+    current_month = get_current_month_name()
+    ndc_pick = get_ndc_pick_for_matchup(matchup)
+
+    ndc_record = Repo.get_by(ClassicClips.PickEm.NdcRecord, month: current_month)
+
+    case ndc_record do
+      nil -> create_ndc_record_for_month(current_month, spread_winning_team_id, ndc_pick)
+      record -> update_ndc_record(record, spread_winning_team_id, ndc_pick)
+    end
+  end
+
+  defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
+    ndc_record = %NdcRecord{
+      month: current_month,
+      tas_losses: 0,
+      tas_wins: 0,
+      trey_losses: 0,
+      trey_wins: 0,
+      skeets_losses: 0,
+      skeets_wins: 0,
+      leigh_losses: 0,
+      leigh_wins: 0
+    }
+
+    attrs = increment_ndc_record_counts(ndc_record, spread_winning_team_id, ndc_pick)
+
+    NdcRecord.changeset(ndc_record, attrs)
+    |> Repo.insert()
+  end
+
+  defp update_ndc_record(%NdcRecord{} = ndc_record, spread_winning_team_id, %NdcPick{} = ndc_pick) do
+    attrs =
+      ndc_record
+      |> increment_ndc_record_counts(spread_winning_team_id, ndc_pick)
+
+    ndc_record
+    |> NdcRecord.changeset(attrs)
+    |> Repo.update()
+  end
+
+  defp increment_ndc_record_counts(
+         %NdcRecord{} = ndc_record,
+         spread_winning_team_id,
+         %NdcPick{} = ndc_pick
+       ) do
+    %{}
+    |> Map.put(
+      :leigh_losses,
+      get_ndc_record_attribute(
+        :losses,
+        ndc_record.leigh_losses,
+        ndc_pick.leigh_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :skeets_losses,
+      get_ndc_record_attribute(
+        :losses,
+        ndc_record.skeets_losses,
+        ndc_pick.skeets_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :trey_losses,
+      get_ndc_record_attribute(
+        :losses,
+        ndc_record.trey_losses,
+        ndc_pick.trey_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :tas_losses,
+      get_ndc_record_attribute(
+        :losses,
+        ndc_record.tas_losses,
+        ndc_pick.tas_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :leigh_wins,
+      get_ndc_record_attribute(
+        :wins,
+        ndc_record.leigh_wins,
+        ndc_pick.leigh_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :skeets_wins,
+      get_ndc_record_attribute(
+        :wins,
+        ndc_record.skeets_wins,
+        ndc_pick.skeets_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :tas_wins,
+      get_ndc_record_attribute(
+        :wins,
+        ndc_record.tas_wins,
+        ndc_pick.tas_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+    |> Map.put(
+      :trey_wins,
+      get_ndc_record_attribute(
+        :wins,
+        ndc_record.trey_wins,
+        ndc_pick.trey_pick_team_id,
+        spread_winning_team_id
+      )
+    )
+  end
+
+  defp get_ndc_record_attribute(:wins, current_record, picked_team_id, spread_winning_team_id)
+       when picked_team_id == spread_winning_team_id,
+       do: current_record + 1
+
+  defp get_ndc_record_attribute(:wins, current_record, _, _), do: current_record
+
+  defp get_ndc_record_attribute(:losses, current_record, picked_team_id, spread_winning_team_id)
+       when picked_team_id == spread_winning_team_id,
+       do: current_record
+
+  defp get_ndc_record_attribute(:losses, current_record, _, _), do: current_record + 1
 
   def get_game_winning_team_id(
         %{away: %{score: away_team_score}, home: %{score: home_team_score}},
@@ -204,10 +342,6 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_custom_team_emojis(emojis, teams) do
-    # emojis %{"CHA" => %{"sadkasd9" => "emoji"}}
-    # [%{"saddasd" => "emoji"}]
-    # %{"dkdkdksd" => "emoji"} 
-
     emoji_teams_by_id =
       Enum.reduce(teams, %{}, fn %Team{id: id} = team, acc ->
         Map.put(acc, id, team.default_emoji)

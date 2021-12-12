@@ -8,7 +8,9 @@ defmodule ClassicClipsWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_classic_clips_key",
-    signing_salt: "GMctKrpD"
+    signing_salt: "GMctKrpD",
+    # 16 weeks
+    max_age: 16 * 7 * 24 * 60 * 60
   ]
 
   socket "/socket", ClassicClipsWeb.UserSocket,

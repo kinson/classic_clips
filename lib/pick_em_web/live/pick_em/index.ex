@@ -3,7 +3,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   import PickEmWeb.PickEmLive.Emoji
 
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team}
+  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
   alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
@@ -13,6 +13,8 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     # get ndc pick
     ndc_pick = ClassicClips.PickEm.get_cached_ndc_pick_for_matchup(matchup)
+
+    ndc_record = ClassicClips.PickEm.get_current_ndc_record()
 
     # get user
     {:ok, user} = User.get_or_create_user(session)
@@ -32,6 +34,7 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:theme, theme)
      |> assign(:matchup, matchup)
      |> assign(:ndc_pick, ndc_pick)
+     |> assign(:ndc_record, ndc_record)
      |> assign(:user, user)
      |> assign(:user_pick, user_pick)
      |> assign(:selected_team, selected_team)
@@ -155,5 +158,29 @@ defmodule PickEmWeb.PickEmLive.Index do
     DateTime.add(tip_datetime, -1 * 5 * 60 * 60)
     |> DateTime.to_time()
     |> Timex.format!("{h12}:{0m} {AM}")
+  end
+
+  def get_ndc_record() do
+    ClassicClips.PickEm.get_current_ndc_record()
+  end
+
+  def get_ndc_record_string(_, nil) do
+    "0 - 0"
+  end
+
+  def get_ndc_record_string(:tas, %NdcRecord{} = ndc_record) do
+    "#{ndc_record.tas_wins} - #{ndc_record.tas_losses}"
+  end
+
+  def get_ndc_record_string(:trey, %NdcRecord{} = ndc_record) do
+    "#{ndc_record.trey_wins} - #{ndc_record.trey_losses}"
+  end
+
+  def get_ndc_record_string(:leigh, %NdcRecord{} = ndc_record) do
+    "#{ndc_record.leigh_wins} - #{ndc_record.leigh_losses}"
+  end
+
+  def get_ndc_record_string(:skeets, %NdcRecord{} = ndc_record) do
+    "#{ndc_record.skeets_wins} - #{ndc_record.skeets_losses}"
   end
 end
