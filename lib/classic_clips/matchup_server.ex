@@ -7,6 +7,7 @@ defmodule ClassicClips.MatchupServer do
   alias ClassicClips.PickEm.MatchUp
 
   @interval :timer.minutes(2)
+  @long_interval :timer.minutes(10)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -24,7 +25,11 @@ defmodule ClassicClips.MatchupServer do
     case PickEm.get_current_matchup() do
       nil ->
         Logger.notice("No matchup to monitor")
-        {:noreply, state, @interval}
+        {:noreply, state, @long_interval}
+
+      %MatchUp{winning_team_id: wti} when not is_nil(wti) ->
+        Logger.notice("No active matchup to monitor")
+        {:noreply, state, @long_interval}
 
       matchup ->
         %{away_team: away_team, home_team: home_team} = matchup
@@ -55,10 +60,20 @@ defmodule ClassicClips.MatchupServer do
     end
   end
 
+  def handle_info(:timeout, %{matchup: %MatchUp{winning_team_id: _} = matchup} = state) do
+    %{away_team: away_team, home_team: home_team} = matchup
+
+    Logger.notice(
+      "Matchup complete, waiting for new matchup #{away_team.abbreviation} @ #{home_team.abbreviation}"
+    )
+
+    {:noreply, %{state | matchup: nil}, @long_interval}
+  end
+
   def handle_info(:timeout, state) do
     Logger.notice("Nothing to do in #{__MODULE__}")
     # no game to look forward to
-    {:noreply, state, @interval}
+    {:noreply, state, @long_interval}
   end
 
   defp check_game_data(matchup) do
