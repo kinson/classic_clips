@@ -83,6 +83,7 @@ defmodule ClassicClips.MatchupServer do
       "Final" ->
         Task.start_link(fn ->
           ClassicClips.PickEm.update_user_picks_with_matchup_result(game_data, matchup)
+          ClassicClips.PickEm.update_ndc_records_with_matchup_result(game_data, matchup)
         end)
 
         nil
