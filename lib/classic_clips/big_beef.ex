@@ -3,6 +3,8 @@ defmodule ClassicClips.BigBeef do
   The BigBeef context.
   """
 
+  require Logger
+
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
@@ -43,6 +45,32 @@ defmodule ClassicClips.BigBeef do
     )
     |> Repo.one()
     |> Repo.preload(beef: [:player])
+  end
+
+  def check_for_bad_beefs do
+    lower_date_time_limit = DateTime.utc_now() |> DateTime.add(-1 * 60 * 60 * 3)
+    upper_date_time_limit = DateTime.utc_now() |> DateTime.add(-1 * 60 * 60 * 5)
+    lower_updated_at_limit = DateTime.utc_now() |> DateTime.add(-1 * 60 * 10)
+
+    beefs_to_redact =
+      from(b in Beef,
+        where: b.date_time > ^upper_date_time_limit,
+        where: b.date_time < ^lower_date_time_limit,
+        where: b.updated_at < ^lower_updated_at_limit,
+        where: b.beef_count < 8,
+        where: b.game_time < 2880
+      )
+      |> Repo.all()
+      |> Repo.preload(:player)
+
+    unless Enum.empty?(beefs_to_redact) do
+      players = Enum.map(beefs_to_redact, &"#{&1.player.first_name} #{&1.player.last_name}")
+      ids = Enum.map(beefs_to_redact, & &1.id)
+
+      Logger.notice("Redacting beefs", players: players, ids: ids)
+
+      from(b in Beef, where: b.id in ^ids) |> Repo.delete_all()
+    end
   end
 
   def get_single_game_leaders() do

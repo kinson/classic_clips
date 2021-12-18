@@ -24,6 +24,7 @@ defmodule ClassicClips.Application do
       ClassicClips.ClassicsServer,
       ClassicClips.BigBeef.RecentBeefCache,
       ClassicClips.BigBeef.BigBeefWaiterServer,
+      ClassicClips.BigBeef.BeefRedactionServer,
       ClassicClips.MatchupServer,
       # Start Fiat cache
       Fiat.CacheServer
