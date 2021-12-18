@@ -11,7 +11,7 @@ defmodule ClassicClipsWeb.ReqReferer do
     referer = Map.get(headers, "referer") || "no referer"
     remote = Map.get(headers, "x-real-ip") || "no remote"
 
-    Logger.notice("new conn: #{request_path} - #{remote} - #{referer} - #{user_agent}")
+    Logger.info("new conn: #{request_path} - #{remote} - #{referer} - #{user_agent}")
     conn
   end
 end

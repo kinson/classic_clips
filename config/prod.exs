@@ -32,15 +32,22 @@ config :classic_clips, PickEmWeb.Endpoint,
 
 config :classic_clips, :classics_server_enabled, true
 
+config :logger,
+  backends: [
+    :console,
+    Sentry.LoggerBackend,
+    {LoggerFileBackend, :info_log},
+    LogflareLogger.HttpBackend
+  ]
+
 # Do not print debug messages in production
 config :logger, level: :notice
 
-config :logger,
-  backends: [:console, Sentry.LoggerBackend, {LoggerFileBackend, :info_log}]
-
-config :logger, :info_log, path: "/var/log/clips/info.log"
+config :logger, :info_log, path: "/var/log/clips/info.log", level: :info
 
 config :logger, :console, format: "$time [$level] $message\n"
+
+config :logger, :logflare_logger_backend, level: :notice
 
 # ## SSL Support
 #

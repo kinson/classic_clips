@@ -1,6 +1,8 @@
 defmodule ClassicClips.BigBeef.BigBeefWaiterServer do
   use GenServer
 
+  require Logger
+
   @polling_interval :timer.minutes(5)
 
   def start_link(_) do
@@ -34,7 +36,7 @@ defmodule ClassicClips.BigBeef.BigBeefWaiterServer do
 
       {beef, updated_state} ->
         ClassicClips.BigBeef.create_big_beef_event(%{beef_id: beef.id})
-        log_new_big_beef_to_sentry()
+        log_new_big_beef()
         updated_state
     end
   end
@@ -58,8 +60,12 @@ defmodule ClassicClips.BigBeef.BigBeefWaiterServer do
     end
   end
 
-  defp log_new_big_beef_to_sentry() do
-    Sentry.Event.create_event(message: "NEW big beef event created!")
+  defp log_new_big_beef() do
+    message = "New big beef event created!"
+
+    Logger.notice(message)
+
+    Sentry.Event.create_event(message: message)
     |> Sentry.send_event()
   end
 end

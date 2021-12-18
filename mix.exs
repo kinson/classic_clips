@@ -34,6 +34,7 @@ defmodule ClassicClips.MixProject do
   defp deps do
     [
       {:fiat, "~> 0.1.3"},
+      {:logflare_logger_backend, "~> 0.11.0"},
       {:elixir_auth_google, "~> 1.6.0"},
       {:sentry, "8.0.0"},
       {:html_entities, "~> 0.5"},

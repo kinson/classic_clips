@@ -46,6 +46,10 @@ if config_env() == :prod do
       transport_options: [socket_opts: [:inet6]]
     ],
     secret_key_base: secret_key_base
+
+  config :logger, :logflare_logger_backend,
+    source_id: System.fetch_env!("LOGFLARE_SOURCE_ID"),
+    api_key: System.fetch_env!("LOGFLARE_API_KEY")
 end
 
 config :classic_clips, ClassicClipsWeb.Endpoint, server: true
