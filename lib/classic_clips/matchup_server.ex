@@ -7,7 +7,7 @@ defmodule ClassicClips.MatchupServer do
   alias ClassicClips.PickEm.MatchUp
 
   @interval :timer.minutes(2)
-  @long_interval :timer.minutes(10)
+  @long_interval :timer.minutes(30)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
