@@ -45,8 +45,13 @@ defmodule ClassicClips.BigBeef.Services.Stats do
 
       status = Access.get(game, "gameStatusText", nil)
 
+      away_team_code = get_in(game, ["awayTeam", "teamTricode"])
+      home_team_code = get_in(game, ["homeTeam", "teamTricode"])
+
       %GameData{
         id: id,
+        away_team_code: away_team_code,
+        home_team_code: home_team_code,
         start_time: start_time,
         status: status
       }

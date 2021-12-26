@@ -1,5 +1,5 @@
 defmodule ClassicClips.GameData do
-  defstruct [:id, :start_time, :status, final_fetch_count: 0]
+  defstruct [:id, :start_time, :status, :away_team_code, :home_team_code, final_fetch_count: 0]
 
   alias ClassicClips.GameData
 
