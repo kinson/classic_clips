@@ -8,6 +8,9 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
       <a href="/leaders" class={get_class("leaders", @active)}>Leaders</a>
       <%= if @user do %>
         <a href="/profile" class={get_class("profile", @active)}>Your Profile</a>
+        <%= if @user.username == "leighs-durag" || true do %>
+          <a href="/secaucus" class={get_class("secaucus", @active)}>Secaucus</a>
+        <% end %>
       <% end %>
       <a href="/settings" class={get_class("settings", @active)}>Settings</a>
     </div>
