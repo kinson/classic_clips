@@ -239,7 +239,7 @@ defmodule Mix.Tasks.LoadTeams do
       %{
         name: "Spurs",
         location: "San Antonio",
-        abbreviation: "SAN",
+        abbreviation: "SAS",
         conference: :west,
         default_emoji: "🤠"
       },

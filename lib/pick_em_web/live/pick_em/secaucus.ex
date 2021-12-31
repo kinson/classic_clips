@@ -1,9 +1,7 @@
 defmodule PickEmWeb.PickEmLive.Secaucus do
   use PickEmWeb, :live_view
 
-  import PickEmWeb.PickEmLive.Emoji
-
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
+  alias ClassicClips.PickEm
   alias PickEmWeb.PickEmLive.{Theme, User}
 
   @impl true
@@ -15,17 +13,22 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     games = load_games()
 
+    current_matchup = PickEm.get_current_matchup()
+
     socket =
       socket
       |> assign(:page, "secaucus")
       |> assign(:games, games)
       |> assign(:user, user)
       |> assign(:theme, theme)
+      |> assign(:message, nil)
+      |> assign(:error, nil)
       |> assign(:selected_game_id, nil)
       |> assign(:selected_game_tip_datetime, nil)
       |> assign(:selected_game_away_code, nil)
       |> assign(:selected_game_home_code, nil)
       |> assign(:selected_game_favorite_code, nil)
+      |> assign(:current_matchup, current_matchup)
       |> assign(:ndc_picks, %{})
 
     {:ok, socket}
@@ -72,6 +75,60 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "create-matchup",
+        %{
+          "matchup" => %{
+            "game_id" => game_id,
+            "tip_datetime" => tip_datetime,
+            "favorite_team_code" => favorite_team,
+            "away_team_code" => away_team_code,
+            "home_team_code" => home_team_code,
+            "game_line" => spread
+          }
+        },
+        %{
+          assigns: %{
+            ndc_picks: %{
+              "tas" => tas_pick,
+              "skeets" => skeets_pick,
+              "leigh" => leigh_pick,
+              "trey" => trey_pick
+            }
+          }
+        } = socket
+      ) do
+    case ClassicClips.PickEm.create_matchup(
+           away_team_code,
+           home_team_code,
+           favorite_team,
+           spread,
+           game_id,
+           tip_datetime,
+           leigh_pick,
+           skeets_pick,
+           tas_pick,
+           trey_pick
+         ) do
+      {:ok, _} ->
+        {:noreply,
+         socket
+         |> assign(:current_matchup, PickEm.get_current_matchup())
+         |> assign(:message, "Successfully created matchup")
+         |> assign(:error, nil)}
+
+      _ ->
+        {:noreply,
+         socket
+         |> assign(:error, "Failed to create matchup")
+         |> assign(:message, nil)}
+    end
+  end
+
+  def handle_event("create-matchup", _, socket) do
+    {:noreply, assign(socket, :error, "Failed to create matchup")}
+  end
+
   def load_games do
     # get games
     {:ok, games} = games()
@@ -82,26 +139,26 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     Fiat.CacheServer.fetch_object(
       :todays_games,
       fn ->
-        ClassicClips.BigBeef.Services.Stats.games_or_someshit() |> IO.inspect()
+        ClassicClips.BigBeef.Services.Stats.games_or_someshit()
       end,
       600
     )
   end
 
   def team_button_class(team_id, team_id) do
-    "border-2 border-white box-border bg-nd-pink w-24 text-center py-2"
+    "border-2 border-white box-border bg-nd-pink w-24 text-center py-2 cursor-pointer"
   end
 
   def team_button_class(_, _) do
-    "border-2 border-transparent box-border bg-nd-pink w-24 text-center py-2"
+    "border-2 border-transparent box-border bg-nd-pink w-24 text-center py-2 cursor-pointer"
   end
 
   def game_button_class(game_id, game_id) do
-    "border-2 border-white box-border shadow-md flex flex-row bg-nd-pink text-white px-3 py-3 justify-between"
+    "border-2 border-white box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
   end
 
   def game_button_class(_, _) do
-    "border-2 border-transparent box-border shadow-md flex flex-row bg-nd-pink text-white px-3 py-3 justify-between"
+    "border-2 border-transparent box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
   end
 
   def get_time_for_game(tip_datetime) do

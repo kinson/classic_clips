@@ -10,7 +10,12 @@ defmodule ClassicClips.PickEm do
   @new_york_offset 5 * 60 * 60
 
   def get_cached_current_matchup() do
-    Fiat.CacheServer.fetch_object(:current_matchup, &get_current_matchup/0, 300)
+    Fiat.CacheServer.fetch_object(:current_matchup, &get_current_matchup/0, 60)
+  end
+
+  def set_cached_current_matchup() do
+    current_matchup = get_current_matchup()
+    Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
   end
 
   def get_current_matchup() do
@@ -26,7 +31,7 @@ defmodule ClassicClips.PickEm do
     Fiat.CacheServer.fetch_object(
       {:ndc_pick, id},
       fn -> get_ndc_pick_for_matchup(matchup) end,
-      300
+      60
     )
   end
 
@@ -393,4 +398,61 @@ defmodule ClassicClips.PickEm do
   def get_est_offset_seconds do
     @new_york_offset
   end
+
+  def create_matchup(
+        away_abbreviation,
+        home_abbreviation,
+        favorite_abbreviation,
+        spread,
+        game_id,
+        game_tip_time,
+        leigh_pick_team,
+        skeets_pick_team,
+        tas_pick_team,
+        trey_pick_team
+      ) do
+    # get away team
+    away_team = Repo.get_by!(Team, abbreviation: away_abbreviation)
+    # get home team
+    home_team = Repo.get_by!(Team, abbreviation: home_abbreviation)
+    # get favorite team
+    favorite_team = Repo.get_by!(Team, abbreviation: favorite_abbreviation)
+
+    {:ok, tip_datetime_utc, _} = DateTime.from_iso8601(game_tip_time)
+    tip_datetime_est = DateTime.add(tip_datetime_utc, -1 * get_est_offset_seconds())
+
+    month = get_month_name(tip_datetime_est.month)
+
+    matchup_changeset =
+      MatchUp.changeset(%MatchUp{}, %{
+        month: month,
+        spread: spread,
+        tip_datetime: tip_datetime_utc,
+        nba_game_id: game_id,
+        away_team_id: away_team.id,
+        home_team_id: home_team.id,
+        favorite_team_id: favorite_team.id
+      })
+
+    ndc_attrs = %{
+      skeets_pick_team_id: get_ndc_team_id(away_team, home_team, skeets_pick_team),
+      tas_pick_team_id: get_ndc_team_id(away_team, home_team, tas_pick_team),
+      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team),
+      leigh_pick_team_id: get_ndc_team_id(away_team, home_team, leigh_pick_team)
+    }
+
+    with {:ok, matchup} <- Repo.insert(matchup_changeset),
+         ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
+         ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
+         {:ok, _} <- Repo.insert(ndc_pick_changeset) do
+      set_cached_current_matchup()
+      {:ok, matchup}
+    end
+  end
+
+  defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),
+    do: away_team.id
+
+  defp get_ndc_team_id(_, %Team{abbreviation: home_team_abbrev} = home_team, home_team_abbrev),
+    do: home_team.id
 end
