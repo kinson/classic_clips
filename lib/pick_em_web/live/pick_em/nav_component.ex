@@ -3,12 +3,12 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-row flex-wrap justify-around px-px gap-6 mt-10 mb-16">
+    <div class="flex flex-row flex-wrap justify-center px-px gap-6 mt-10 mb-16">
       <a href="/" class={get_class("home", @active)}>Home</a>
       <a href="/leaders" class={get_class("leaders", @active)}>Leaders</a>
       <%= if @user do %>
         <a href="/profile" class={get_class("profile", @active)}>Your Profile</a>
-        <%= if @user.username == "leighs-durag" || true do %>
+        <%= if @user.role == :super_sicko do %>
           <a href="/secaucus" class={get_class("secaucus", @active)}>Secaucus</a>
         <% end %>
       <% end %>
