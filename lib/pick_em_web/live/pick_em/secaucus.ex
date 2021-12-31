@@ -31,7 +31,16 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:current_matchup, current_matchup)
       |> assign(:ndc_picks, %{})
 
-    {:ok, socket}
+    case user do
+      %ClassicClips.Timeline.User{role: :super_sicko} ->
+        {:ok, socket}
+
+      _ ->
+        {:ok,
+         push_redirect(socket,
+           to: Routes.pick_em_index_path(socket, :index)
+         )}
+    end
   end
 
   @impl true

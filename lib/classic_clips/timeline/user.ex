@@ -12,6 +12,7 @@ defmodule ClassicClips.Timeline.User do
     field :username, :string
     field :google_id, :string
     field :config, :map
+    field :role, Ecto.Enum, values: [:sicko, :super_sicko], default: :sicko
 
     timestamps()
   end
