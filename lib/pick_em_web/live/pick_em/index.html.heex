@@ -10,7 +10,15 @@
       <p class="ml-4 my-0"><%= @matchup.spread %></p>)
     </div>
   </div>
+  <%= if @matchup.score do %>
+    <div class="flex flex-row gap-4 mt-4">
+      <%= render_team_location(@matchup.winning_team, @theme, "text-2xl text-white font-open-sans font-bold my-0 uppercase opacity-90") %>
+      <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90">WINS</p>
+      <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90"><%= @matchup.score %></p>
+    </div>
+  <% else %>
     <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-4">Tip @ <%= get_time_for_game(@matchup) %> EST</p>
+  <% end %>
  </div>
 
  <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
