@@ -1,38 +1,21 @@
 defmodule ClassicClips.GameSchedule do
-  @todays_games_url "https://stats.nba.com/stats/scoreboardv3?LeagueID=00&GameDate="
+  @todays_games_url "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
 
   require Logger
 
-  def get_game_schedule(%Date{} = date) do
-    date_string = "#{date.year}-#{date.month}-#{date.day}"
-    request_url = @todays_games_url <> date_string
-
-    headers = [
-      Referer: "https://www.nba.com",
-      Origin: "https://www.nba.com",
-      Connection: "keep-alive",
-      "Accept-Lanuage": "en-US,en;q=0.5",
-      Accept: "*/*",
-      "Content-Type": "application/json",
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:96.0) Gecko/20100101 Firefox/96.0",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Sec-Fetch-Mode": "no-cors",
-      "Cache-Control": "no-cache"
-    ]
-
-    options = [recv_timeout: 10000]
-
-    :hackney_trace.enable(:max, :io)
-
+  def get_game_schedule() do
     with {:ok, %HTTPoison.Response{body: body}} <-
-           HTTPoison.get(request_url, headers, options),
-         {:ok, data} <- Jason.decode(body |> :zlib.gunzip()),
+           HTTPoison.get(@todays_games_url),
+         {:ok, data} <- Jason.decode(body),
          schedule <- parse_game_schedule(data) do
       {:ok, schedule}
     else
       {:error, message} = error ->
-        Logger.error("Failed to fetch schedule data", error: message, request_url: request_url)
+        Logger.error("Failed to fetch schedule data",
+          error: message,
+          request_url: @todays_games_url
+        )
+
         error
     end
   end

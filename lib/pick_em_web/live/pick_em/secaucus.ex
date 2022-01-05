@@ -157,10 +157,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     Fiat.CacheServer.fetch_object(
       :todays_games,
       fn ->
-        DateTime.utc_now()
-        |> DateTime.add(-1 * PickEm.get_est_offset_seconds())
-        |> DateTime.to_date()
-        |> ClassicClips.GameSchedule.get_game_schedule()
+        ClassicClips.GameSchedule.get_game_schedule()
       end,
       600
     )
