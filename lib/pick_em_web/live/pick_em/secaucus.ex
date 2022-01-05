@@ -4,6 +4,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   alias ClassicClips.PickEm
   alias PickEmWeb.PickEmLive.{Theme, User}
 
+  require Logger
+
   @impl true
   def mount(_params, session, socket) do
     # get user
@@ -24,6 +26,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:message, nil)
       |> assign(:error, nil)
       |> assign(:selected_game_id, nil)
+      |> assign(:selected_game_line, nil)
       |> assign(:selected_game_tip_datetime, nil)
       |> assign(:selected_game_away_code, nil)
       |> assign(:selected_game_home_code, nil)
@@ -126,7 +129,9 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
          |> assign(:message, "Successfully created matchup")
          |> assign(:error, nil)}
 
-      _ ->
+      _ = error ->
+        Logger.error("Could not create new matchup", error: error)
+
         {:noreply,
          socket
          |> assign(:error, "Failed to create matchup")
@@ -136,6 +141,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def handle_event("create-matchup", _, socket) do
     {:noreply, assign(socket, :error, "Failed to create matchup")}
+  end
+
+  def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
+    {:noreply, assign(socket, :selected_game_line, game_line)}
   end
 
   def load_games do
@@ -148,7 +157,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     Fiat.CacheServer.fetch_object(
       :todays_games,
       fn ->
-        ClassicClips.BigBeef.Services.Stats.games_or_someshit()
+        DateTime.utc_now()
+        |> DateTime.add(-1 * PickEm.get_est_offset_seconds())
+        |> DateTime.to_date()
+        |> ClassicClips.GameSchedule.get_game_schedule()
       end,
       600
     )
