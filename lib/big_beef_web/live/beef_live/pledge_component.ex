@@ -10,8 +10,8 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
       <div class="pledge-card">
 
         <div class="raised">
-          <p class="amount">$428</p>
-          <p class="description">donated as of December 31st, 2021</p>
+          <p class="amount">$449</p>
+          <p class="description">donated as of January 7th, 2022</p>
         </div>
 
         <p>For the second season, Big Beef Tracker is giving back by donating to <a href="https://www.feedingamerica.org/">Feeding America</a>, an organization trying to put an end to food insecurity across the United States.</p>

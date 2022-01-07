@@ -82,7 +82,11 @@ defmodule ClassicClips.PickEm do
     |> Enum.frequencies()
   end
 
-  def get_leaders() do
+  def get_leaders_cached do
+    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 60)
+  end
+
+  def get_leaders do
     current_month = get_current_month_name()
 
     from(ur in UserRecord,

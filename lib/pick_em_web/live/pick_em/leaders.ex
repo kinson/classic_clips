@@ -20,6 +20,6 @@ defmodule PickEmWeb.PickEmLive.Leaders do
   end
 
   def get_leaders() do
-    PickEm.get_leaders()
+    PickEm.get_leaders_cached()
   end
 end

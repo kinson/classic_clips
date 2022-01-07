@@ -3,8 +3,10 @@
 
   <%= live_component PickEmWeb.PickEmLive.AccountInfoComponent, id: "account-info-component", socket: @socket, user: @user %>
 
-  <button type="button" class={get_forfeit_button_class(@is_missing_picks)} phx-click="forfeit-missed">Forfeit Missed Games</button>
-  <%= unless @is_missing_picks do %>
+  <button type="button" class={get_forfeit_button_class(@is_missing_picks)} phx-click="forfeit-missed">Forfeit Missed Picks</button>
+  <%= if @is_missing_picks do %>
+    <p class="text-white font-open-sans text-xl mt-1 mb-0 ml-10 md:ml-20 opacity-70">Accept losses for any missed picks from this month</p>
+  <% else %>
     <p class="text-white font-open-sans text-xl mt-1 mb-0 ml-10 md:ml-20 opacity-70">No missing picks</p>
   <% end %>
 
