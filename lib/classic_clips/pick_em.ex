@@ -66,8 +66,20 @@ defmodule ClassicClips.PickEm do
     |> Repo.update()
   end
 
-  def get_pick_count_for_matchup(%MatchUp{id: id}) do
-    from(up in UserPick, select: count(up.id), where: up.matchup_id == ^id) |> Repo.one()
+  def get_cached_pick_spread(matchup) do
+    Fiat.CacheServer.fetch_object(
+      {:matchup_pick_spread, matchup.id},
+      fn ->
+        get_pick_spread(matchup)
+      end,
+      30
+    )
+  end
+
+  def get_pick_spread(%MatchUp{id: id}) do
+    from(up in UserPick, select: up.picked_team_id, where: up.matchup_id == ^id)
+    |> Repo.all()
+    |> Enum.frequencies()
   end
 
   def get_leaders() do

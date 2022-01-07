@@ -16,6 +16,8 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     ndc_record = ClassicClips.PickEm.get_current_ndc_record()
 
+    matchup_pick_spread = ClassicClips.PickEm.get_cached_pick_spread(matchup)
+
     # get user
     {:ok, user} = User.get_or_create_user(session)
 
@@ -34,6 +36,7 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:theme, theme)
      |> assign(:matchup, matchup)
      |> assign(:ndc_pick, ndc_pick)
+     |> assign(:pick_spread, matchup_pick_spread)
      |> assign(:ndc_record, ndc_record)
      |> assign(:user, user)
      |> assign(:user_pick, user_pick)
@@ -183,4 +186,21 @@ defmodule PickEmWeb.PickEmLive.Index do
   def get_ndc_record_string(:skeets, %NdcRecord{} = ndc_record) do
     "#{ndc_record.skeets_wins} - #{ndc_record.skeets_losses}"
   end
+
+  def get_pick_spread_string(pick_spread, %MatchUp{
+        away_team_id: away_team_id,
+        home_team_id: home_team_id
+      })
+      when is_map_key(pick_spread, away_team_id) and is_map_key(pick_spread, home_team_id) do
+    away_picks = Map.get(pick_spread, away_team_id, 0)
+    home_picks = Map.get(pick_spread, home_team_id, 0)
+    total = away_picks + home_picks
+
+    away_percent = round(away_picks / total * 100)
+    home_percent = round(home_picks / total * 100)
+
+    "PICK SPREAD #{away_percent}% @ #{home_percent}%"
+  end
+
+  def get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
 end

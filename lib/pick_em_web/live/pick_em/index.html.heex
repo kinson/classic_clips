@@ -11,14 +11,19 @@
       </div>
     </div>
     <%= if @matchup.score do %>
-      <div class="flex flex-row gap-4 mt-4">
-        <%= render_team_location(@matchup.winning_team, @theme, "text-2xl text-white font-open-sans font-bold my-0 uppercase opacity-90") %>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90">WINS</p>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90"><%= @matchup.score %></p>
-      </div>
+      <div class="flex flex-row gap-4 mt-6 flex-wrap">
+        <%= render_team_location(@matchup.winning_team, @theme, "text-2xl text-white font-open-sans font-bold my-0 uppercase opacity-90 whitespace-nowrap") %>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">WINS</p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap"><%= @matchup.score %></p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">&bull;</p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap"><%= get_pick_spread_string(@pick_spread, @matchup) %></p>
+    </div>
     <% else %>
-      <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-4">Tip @ <%= get_time_for_game(@matchup) %> EST</p>
+      <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-6">
+        TIP @ <%= get_time_for_game(@matchup) %> EST &bull; <%= get_pick_spread_string(@pick_spread, @matchup) %>
+      </p>
     <% end %>
+
  </div>
 
   <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
