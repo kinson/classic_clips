@@ -374,17 +374,28 @@ defmodule ClassicClips.PickEm do
     |> Enum.into(%{})
   end
 
+  def get_picks_for_user_cached(user) do
+    Fiat.CacheServer.fetch_object(
+      {:picks_for_user, user.id},
+      fn -> get_picks_for_user(user) end,
+      300
+    )
+  end
+
   def get_picks_for_user(%User{id: user_id}) do
     from(up in UserPick,
       where: up.user_id == ^user_id,
       order_by: [desc: up.inserted_at],
-      limit: 10
+      limit: 30
     )
     |> Repo.all()
     |> Repo.preload([
       :picked_team,
       matchup: [:away_team, :home_team, :favorite_team, :winning_team]
     ])
+    |> Enum.sort(fn pick_one, pick_two ->
+      DateTime.compare(pick_one.matchup.tip_datetime, pick_two.matchup.tip_datetime) != :lt
+    end)
   end
 
   def get_current_month_name do
@@ -467,4 +478,86 @@ defmodule ClassicClips.PickEm do
 
   defp get_ndc_team_id(_, %Team{abbreviation: home_team_abbrev} = home_team, home_team_abbrev),
     do: home_team.id
+
+  def forfeit_missed_games(%User{id: user_id} = user) do
+    current_month = get_current_month_name()
+
+    user_picks =
+      from(up in UserPick,
+        where: up.user_id == ^user_id,
+        select: up.matchup_id,
+        order_by: [desc: up.inserted_at],
+        limit: 25
+      )
+
+    new_picks =
+      from(m in MatchUp,
+        where: m.month == ^current_month,
+        where: m.id not in subquery(user_picks),
+        where: not is_nil(m.winning_team_id),
+        select: {m.id, m.winning_team_id, m.away_team_id, m.home_team_id}
+      )
+      |> Repo.all()
+      |> Enum.map(fn
+        {matchup_id, winning_team_id, away_team_id, _} when winning_team_id != away_team_id ->
+          UserPick.changeset(%UserPick{}, %{
+            matchup_id: matchup_id,
+            picked_team_id: away_team_id,
+            user_id: user_id,
+            result: :loss,
+            forfeited_at: DateTime.utc_now()
+          })
+          |> Repo.insert()
+
+        {matchup_id, winning_team_id, _, home_team_id} when winning_team_id != home_team_id ->
+          UserPick.changeset(%UserPick{}, %{
+            matchup_id: matchup_id,
+            picked_team_id: home_team_id,
+            user_id: user_id,
+            result: :loss,
+            forfeited_at: DateTime.utc_now()
+          })
+          |> Repo.insert()
+      end)
+
+    season = Repo.get_by!(ClassicClips.BigBeef.Season, current: true)
+
+    create_or_update_user_record(user_id, season.id, 0, Enum.count(new_picks))
+
+    Fiat.CacheServer.cache_object({:is_missing_picks?, user_id}, false, 1)
+    Fiat.CacheServer.cache_object({:picks_for_user, user_id}, get_picks_for_user(user), 10)
+  end
+
+  def is_missing_picks_cached?(user) do
+    Fiat.CacheServer.fetch_object(
+      {:is_missing_picks?, user.id},
+      fn -> is_missing_picks?(user) end,
+      300
+    )
+  end
+
+  def is_missing_picks?(%User{id: user_id}) do
+    current_month = get_current_month_name()
+
+    user_pick_query =
+      from(up in UserPick,
+        where: up.user_id == ^user_id,
+        select: up.matchup_id,
+        order_by: [desc: up.inserted_at],
+        limit: 25
+      )
+
+    missing_matchups =
+      from(m in MatchUp,
+        where: m.month == ^current_month,
+        where: m.id not in subquery(user_pick_query),
+        where: not is_nil(m.winning_team_id)
+      )
+      |> Repo.all()
+
+    case missing_matchups do
+      [] -> false
+      _ -> true
+    end
+  end
 end

@@ -3,8 +3,13 @@
 
   <%= live_component PickEmWeb.PickEmLive.AccountInfoComponent, id: "account-info-component", socket: @socket, user: @user %>
 
-  <p class="text-nd-pink mb-6 mt-14 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
-  <div class="flex flex-col gap-16">
+  <button type="button" class={get_forfeit_button_class(@is_missing_picks)} phx-click="forfeit-missed">Forfeit Missed Games</button>
+  <%= unless @is_missing_picks do %>
+    <p class="text-white font-open-sans text-xl mt-1 mb-0 ml-10 md:ml-20 opacity-70">No missing picks</p>
+  <% end %>
+
+  <p class="text-nd-pink mb-6 mt-10 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
+  <div class="flex flex-col gap-14">
     <%= if @picks == [] do %>
           <p class="font-open-sans text-white text-2xl font-bold my-0 ml-10 md:ml-20">No picks yet</p>
     <% end %>
@@ -16,7 +21,11 @@
           <p class="font-open-sans text-nd-pink text-3xl font-bold my-0">[<%= get_matchup_outcome(pick) %>]</p>
           <div class="flex flex-row gap-3">
             <p class="font-open-sans text-white text-3xl font-bold my-0">PICKED:</p>
-            <%= render_team_abbreviation(pick.picked_team, @theme, "text-nd-yellow font-open-sans font-bold text-3xl") %>
+            <%= if is_nil(pick.forfeited_at) do %>
+              <%= render_team_abbreviation(pick.picked_team, @theme, "text-nd-yellow font-open-sans font-bold text-3xl") %>
+              <% else %>
+                <p class="text-nd-yellow font-open-sans font-bold text-3xl my-0">N/A</p>
+              <% end %>
           </div>
         </div>
         <div class="flex flex-row gap-4 ml-2 md:ml-4">

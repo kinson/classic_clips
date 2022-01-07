@@ -5,6 +5,7 @@ defmodule ClassicClips.PickEm.UserPick do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "user_picks" do
     field :result, Ecto.Enum, values: [:win, :loss]
+    field :forfeited_at, :utc_datetime
 
     belongs_to :user, ClassicClips.Timeline.User, type: :binary_id
     belongs_to :matchup, ClassicClips.PickEm.MatchUp, type: :binary_id
@@ -16,7 +17,7 @@ defmodule ClassicClips.PickEm.UserPick do
   @doc false
   def changeset(user_pick, attrs) do
     user_pick
-    |> cast(attrs, [:result, :user_id, :matchup_id, :picked_team_id])
+    |> cast(attrs, [:result, :user_id, :matchup_id, :picked_team_id, :forfeited_at])
     |> validate_required([:user_id, :matchup_id, :picked_team_id])
   end
 end
