@@ -92,7 +92,7 @@ defmodule ClassicClips.PickEm do
     from(ur in UserRecord,
       where: ur.month == ^current_month,
       order_by: [desc: ur.wins, asc: ur.losses, desc: ur.updated_at, desc: ur.id],
-      limit: 25
+      limit: 50
     )
     |> Repo.all()
     |> Repo.preload(:user)
