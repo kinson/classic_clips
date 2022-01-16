@@ -12,6 +12,7 @@ defmodule ClassicClips.Timeline.User do
     field :username, :string
     field :google_id, :string
     field :config, :map
+    field :email_new_matchups, :boolean
     field :role, Ecto.Enum, values: [:sicko, :super_sicko], default: :sicko
 
     timestamps()
@@ -28,7 +29,7 @@ defmodule ClassicClips.Timeline.User do
 
   def create_user_changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :active, :google_id])
+    |> cast(attrs, [:username, :email, :active, :google_id, :email_new_matchups])
     |> put_change(:google_id, user.google_id || attrs.sub)
     |> validate_required([:email])
     |> unsafe_validate_unique(:username, Repo, message: "Username is already taken")
@@ -45,7 +46,7 @@ defmodule ClassicClips.Timeline.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :active, :google_id])
+    |> cast(attrs, [:username, :email, :active, :google_id, :email_new_matchups])
     |> put_change(:google_id, user.google_id || attrs.sub)
     |> validate_required([:email])
     |> validate_length(:username,
