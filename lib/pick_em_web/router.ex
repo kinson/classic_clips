@@ -56,4 +56,12 @@ defmodule PickEmWeb.Router do
       live_dashboard "/dashboard", metrics: PickEmWeb.Telemetry, ecto_repos: [ClassicClips.Repo]
     end
   end
+
+  if Mix.env() == :dev do
+    scope "/mail/dev" do
+      pipe_through [:browser]
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
 end

@@ -40,6 +40,11 @@ config :sentry,
   tags: %{env: "prod"},
   included_environments: [:prod]
 
+config :classic_clips, ClassicClips.Mailer, adapter: Swoosh.Adapters.Local
+# config :classic_clips, ClassicClips.Mailer,
+#  adapter: Swoosh.Adapters.Sendgrid,
+#  api_key: System.fetch_env!("SENDGRID_API_KEY")
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

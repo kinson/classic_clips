@@ -468,13 +468,30 @@ defmodule ClassicClips.PickEm do
       leigh_pick_team_id: get_ndc_team_id(away_team, home_team, leigh_pick_team)
     }
 
-    with {:ok, matchup} <- Repo.insert(matchup_changeset),
+    with {:ok, matchup} <-
+           Repo.insert(matchup_changeset, returning: true),
+         matchup <-
+           Repo.preload(matchup, [:away_team, :home_team, :favorite_team]),
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
-         {:ok, _} <- Repo.insert(ndc_pick_changeset) do
+         {:ok, _} <- Repo.insert(ndc_pick_changeset),
+         {:ok, _} <- notify_sickos(matchup) do
       set_cached_current_matchup()
       {:ok, matchup}
     end
+  end
+
+  def notify_sickos(matchup) do
+    Task.start_link(fn ->
+      from(u in User,
+        where: u.email_new_matchups == true
+      )
+      |> Repo.all()
+      |> Enum.map(&%{name: &1.username, email: &1.email, matchup: matchup})
+      |> Enum.each(&ClassicClips.Timeline.UserNotifier.deliver_new_matchup/1)
+    end)
+
+    {:ok, true}
   end
 
   defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),

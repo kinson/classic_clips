@@ -12,6 +12,10 @@ if config_env() == :prod do
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
+  config :classic_clips, ClassicClips.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: System.fetch_env!("SENDGRID_API_KEY")
+
   config :classic_clips, ClassicClips.Repo,
     ssl: true,
     url: database_url,
