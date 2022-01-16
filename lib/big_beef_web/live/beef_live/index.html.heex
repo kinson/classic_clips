@@ -1,7 +1,7 @@
-<div id="page-container">
-  <div id="beef-container" class="saucy">
-    <img src={Routes.static_path(@socket, "/images/big-beef-logo-1.png")} id="beef-logo" alt="" />
-    <h1>BIG BEEF TRACKER</h1>
+<div class="bg-beef-white">
+  <div class="grid grid-cols-bb-sm md:grid-cols-bb-md grid-rows-bb-sm md:grid-rows-bb-md">
+    <img src={Routes.static_path(@socket, "/images/big-beef-logo-1.png")} id="prev-beef-logo" class="row-start-1 row-end-2 h-10 md:h-12" alt="" />
+    <h1 class="text-xl col-start-2 col-end-3">BIG BEEF TRACKER</h1>
     <%= live_component BigBeefWeb.BeefLive.MenuComponent, id: "menu", page_type: @page_type %>
     <%= live_component BigBeefWeb.BeefLive.GraphComponent, id: "graph-component", page_type: @page_type, active_game_count: @active_game_count, beefs: @beefs, last_updated: @last_updated %>
     <%= live_component BigBeefWeb.BeefLive.StatsComponent, id: "stats-component", page_type: @page_type, big_beefs: @big_beefs, latest: @latest, total_leaders: @total_leaders, season_total_leaders: @season_total_leaders, season_single_game_leaders: @season_single_game_leaders, single_game_leaders: @single_game_leaders %>
