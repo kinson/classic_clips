@@ -581,4 +581,15 @@ defmodule ClassicClips.PickEm do
       _ -> true
     end
   end
+
+  def enable_matchup_email_notifications(user),
+    do: update_matchup_email_notifications(user, true)
+
+  def disable_matchup_email_notifications(user),
+    do: update_matchup_email_notifications(user, false)
+
+  def update_matchup_email_notifications(%User{} = user, enabled?) do
+    User.changeset(user, %{email_new_matchups: enabled?})
+    |> Repo.update(returning: true)
+  end
 end

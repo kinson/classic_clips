@@ -1,13 +1,13 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
   <.form let={f} for={:team_emojis} action={Routes.theme_path(@socket, :create)} phx-change="toggle_emojis" phx-submit="toggle_emojis" phx-trigger-action={@submit_emoji_enabled}>
     <div class="flex flex-row items-baseline gap-6 mb-10 ml-10 md:ml-20">
-      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Team Emojis</p>
       <%= checkbox f, :emojis_enabled, value: Theme.get_emojis_enabled(@theme), class: "my-0" %>
+      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Team Emojis</p>
     </div>
 
     <div class="flex flex-row items-baseline my-8 gap-6 my-10 ml-10 md:ml-20">
-      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Emoji Only Mode</p>
       <%= checkbox f, :emojis_only, value: Theme.get_emoji_only_enabled(@theme), class: "my-0", disabled: Theme.get_emojis_enabled(@theme) == false %>
+      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Emoji Only Mode</p>
     </div>
   </.form>
 

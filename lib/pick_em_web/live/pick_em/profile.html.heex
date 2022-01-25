@@ -3,14 +3,22 @@
 
   <%= live_component PickEmWeb.PickEmLive.AccountInfoComponent, id: "account-info-component", socket: @socket, user: @user %>
 
+
+  <p class="text-nd-pink mb-6 mt-10 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Account Settings</p>
+  <.form let={f} for={:matchup_emails} phx-change="toggle-email-notifications">
+    <div class="flex flex-row items-baseline gap-6 mb-10 ml-10 md:ml-20">
+      <%= checkbox f, :email_notifications, value: @subscribed_to_email_notifications?, class: "my-0" %>
+      <p class="text-white my-0 font-open-sans font-bold text-3xl">Get Matchup Email Notifications</p>
+    </div>
+  </.form>
+
+  <p class="text-nd-pink mb-0 mt-10 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
   <button type="button" class={get_forfeit_button_class(@is_missing_picks)} phx-click="forfeit-missed">Forfeit Missed Picks</button>
   <%= if @is_missing_picks do %>
-    <p class="text-white font-open-sans text-xl mt-1 mb-0 ml-10 md:ml-20 opacity-70">Accept losses for any missed picks from this month</p>
+    <p class="text-white font-open-sans text-xl mt-1 mb-8 ml-10 md:ml-20 opacity-70">Accept losses for any missed picks from this month</p>
   <% else %>
-    <p class="text-white font-open-sans text-xl mt-1 mb-0 ml-10 md:ml-20 opacity-70">No missing picks</p>
+    <p class="text-white font-open-sans text-xl mt-1 mb-4 ml-10 md:ml-20 opacity-70">No missing picks</p>
   <% end %>
-
-  <p class="text-nd-pink mb-6 mt-10 ml-10 md:ml-20 font-open-sans font-bold text-4xl">Your Picks</p>
   <div class="flex flex-col gap-14">
     <%= if @picks == [] do %>
           <p class="font-open-sans text-white text-2xl font-bold my-0 ml-10 md:ml-20">No picks yet</p>
