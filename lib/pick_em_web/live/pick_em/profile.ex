@@ -20,6 +20,7 @@ defmodule PickEmWeb.PickEmLive.Profile do
        socket
        |> assign(:page, "profile")
        |> assign(:theme, theme)
+       |> assign(:subscribed_to_email_notifications?, user.email_new_matchups)
        |> assign(:is_missing_picks, PickEm.is_missing_picks_cached?(user))
        |> assign(:picks, PickEm.get_picks_for_user_cached(user))
        |> assign(:user, user)}
@@ -46,6 +47,28 @@ defmodule PickEmWeb.PickEmLive.Profile do
      )}
   end
 
+  def handle_event(
+        "toggle-email-notifications",
+        %{"matchup_emails" => %{"email_notifications" => enabled?}},
+        %{assigns: %{user: user}} = socket
+      ) do
+    user_result =
+      case enabled? do
+        "true" -> PickEm.enable_matchup_email_notifications(user)
+        "false" -> PickEm.disable_matchup_email_notifications(user)
+      end
+
+    case user_result do
+      {:ok, updated_user} ->
+        {:noreply,
+         assign(socket, :subscribed_to_email_notifications?, updated_user.email_new_matchups)
+         |> assign(:user, updated_user)}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
   def get_matchup_date(%UserPick{matchup: matchup}) do
     %{day: day, month: month, year: year} =
       DateTime.add(matchup.tip_datetime, -1 * PickEm.get_est_offset_seconds())
@@ -70,7 +93,7 @@ defmodule PickEmWeb.PickEmLive.Profile do
   end
 
   def get_forfeit_button_class(true) do
-    "rounded-none bg-nd-pink text-nd-purple font-open-sans mt-10 mb-0 border-none text-2xl ml-10 md:ml-20 hover:bg-nd-pink hover:text-nd-yellow focus:bg-nd-pink focus:text-nd-purple"
+    "rounded-none bg-nd-pink text-nd-purple font-open-sans mt-4 mb-0 border-none text-2xl ml-10 md:ml-20 hover:bg-nd-pink hover:text-nd-yellow focus:bg-nd-pink focus:text-nd-purple"
   end
 
   def get_forfeit_button_class(_) do
