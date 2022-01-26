@@ -5,9 +5,12 @@ module.exports = {
     extend: {
       colors: {
           'beef-red': 'rgb(215, 25, 33)',
-          'nd-yellow': '#DAFF4F',
-          'nd-pink': '#E934D7',
-          'nd-purple': '#6000AA'
+          // 'nd-yellow': '#DAFF4F',
+          'nd-yellow': '#DDFE52',
+          // 'nd-pink': '#E934D7',
+          'nd-pink': '#EA33F1',
+          // 'nd-purple': '#6000AA'
+          'nd-purple': '#4C0A9B'
         },
         fontFamily: {
           'open-sans': ['Open Sans', 'sans-serif']
