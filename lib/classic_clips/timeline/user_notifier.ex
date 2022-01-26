@@ -5,7 +5,12 @@ defmodule ClassicClips.Timeline.UserNotifier do
   require Logger
 
   def deliver_new_matchup(%{name: name, email: email, matchup: matchup}) do
-    {:ok, datestring} = matchup.tip_datetime |> Timex.format("{Mfull} {D}, {YYYY}")
+    est_offset_seconds = -1 * ClassicClips.PickEm.get_est_offset_seconds()
+
+    {:ok, datestring} =
+      matchup.tip_datetime
+      |> DateTime.add(est_offset_seconds)
+      |> Timex.format("{Mfull} {D}, {YYYY}")
 
     matchupline =
       "#{matchup.away_team.abbreviation} @ #{matchup.home_team.abbreviation} (#{matchup.favorite_team.abbreviation} #{matchup.spread})"
