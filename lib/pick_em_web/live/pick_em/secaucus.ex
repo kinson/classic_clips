@@ -17,6 +17,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     current_matchup = PickEm.get_current_matchup()
 
+    todays_matchup = PickEm.get_todays_matchup() |> IO.inspect(label: "Here")
+
     socket =
       socket
       |> assign(:page, "secaucus")
@@ -32,7 +34,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_home_code, nil)
       |> assign(:selected_game_favorite_code, nil)
       |> assign(:current_matchup, current_matchup)
+      |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
+
+    IO.inspect(socket, label: "socket")
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -184,4 +189,20 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     |> DateTime.to_time()
     |> Timex.format!("{h12}:{0m} {AM}")
   end
+
+  def game_id_value(nil, %{game_id: game_id}), do: game_id
+
+  def game_id_value(game_id, _), do: game_id
+
+  def favorite_team_id_value(nil, %{favorite_team_id: favorite_team_id}), do: favorite_team_id
+
+  def favorite_team_id_value(team_id, _), do: team_id
+
+  def away_team_id_value(nil, %{away_team_id: away_team_id}), do: away_team_id
+
+  def away_team_id_value(team_id, _), do: team_id
+
+  def home_team_id_value(nil, %{home_team_id: home_team_id}), do: home_team_id
+
+  def home_team_id_value(team_id, _), do: team_id
 end
