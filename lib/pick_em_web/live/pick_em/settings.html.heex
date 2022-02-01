@@ -1,59 +1,101 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
-  <.form let={f} for={:team_emojis} action={Routes.theme_path(@socket, :create)} phx-change="toggle_emojis" phx-submit="toggle_emojis" phx-trigger-action={@submit_emoji_enabled}>
+  <.form
+    let={f}
+    for={:team_emojis}
+    action={Routes.theme_path(@socket, :create)}
+    phx-change="toggle_emojis"
+    phx-submit="toggle_emojis"
+    phx-trigger-action={@submit_emoji_enabled}
+  >
     <div class="flex flex-row items-baseline gap-6 mb-10 ml-10 md:ml-20">
-      <%= checkbox f, :emojis_enabled, value: Theme.get_emojis_enabled(@theme), class: "my-0" %>
-      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Team Emojis</p>
+      <%= checkbox(f, :emojis_enabled, value: Theme.get_emojis_enabled(@theme), class: "my-0") %>
+      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">
+        Enable Team Emojis
+      </p>
     </div>
 
     <div class="flex flex-row items-baseline my-8 gap-6 my-10 ml-10 md:ml-20">
-      <%= checkbox f, :emojis_only, value: Theme.get_emoji_only_enabled(@theme), class: "my-0", disabled: Theme.get_emojis_enabled(@theme) == false %>
-      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Enable Emoji Only Mode</p>
+      <%= checkbox(f, :emojis_only,
+        value: Theme.get_emoji_only_enabled(@theme),
+        class: "my-0",
+        disabled: Theme.get_emojis_enabled(@theme) == false
+      ) %>
+      <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">
+        Enable Emoji Only Mode
+      </p>
     </div>
   </.form>
 
   <div class="flex flex-row items-center gap-6 mb-2 mt-10 ml-10 md:ml-20">
-    <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">Team Emojis</p>
+    <p class="text-nd-pink my-0 font-open-sans font-bold text-4xl">
+      Team Emojis
+    </p>
     <%= if @is_editing_teams do %>
-      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="cancel">cancel</p>
+      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="cancel">
+        cancel
+      </p>
     <% else %>
-      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="edit">edit</p>
+      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="edit">
+        edit
+      </p>
     <% end %>
   </div>
 
   <%= if @is_editing_teams do %>
-    <p class="text-white text-2xl font-open-sans font-light mb-6 mt-4 ml-10 md:ml-20">Customize emojis by replacing them with your favorites.</p>
+    <p class="text-white text-2xl font-open-sans font-light mb-6 mt-4 ml-10 md:ml-20">
+      Customize emojis by replacing them with your favorites.
+    </p>
   <% end %>
 
-  <.form let={f} for={:custom_emojis} action={Routes.theme_path(@socket, :create)} >
+  <.form let={f} for={:custom_emojis} action={Routes.theme_path(@socket, :create)}>
     <div class="flex flex-row ml-10 md:ml-20">
       <div class="flex flex-col flex-1">
         <%= for team <- @east_teams do %>
           <div class="flex flex-row gap-2 items-center gap-8 my-3">
             <%= if @is_editing_teams do %>
-              <%= text_input f, team.id, class: "text-white !w-16 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto text-5xl", value: Theme.get_emoji_for_team(team, @theme) %>
+              <%= text_input(f, team.id,
+                class:
+                  "text-white !w-16 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto text-5xl",
+                value: Theme.get_emoji_for_team(team, @theme)
+              ) %>
             <% else %>
-              <p class="text-white py-3 px-2 my-0 text-5xl"><%= Theme.get_emoji_for_team(team, @theme) %></p>
+              <p class="text-white py-3 px-2 my-0 text-5xl">
+                <%= Theme.get_emoji_for_team(team, @theme) %>
+              </p>
             <% end %>
-            <p class="text-white mx-0 my-0 font-open-sans text-3xl"><%= team.name %></p>
+            <p class="text-white mx-0 my-0 font-open-sans text-3xl">
+              <%= team.name %>
+            </p>
           </div>
         <% end %>
       </div>
-      
+
       <div class="flex flex-col ml-8 flex-1">
         <%= for team <- @west_teams do %>
           <div class="flex flex-row items-center gap-8 my-3">
             <%= if @is_editing_teams do %>
-              <%= text_input f, team.id, class: "text-white !w-16 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto text-5xl", value: Theme.get_emoji_for_team(team, @theme) %>
+              <%= text_input(f, team.id,
+                class:
+                  "text-white !w-16 !border-0 !border-b-2 !rounded-none !px-2 !py-1 !text-center !my-0 !mx-0 !h-auto text-5xl",
+                value: Theme.get_emoji_for_team(team, @theme)
+              ) %>
             <% else %>
-              <p class="text-white py-3 px-2 my-0 text-5xl"><%= Theme.get_emoji_for_team(team, @theme) %></p>
+              <p class="text-white py-3 px-2 my-0 text-5xl">
+                <%= Theme.get_emoji_for_team(team, @theme) %>
+              </p>
             <% end %>
-            <p class="text-white mx-0 my-0 font-open-sans text-3xl"><%= team.name %></p>
+            <p class="text-white mx-0 my-0 font-open-sans text-3xl">
+              <%= team.name %>
+            </p>
           </div>
         <% end %>
       </div>
     </div>
     <%= if @is_editing_teams do %>
-      <%= submit "Save", class: "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 mt-10 ml-10 md:ml-20" %>
+      <%= submit("Save",
+        class:
+          "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 mt-10 ml-10 md:ml-20"
+      ) %>
     <% end %>
   </.form>
 </div>

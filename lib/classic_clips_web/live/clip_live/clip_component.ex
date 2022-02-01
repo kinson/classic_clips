@@ -12,48 +12,79 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
 
   @impl true
   def render(assigns) do
-    ~L"""
+    ~H"""
     <div class="clip-box">
       <div class="clip-container">
         <div class="tas-container">
-          <div class="clip-edit-button <%= get_edit_class(@user, @clip) %>">
+          <div class={"clip-edit-button #{get_edit_class(@user, @clip)}"}>
             <%= live_patch to: Routes.clip_index_path(@socket, :edit, @clip.id) do %>
               <i class="fas fa-cog"></i>
             <% end %>
           </div>
-          <div class="save-button <%= get_save_class(@saves, @clip) %>" phx-click="save_clip" phx-value-clip="<%= @id %>"></div>
+          <div
+            class={"save-button #{get_save_class(@saves, @clip)}"}
+            phx-click="save_clip"
+            phx-value-clip={@id}
+          ></div>
           <%= link to: @clip.yt_video_url, class: "tas-text", target: "_blank" do %>
-          <%= @clip.title |> String.upcase() %><span>
-          <svg width="50px" height="53px" viewBox="0 0 93 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g id="Classic-Clips" stroke="none" stroke-width="5" fill="none" fill-rule="evenodd">
-                <g id="Artboard" transform="translate(-29.000000, -129.000000)" stroke="#fff">
+            <%= @clip.title |> String.upcase() %>
+            <span>
+              <svg
+                width="50px"
+                height="53px"
+                viewBox="0 0 93 53"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Classic-Clips" stroke="none" stroke-width="5" fill="none" fill-rule="evenodd">
+                  <g id="Artboard" transform="translate(-29.000000, -129.000000)" stroke="#fff">
                     <line x1="42" y1="155" x2="120" y2="155" id="Path"></line>
-                    <polyline id="Rectangle" transform="translate(95.297759, 155) rotate(-315.000000) translate(-95.297759, -155) " points="77.2665364 137.557089 113.328982 137.557089 113.328982 173.619535"></polyline>
+                    <polyline
+                      id="Rectangle"
+                      transform="translate(95.297759, 155) rotate(-315.000000) translate(-95.297759, -155) "
+                      points="77.2665364 137.557089 113.328982 137.557089 113.328982 173.619535"
+                    ></polyline>
+                  </g>
                 </g>
-            </g>
-          </svg>
-          </span>
+              </svg>
+            </span>
           <% end %>
-          <%= link get_publish_date(@clip.video), to: Routes.clip_show_path(@socket, :show, @clip.id) , class: "tas-date" %>
-          <p class="tas-time"><%= get_duration(@clip.clip_length) %></p>
-            <a href="<%= @clip.yt_video_url %>" target="_blank" class="tas-video-link">
-              <img class="tas-image" src="<%= @clip.yt_thumbnail_url %>" />
-            </a>
+          <%= link(get_publish_date(@clip.video),
+            to: Routes.clip_show_path(@socket, :show, @clip.id),
+            class: "tas-date"
+          ) %>
+          <p class="tas-time">
+            <%= get_duration(@clip.clip_length) %>
+          </p>
+          <a href={@clip.yt_video_url} target="_blank" class="tas-video-link">
+            <img class="tas-image" src={@clip.yt_thumbnail_url} />
+          </a>
         </div>
         <div class="leigh-container">
-          <div class="<%= Timeline.get_vote_class(@id, @votes, @user) %> icon" phx-click="inc_votes" phx-value-clip="<%= @id %>">
+          <div
+            class={"#{Timeline.get_vote_class(@id, @votes, @user)} icon"}
+            phx-click="inc_votes"
+            phx-value-clip={@id}
+          >
             <div class="arrow"></div>
           </div>
-          <p class="leigh-score"><%= @clip.vote_count %></p>
+          <p class="leigh-score">
+            <%= @clip.vote_count %>
+          </p>
           <%= if has_tags?(@clip) do %>
             <div class="leigh-tags">
               <i class="fas fa-tags"></i>
             </div>
           <% end %>
           <div class="leigh-label-container">
-            <p><%= get_username(@clip) %></p>
+            <p>
+              <%= get_username(@clip) %>
+            </p>
           </div>
-          <p class="tags-text"><%= get_tags(@clip) %></p>
+          <p class="tags-text">
+            <%= get_tags(@clip) %>
+          </p>
         </div>
       </div>
     </div>

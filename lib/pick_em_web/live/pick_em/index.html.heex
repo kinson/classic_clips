@@ -1,45 +1,102 @@
 <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
   <div class="ml-10 md:ml-20">
-    <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">Today&apos;s Matchup</p>
+    <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">
+      Today&apos;s Matchup
+    </p>
     <div class="flex flex-row gap-4">
-      <%= render_team_abbreviation(@matchup.away_team, @theme, "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
-      <p class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0">@</p>
-      <%= render_team_abbreviation(@matchup.home_team, @theme, "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0") %>
+      <%= render_team_abbreviation(
+        @matchup.away_team,
+        @theme,
+        "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0"
+      ) %>
+      <p class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0">
+        @
+      </p>
+      <%= render_team_abbreviation(
+        @matchup.home_team,
+        @theme,
+        "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0"
+      ) %>
       <div class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0 flex flex-row">
-        (<%= render_team_abbreviation(@matchup.favorite_team, @theme) %>
-        <p class="ml-4 my-0"><%= @matchup.spread %></p>)
+        ( <%= render_team_abbreviation(@matchup.favorite_team, @theme) %>
+        <p class="ml-4 my-0">
+          <%= @matchup.spread %>
+        </p>
+        )
       </div>
     </div>
     <%= if @matchup.score do %>
       <div class="flex flex-row gap-4 mt-6 flex-wrap">
-        <%= render_team_location(@matchup.winning_team, @theme, "text-2xl text-white font-open-sans font-bold my-0 uppercase opacity-90 whitespace-nowrap") %>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">WINS</p>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap"><%= @matchup.score %></p>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">&bull;</p>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap"><%= get_pick_spread_string(@pick_spread, @matchup) %></p>
-    </div>
+        <%= render_team_location(
+          @matchup.winning_team,
+          @theme,
+          "text-2xl text-white font-open-sans font-bold my-0 uppercase opacity-90 whitespace-nowrap"
+        ) %>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
+          WINS
+        </p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
+          <%= @matchup.score %>
+        </p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
+          &bull;
+        </p>
+        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
+          <%= get_pick_spread_string(@pick_spread, @matchup) %>
+        </p>
+      </div>
     <% else %>
       <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-6">
         TIP @ <%= get_time_for_game(@matchup) %> EST &bull; <%= get_pick_spread_string(@pick_spread, @matchup) %>
       </p>
     <% end %>
 
- </div>
+  </div>
 
   <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
 
   <div class="ml-10 md:ml-20">
-    <p class="text-center text-nd-pink w-max mb-4 font-open-sans font-bold text-4xl">No Dunks Crew Picks</p>
+    <p class="text-center text-nd-pink w-max mb-4 font-open-sans font-bold text-4xl">
+      No Dunks Crew Picks
+    </p>
 
     <div class="grid grid-cols-4 text-white max-w-xs my-2 font-bold">
-      <p class="col-span-3 my-1">TAS<span class="font-light ml-4">[<%= get_ndc_record_string(:tas, @ndc_record) %>]</span></p>
-      <div class="my-1"><%= render_team_abbreviation(get_ndc_pick("tas", @ndc_pick), @theme) %></div>
-      <p class="col-span-3 my-1">SKEETS<span class="font-light ml-4">[<%= get_ndc_record_string(:skeets, @ndc_record) %>]</span></p>
-      <div class="my-1"><%= render_team_abbreviation(get_ndc_pick("skeets", @ndc_pick), @theme) %></div>
-      <p class="col-span-3 my-1">LEIGH<span class="font-light ml-4">[<%= get_ndc_record_string(:leigh, @ndc_record) %>]</span></p>
-      <div class="my-1"><%= render_team_abbreviation(get_ndc_pick("leigh", @ndc_pick), @theme) %></div>
-      <p class="col-span-3 my-1">TREY<span class="font-light ml-4">[<%= get_ndc_record_string(:trey, @ndc_record) %>]</span></p>
-      <div class="my-1"><%= render_team_abbreviation(get_ndc_pick("trey", @ndc_pick), @theme) %></div>
+      <p class="col-span-3 my-1">
+        TAS
+        <span class="font-light ml-4">
+          [ <%= get_ndc_record_string(:tas, @ndc_record) %> ]
+        </span>
+      </p>
+      <div class="my-1">
+        <%= render_team_abbreviation(get_ndc_pick("tas", @ndc_pick), @theme) %>
+      </div>
+      <p class="col-span-3 my-1">
+        SKEETS
+        <span class="font-light ml-4">
+          [ <%= get_ndc_record_string(:skeets, @ndc_record) %> ]
+        </span>
+      </p>
+      <div class="my-1">
+        <%= render_team_abbreviation(get_ndc_pick("skeets", @ndc_pick), @theme) %>
+      </div>
+      <p class="col-span-3 my-1">
+        LEIGH
+        <span class="font-light ml-4">
+          [ <%= get_ndc_record_string(:leigh, @ndc_record) %> ]
+        </span>
+      </p>
+      <div class="my-1">
+        <%= render_team_abbreviation(get_ndc_pick("leigh", @ndc_pick), @theme) %>
+      </div>
+      <p class="col-span-3 my-1">
+        TREY
+        <span class="font-light ml-4">
+          [ <%= get_ndc_record_string(:trey, @ndc_record) %> ]
+        </span>
+      </p>
+      <div class="my-1">
+        <%= render_team_abbreviation(get_ndc_pick("trey", @ndc_pick), @theme) %>
+      </div>
     </div>
   </div>
 
@@ -47,35 +104,55 @@
 
   <div class="ml-10 md:ml-20">
     <div>
-      <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">Your Pick</p>
-      <p class="text-white font-open-sans text-2xl font-light mt-2 mb-1"><%= get_time_left(@matchup) %></p>
+      <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">
+        Your Pick
+      </p>
+      <p class="text-white font-open-sans text-2xl font-light mt-2 mb-1">
+        <%= get_time_left(@matchup) %>
+      </p>
     </div>
 
     <div class="flex flex-col mt-10">
-      <%= if assigns[:error_message] do %>
-      <p class="text-red-500 font-open-sans font-light text-2xl mb-2 mt-0"><%= @error_message %></p>
-      <% end %>
-      <%= if assigns[:success_message] && assigns[:error_message] == nil do %>
-      <p class="text-nd-yellow font-open-sans font-light text-2xl mb-2 mt-0"><%= @success_message %></p>
-      <% end %>
       <div class="flex flex-col md:flex-row gap-6">
-        <button type="button" phx-click="away-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.away_team) |> maybe_disable(@can_save_pick?)}>
+        <button
+          type="button"
+          phx-click="away-click"
+          phx-value-enabled={"#{@can_save_pick?}"}
+          class={get_team_button_style(@selected_team, @matchup.away_team) |> maybe_disable(@can_save_pick?)}
+        >
           <%= render_team_location(@matchup.away_team, @theme, "mx-auto") %>
         </button>
-        <button type="button" phx-click="home-click" phx-value-enabled={"#{@can_save_pick?}"} class={get_team_button_style(@selected_team, @matchup.home_team) |> maybe_disable(@can_save_pick?)}>
+        <button
+          type="button"
+          phx-click="home-click"
+          phx-value-enabled={"#{@can_save_pick?}"}
+          class={get_team_button_style(@selected_team, @matchup.home_team) |> maybe_disable(@can_save_pick?)}
+        >
           <%= render_team_location(@matchup.home_team, @theme) %>
         </button>
       </div>
       <%= if @user do %>
-      <button type="button" phx-click="save-click" phx-value-enabled={"#{@can_save_pick?}"} class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}>
-        <%= get_save_button_text(@selection_saved, @can_save_pick?) %>
-      </button>
+        <button
+          type="button"
+          phx-click="save-click"
+          phx-value-enabled={"#{@can_save_pick?}"}
+          class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}
+        >
+          <%= get_save_button_text(@selection_saved, @can_save_pick?) %>
+        </button>
       <% end %>
       <%= unless @user do %>
-      <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
-        <img class="w-14 mr-4" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
-        <%= link "Sign In To Pick!", to: @google_auth_url, class: "underline font-bold font-open-sans text-2xl" %>
-      </div>
+        <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
+          <img
+            class="w-14 mr-4"
+            src={Routes.static_path(@socket, "/images/google_logo.png")}
+            alt="Google Sign In"
+          />
+          <%= link("Sign In To Pick!",
+            to: @google_auth_url,
+            class: "underline font-bold font-open-sans text-2xl"
+          ) %>
+        </div>
       <% end %>
     </div>
   </div>

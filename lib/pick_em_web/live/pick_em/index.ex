@@ -4,24 +4,20 @@ defmodule PickEmWeb.PickEmLive.Index do
   import PickEmWeb.PickEmLive.Emoji
 
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
-  alias PickEmWeb.PickEmLive.{Theme, User}
+  alias PickEmWeb.PickEmLive.{Notification, Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
-    # get matchup
     matchup = ClassicClips.PickEm.get_cached_current_matchup()
 
-    # get ndc pick
     ndc_pick = ClassicClips.PickEm.get_cached_ndc_pick_for_matchup(matchup)
 
     ndc_record = ClassicClips.PickEm.get_current_ndc_record()
 
     matchup_pick_spread = ClassicClips.PickEm.get_cached_pick_spread(matchup)
 
-    # get user
     {:ok, user} = User.get_or_create_user(session)
 
-    # get user pick
     user_pick = ClassicClips.PickEm.get_user_pick_for_matchup(user, matchup)
 
     {selected_team, selection_saved} = get_selected_team(user_pick)
@@ -70,10 +66,10 @@ defmodule PickEmWeb.PickEmLive.Index do
           {:ok, user_pick} ->
             socket
             |> assign(:user_pick, user_pick)
-            |> assign(:success_message, "Saved your pick")
+            |> Notification.show("Saved your pick", :success)
 
           {:error, _} ->
-            assign(socket, :error_message, "Could not save your pick, please try again")
+            Notification.show(socket, "Could not save your pick, please try again", :error)
         end
       end
 

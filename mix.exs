@@ -44,21 +44,22 @@ defmodule ClassicClips.MixProject do
       {:ecto_psql_extras, "~> 0.7"},
       {:logger_file_backend, "~> 0.0.11"},
       {:postgrex, "~> 0.15"},
-      {:phoenix_live_view, "~> 0.16.4"},
+      {:phoenix_live_view, "~> 0.17.7", override: true},
       {:floki, ">= 0.27.0", only: :test},
       {:new_relic_agent, "~> 1.27"},
-      {:phoenix_html, "~> 3.0.4"},
+      {:phoenix_html, "~> 3.2"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 0.5"},
       {:timex, "~> 3.7"},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.2"},
+      {:jason, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
       {:swoosh, "~> 1.6"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
-      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev}
+      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev},
+      {:heex_formatter, github: "feliperenan/heex_formatter"}
     ]
   end
 

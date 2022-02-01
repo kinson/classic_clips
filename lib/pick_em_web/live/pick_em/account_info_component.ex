@@ -5,27 +5,48 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
   def render(assigns) do
     ~H"""
     <div class="w-auto md:w-full ml-10 md:ml-20 py-4 px-8 bg-gray-100 shadow-lg rounded-lg flex flex-row">
-     <img class="max-h-24 mr-8 ml-0 my-2" src={Routes.static_path(@socket, "/images/google_logo.png")} alt="Google Sign In" />
-     <div class="flex flex-col w-full">
-       <div class="flex flex-row my-2">
-         <p class="my-0 mr-2 text-nd-pink text-3xl leading-normal font-open-sans font-bold tracking-wide">username</p>
-         <%= if @editing_profile do %>
-           <p class="my-0 ml-auto underline cursor-pointer" phx-click="cancel" phx-target={@myself}>cancel</p>
-         <% else %>
-           <p class="my-0 ml-auto underline cursor-pointer" phx-click="edit" phx-target={@myself}>edit</p>
-           <%= link "log out", class: "my-0 ml-4 underline text-black hover:text-black", to: Routes.google_auth_path(@socket, :logout), method: :post %>
-         <% end %>
+      <img
+        class="max-h-24 mr-8 ml-0 my-2"
+        src={Routes.static_path(@socket, "/images/google_logo.png")}
+        alt="Google Sign In"
+      />
+      <div class="flex flex-col w-full">
+        <div class="flex flex-row my-2">
+          <p class="my-0 mr-2 text-nd-pink text-3xl leading-normal font-open-sans font-bold tracking-wide">
+            username
+          </p>
+          <%= if @editing_profile do %>
+            <p class="my-0 ml-auto underline cursor-pointer" phx-click="cancel" phx-target={@myself}>
+              cancel
+            </p>
+          <% else %>
+            <p class="my-0 ml-auto underline cursor-pointer" phx-click="edit" phx-target={@myself}>
+              edit
+            </p>
+            <%= link("log out",
+              class: "my-0 ml-4 underline text-black hover:text-black",
+              to: Routes.google_auth_path(@socket, :logout),
+              method: :post
+            ) %>
+          <% end %>
         </div>
         <%= if @editing_profile do %>
           <.form let={f} for={:user} phx-submit="save" phx-target={@myself} class="mb-0">
-            <%= text_input f, :username, value: @user.username, class: "!w-full block font-open-sans text-3xl tracking-wide" %>
-            <%= submit "Save", class: "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 w-full" %>
+            <%= text_input(f, :username,
+              value: @user.username,
+              class: "!w-full block font-open-sans text-3xl tracking-wide"
+            ) %>
+            <%= submit("Save",
+              class: "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 w-full"
+            ) %>
           </.form>
         <% else %>
-          <p class="m-0 w-72 tracking-wide truncate text-3xl font-open-sans tracking-wide"><%= @user.username %></p>
+          <p class="m-0 w-72 tracking-wide truncate text-3xl font-open-sans tracking-wide">
+            <%= @user.username %>
+          </p>
         <% end %>
-       </div>
-     </div>
+      </div>
+    </div>
     """
   end
 

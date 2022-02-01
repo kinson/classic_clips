@@ -1,53 +1,123 @@
 <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
   <div class="ml-10 md:ml-20">
-    <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">Secaucus</p>
+    <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">
+      Secaucus
+    </p>
 
-    <.form let={f} for={:matchup} phx-submit="create-matchup" phx-change="matchup-change-form">
-      <%= if @message do %>
-        <p class="text-white font-open-sans font-medium"><%= @message %></p>
-      <% end %>
-      <%= if @error do %>
-        <p class="text-red-500 font-open-sans font-medium"><%= @error %> </p>
-        |> assign(:todays_matchup, todays_matchup)
-      <% end %>
+    <.form
+      let={f}
+      for={:matchup}
+      phx-submit="create-matchup"
+      phx-change="matchup-change-form"
+      class="mb-0"
+    >
       <%= if Enum.any?(@games, &PickEm.is_game_today?/1) do %>
-        <p class="text-white font-open-sans font-bold">Choose a Game from Today&apos;s Schedule</p>
+        <p class="text-white font-open-sans font-bold">
+          Choose a Game from Today&apos;s Schedule
+        </p>
         <div class="flex flex-col gap-6 mb-10">
-        <%= for game <- @games do %>
-          <div class={game_button_class(game.game_id, game_id_value(@selected_game_id, @todays_matchup))} phx-click="select-game" phx-value-id={game.game_id} phx-value-away-team={game.away_team_code} phx-value-home-team={game.home_team_code} phx-value-tip-datetime={game.game_time_utc}>
-            <p class="my-0 w-40"><%= game.away_team_code %> @ <%= game.home_team_code %></p>
-            <p class="my-0 text-center"><%= get_time_for_game(game.game_time_utc) %></p>
-            <p class="my-0"><%= game.game_id %></p>
-          </div>
-        <% end %>
+          <%= for game <- @games do %>
+            <div
+              class={game_button_class(game.game_id, game_id_value(@selected_game_id, @todays_matchup))}
+              phx-click="select-game"
+              phx-value-id={game.game_id}
+              phx-value-away-team={game.away_team_code}
+              phx-value-home-team={game.home_team_code}
+              phx-value-tip-datetime={game.game_time_utc}
+            >
+              <p class="my-0 w-40">
+                <%= game.away_team_code %> @ <%= game.home_team_code %>
+              </p>
+              <p class="my-0 text-center">
+                <%= get_time_for_game(game.game_time_utc) %>
+              </p>
+              <p class="my-0">
+                <%= game.game_id %>
+              </p>
+            </div>
+          <% end %>
         </div>
 
-        <%= hidden_input f, :game_id, value: game_id_value(@selected_game_id, @todays_matchup) %>
-        <%= hidden_input f, :tip_datetime, value: tip_datetime_value(@selected_game_tip_datetime, @todays_matchup) %>
-        <%= hidden_input f, :favorite_team_code, value: favorite_team_code_value(@selected_game_favorite_code, @todays_matchup) %>
-        <%= hidden_input f, :away_team_code, value: away_team_code_value(@selected_game_away_code, @todays_matchup) %>
-        <%= hidden_input f, :home_team_code, value: home_team_code_value(@selected_game_home_code, @todays_matchup) %>
+        <%= hidden_input(f, :game_id, value: game_id_value(@selected_game_id, @todays_matchup)) %>
+        <%= hidden_input(f, :tip_datetime,
+          value: tip_datetime_value(@selected_game_tip_datetime, @todays_matchup)
+        ) %>
+        <%= hidden_input(f, :favorite_team_code,
+          value: favorite_team_code_value(@selected_game_favorite_code, @todays_matchup)
+        ) %>
+        <%= hidden_input(f, :away_team_code,
+          value: away_team_code_value(@selected_game_away_code, @todays_matchup)
+        ) %>
+        <%= hidden_input(f, :home_team_code,
+          value: home_team_code_value(@selected_game_home_code, @todays_matchup)
+        ) %>
 
-       <%= if away_team_code_value(@selected_game_away_code, @todays_matchup) do %>
-        <p class="text-white font-open-sans font-bold">Set Favorite Team and No Dunks Picks</p>
-       <div class="flex flex-row my-4 gap-x-4">
-         <p class="text-white w-24 my-0">Favorite</p>
-         <div phx-click="select-favorite-team" phx-value-favorite-code={away_team_code_value(@selected_game_away_code, @todays_matchup)} class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}><p class="my-0 bg-nd-pink text-white"><%= away_team_code_value(@selected_game_away_code, @todays_matchup) %></p></div>
-         <div phx-click="select-favorite-team" phx-value-favorite-code={home_team_code_value(@selected_game_home_code, @todays_matchup)} class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}><p class="my-0 bg-nd-pink text-white"><%= home_team_code_value(@selected_game_home_code, @todays_matchup) %></p></div>
-       <%= text_input f, :game_line, placeholder: "-7.5", class: "my-0 text-white !w-28", value: game_line_value(@selected_game_line, @todays_matchup) %>
-       </div>
+        <%= if away_team_code_value(@selected_game_away_code, @todays_matchup) do %>
+          <p class="text-white font-open-sans font-bold">
+            Set Favorite Team and No Dunks Picks
+          </p>
+          <div class="flex flex-row my-4 gap-x-4">
+            <p class="text-white w-24 my-0">
+              Favorite
+            </p>
+            <div
+              phx-click="select-favorite-team"
+              phx-value-favorite-code={away_team_code_value(@selected_game_away_code, @todays_matchup)}
+              class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}
+            >
+              <p class="my-0 bg-nd-pink text-white">
+                <%= away_team_code_value(@selected_game_away_code, @todays_matchup) %>
+              </p>
+            </div>
+            <div
+              phx-click="select-favorite-team"
+              phx-value-favorite-code={home_team_code_value(@selected_game_home_code, @todays_matchup)}
+              class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}
+            >
+              <p class="my-0 bg-nd-pink text-white">
+                <%= home_team_code_value(@selected_game_home_code, @todays_matchup) %>
+              </p>
+            </div>
+            <%= text_input(f, :game_line,
+              placeholder: "-7.5",
+              class: "my-0 text-white !w-28",
+              value: game_line_value(@selected_game_line, @todays_matchup)
+            ) %>
+          </div>
 
-         <%= for ndc_member <- [:leigh, :skeets, :tas, :trey] do %>
-         <div class="flex flex-row my-4 gap-x-4">
-           <p class="text-white w-24 my-0"><%= Atom.to_string(ndc_member) |> String.capitalize() %></p>
-           <div phx-click="select-ndc-member-pick" phx-value-member={ndc_member} phx-value-team-code={away_team_code_value(@selected_game_away_code, @todays_matchup)} class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))}><p class="my-0 bg-nd-pink text-white"><%= away_team_code_value(@selected_game_away_code, @todays_matchup) %></p></div>
-           <div class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))} phx-click="select-ndc-member-pick" phx-value-member={ndc_member} phx-value-team-code={home_team_code_value(@selected_game_home_code, @todays_matchup)}><p class="my-0 bg-nd-pink text-white"><%= home_team_code_value(@selected_game_home_code, @todays_matchup) %></p></div>
-         </div>
-         <% end %>
+          <%= for ndc_member <- [:leigh, :skeets, :tas, :trey] do %>
+            <div class="flex flex-row my-4 gap-x-4">
+              <p class="text-white w-24 my-0">
+                <%= Atom.to_string(ndc_member) |> String.capitalize() %>
+              </p>
+              <div
+                phx-click="select-ndc-member-pick"
+                phx-value-member={ndc_member}
+                phx-value-team-code={away_team_code_value(@selected_game_away_code, @todays_matchup)}
+                class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))}
+              >
+                <p class="my-0 bg-nd-pink text-white">
+                  <%= away_team_code_value(@selected_game_away_code, @todays_matchup) %>
+                </p>
+              </div>
+              <div
+                class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))}
+                phx-click="select-ndc-member-pick"
+                phx-value-member={ndc_member}
+                phx-value-team-code={home_team_code_value(@selected_game_home_code, @todays_matchup)}
+              >
+                <p class="my-0 bg-nd-pink text-white">
+                  <%= home_team_code_value(@selected_game_home_code, @todays_matchup) %>
+                </p>
+              </div>
+            </div>
+          <% end %>
 
-          <%= submit "#{if @todays_matchup, do: "Update", else: "Create"} Matchup", class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink" %>
-       <% end %>
+          <%= submit("#{if @todays_matchup, do: "Update", else: "Create"} Matchup",
+            class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
+          ) %>
+        <% end %>
       <% end %>
-      </.form>
-    </div>
+    </.form>
+  </div>
 </div>
