@@ -5,7 +5,7 @@ defmodule PickEmWeb.PickEmLive.Profile do
 
   alias ClassicClips.PickEm
   alias ClassicClips.PickEm.UserPick
-  alias PickEmWeb.PickEmLive.{Theme, User}
+  alias PickEmWeb.PickEmLive.{Theme, User, Notification}
 
   @impl true
   def mount(_params, session, socket) do
@@ -44,7 +44,8 @@ defmodule PickEmWeb.PickEmLive.Profile do
      |> assign(
        :picks,
        PickEm.get_picks_for_user(user)
-     )}
+     )
+     |> Notification.show("Sucessfully forfeited missed picks")}
   end
 
   def handle_event(
@@ -62,7 +63,8 @@ defmodule PickEmWeb.PickEmLive.Profile do
       {:ok, updated_user} ->
         {:noreply,
          assign(socket, :subscribed_to_email_notifications?, updated_user.email_new_matchups)
-         |> assign(:user, updated_user)}
+         |> assign(:user, updated_user)
+         |> Notification.show("Updated email notification preference")}
 
       _ ->
         {:noreply, socket}

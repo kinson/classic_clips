@@ -1,7 +1,0 @@
-<footer>
-  <div class="footer-links">
-    <%= link "About", to: "/about" %>
-    <a href="https://www.youtube.com/channel/UCi6Nwwk1pAp7gYwe3is7Y0g">No Dunks Youtube</a>
-  </div>
-  <p id="disclaimer">Disclaimer: I have no affiliation or partnership with No Dunks. I am just a fan.</p>
-</footer>

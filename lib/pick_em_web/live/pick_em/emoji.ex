@@ -20,7 +20,9 @@ defmodule PickEmWeb.PickEmLive.Emoji do
 
     ~H"""
     <div class="flex flex-row gap-4 w-max">
-       <p class={"my-0 mx-0 font-open-sans #{@p_class}"}><%= @attr %></p>
+      <p class={"my-0 mx-0 font-open-sans #{@p_class}"}>
+        <%= @attr %>
+      </p>
     </div>
     """
   end
@@ -33,8 +35,12 @@ defmodule PickEmWeb.PickEmLive.Emoji do
 
     ~H"""
     <div class="flex flex-row gap-4 w-max">
-       <p class={"my-0 mx-0 font-open-sans #{@p_class}"}><%= @emoji %></p>
-       <p class={"my-0 mx-0 font-open-sans #{@p_class}"}><%= @attr %></p>
+      <p class={"my-0 mx-0 font-open-sans #{@p_class}"}>
+        <%= @emoji %>
+      </p>
+      <p class={"my-0 mx-0 font-open-sans #{@p_class}"}>
+        <%= @attr %>
+      </p>
     </div>
     """
   end
@@ -47,7 +53,9 @@ defmodule PickEmWeb.PickEmLive.Emoji do
 
     ~H"""
     <div class="flex flex-row gap-4 w-max">
-       <p class={"my-0 mx-0 font-open-sans #{@p_class}"}><%= @emoji %></p>
+      <p class={"my-0 mx-0 font-open-sans #{@p_class}"}>
+        <%= @emoji %>
+      </p>
     </div>
     """
   end
@@ -57,7 +65,9 @@ defmodule PickEmWeb.PickEmLive.Emoji do
 
     ~H"""
     <div class="flex flex-row gap-4 w-max">
-       <p class="my-0 mx-0 font-open-sans"><%= @attr %></p>
+      <p class="my-0 mx-0 font-open-sans">
+        <%= @attr %>
+      </p>
     </div>
     """
   end

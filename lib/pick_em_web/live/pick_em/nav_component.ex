@@ -4,15 +4,25 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
   def render(assigns) do
     ~H"""
     <div class="flex flex-row flex-wrap justify-center px-px gap-6 mt-10 mb-16">
-      <a href="/" class={get_class("home", @active)}>Home</a>
-      <a href="/leaders" class={get_class("leaders", @active)}>Leaders</a>
+      <a href="/" class={get_class("home", @active)}>
+        Home
+      </a>
+      <a href="/leaders" class={get_class("leaders", @active)}>
+        Leaders
+      </a>
       <%= if @user do %>
-        <a href="/profile" class={get_class("profile", @active)}>Your Profile</a>
+        <a href="/profile" class={get_class("profile", @active)}>
+          Your Profile
+        </a>
         <%= if @user.role == :super_sicko do %>
-          <a href="/secaucus" class={get_class("secaucus", @active)}>Secaucus</a>
+          <a href="/secaucus" class={get_class("secaucus", @active)}>
+            Secaucus
+          </a>
         <% end %>
       <% end %>
-      <a href="/settings" class={get_class("settings", @active)}>Settings</a>
+      <a href="/settings" class={get_class("settings", @active)}>
+        Settings
+      </a>
     </div>
     """
   end

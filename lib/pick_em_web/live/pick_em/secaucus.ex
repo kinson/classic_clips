@@ -3,18 +3,15 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   alias ClassicClips.{PickEm, Repo}
   alias ClassicClips.PickEm.{MatchUp, NdcPick}
-  alias PickEmWeb.PickEmLive.{Theme, User}
+  alias PickEmWeb.PickEmLive.{Theme, User, Notification}
 
   require Logger
 
   @impl true
   def mount(_params, session, socket) do
-    # get user
     {:ok, user} = User.get_or_create_user(session)
 
     theme = Theme.get_theme_from_session(session)
-
-    games = load_games()
 
     current_matchup = PickEm.get_current_matchup()
 
@@ -33,11 +30,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     socket =
       socket
       |> assign(:page, "secaucus")
-      |> assign(:games, games)
       |> assign(:user, user)
       |> assign(:theme, theme)
-      |> assign(:message, nil)
-      |> assign(:error, nil)
       |> assign(:selected_game_id, nil)
       |> assign(:selected_game_line, nil)
       |> assign(:selected_game_tip_datetime, nil)
@@ -48,6 +42,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
       |> assign(:todays_ndc_picks, todays_ndc_picks)
+      |> assign_games()
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -168,6 +163,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       socket
       |> assign(:todays_matchup, updated_matchup)
       |> assign(:current_matchup, updated_matchup)
+      |> Notification.show("Updated matchup")
 
     {:noreply, socket}
   end
@@ -216,34 +212,35 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
          |> assign(:current_matchup, matchup)
          |> assign(:todays_matchup, matchup)
          |> assign(:todays_ndc_picks, ndc_picks)
-         |> assign(:message, "Successfully created matchup")
-         |> assign(:error, nil)}
+         |> assign(:current_matchup, PickEm.get_current_matchup())
+         |> Notification.show("Successfully created matchup")}
 
       _ = error ->
         Logger.error("Could not create new matchup", error: error)
 
-        {:noreply,
-         socket
-         |> assign(:error, "Failed to create matchup")
-         |> assign(:message, nil)}
+        {:noreply, Notification.show(socket, "Failed to create matchup", :error)}
     end
   end
 
-  def handle_event("create-matchup", form_data, socket) do
-    {:noreply, assign(socket, :error, "Failed to create matchup") |> assign(:message, nil)}
+  def handle_event("create-matchup", _, socket) do
+    {:noreply, Notification.show(socket, "Could not create matchup", :error)}
   end
 
   def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
     {:noreply, assign(socket, :selected_game_line, game_line)}
   end
 
-  def load_games do
-    # get games
-    {:ok, games} = games()
-    games
+  defp assign_games(socket) do
+    case load_games() do
+      {:ok, games} ->
+        assign(socket, :games, games)
+
+      {:error, _} ->
+        Notification.show(socket, "Could not load todays games", :error) |> assign(:games, [])
+    end
   end
 
-  def games do
+  def load_games do
     Fiat.CacheServer.fetch_object(
       :todays_games,
       fn ->

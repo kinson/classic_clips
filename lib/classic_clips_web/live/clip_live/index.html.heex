@@ -1,0 +1,128 @@
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal(@socket, ClassicClipsWeb.ClipLive.FormComponent,
+    id: @clip_id || :new,
+    title: @page_title,
+    action: @live_action,
+    clip: @clip,
+    user: @user,
+    return_to: Routes.clip_index_path(@socket, :index)
+  ) %>
+<% end %>
+<%= if @show_signup_message do %>
+  <div class="show-signup-message" phx-click="hide_signup_message">
+    <p>Sign up or login to submit, vote, and save clips.</p>
+  </div>
+<% end %>
+<%= if @live_action in [:show] do %>
+  <%= if is_nil(@clip) do %>
+    <div class="clip-not-found">
+      <p>Hmmm, it looks like we couldn't find that clip. Tweet or message
+        <a href="https://twitter.com/bigbeeftracker">
+          @BigBeefTracker
+        </a>
+        if you believe this is a bug!
+      </p>
+    </div>
+  <% else %>
+    <div class="show-clip">
+      <div>
+        <div class="video-area">
+          <p class="featured-in">
+            FEATURED IN
+          </p>
+          <%= link(title(@clip.video), to: yt_url(@clip.video), target: "_blank", class: "title") %>
+          <p class="description">
+            <%= @clip.video.description %>
+          </p>
+          <%= link("More Clips From This Video",
+            to: Routes.clip_index_path(@socket, :index, video_id: @clip.video.id)
+          ) %>
+          <br />
+          <%= link("All Clips", to: Routes.clip_index_path(@socket, :index)) %>
+        </div>
+        <div class="clip-area">
+          <%= live_component(@socket, ClassicClipsWeb.ClipLive.ClipComponent,
+            id: @clip.id,
+            clip: @clip,
+            user: @user,
+            votes: @votes,
+            saves: @saves
+          ) %>
+        </div>
+      </div>
+      <button type="button" id="share-clip-text-button">
+        <span id="copy-link-p-before">
+          &#128279; Copy Link to This Clip
+        </span>
+        <span id="copy-link-p-after" class="hidden">
+          &#128279; Copied Link to Clip!
+        </span>
+        <input id="clip-link-external" type="text" readonly value={short_link(@clip)} />
+      </button>
+    </div>
+  <% end %>
+<% else %>
+  <div class="skeets-container">
+    <%= live_patch("DROP A NEW CLASSIC CLIP",
+      to: Routes.clip_index_path(@socket, :new),
+      class: "skeets-create-classic-clip-button"
+    ) %>
+    <div class="swimup-bar-loooking-good">
+      <div id="search-area">
+        <i class="fas fa-search"></i>
+        <.form
+          for={:search}
+          let={d}
+          action={Routes.clip_index_path(@socket, :index)}
+          phx-change="change_search"
+          class="search-form"
+        >
+          <%= text_input(d, :term, phx_debounce: "250", placeholder: "Search") %>
+        </.form>
+      </div>
+    </div>
+    <p class="sort-by">
+      viewing:
+    </p>
+    <.form
+      for={:sort}
+      let={f}
+      action={Routes.clip_index_path(@socket, :index)}
+      phx-change="change_sort"
+      class="sort-form"
+    >
+      <%= select(
+        f,
+        :timeframe,
+        [NEWEST: "new", "TOP TODAY": "today", "BEST OF THE WEEK": "week", GOAT: "goat"],
+        selected: @category
+      ) %>
+    </.form>
+  </div>
+  <div id="clipss" class="timeline-container" phx-update="replace">
+    <%= if Enum.empty?(@clips) do %>
+      <div class="empty-clips">
+        <p>There are no clips to show, can you believe it?</p>
+      </div>
+    <% else %>
+      <%= for clip <- @clips do %>
+        <%= live_component(@socket, ClassicClipsWeb.ClipLive.ClipComponent,
+          id: clip.id,
+          clip: clip,
+          user: @user,
+          votes: @votes,
+          saves: @saves
+        ) %>
+      <% end %>
+    <% end %>
+  </div>
+  <%= if Enum.count(@clips) > 0 do %>
+    <div class="pagination">
+      <div class="page-arrow left" phx-click="dec_page"></div>
+      <p class="pagination-text">
+        <%= Access.get(@pagination, :current_page) %> / <%= Access.get(@pagination, :total_pages) %>
+      </p>
+      <div class="page-arrow right" phx-click="inc_page"></div>
+    </div>
+  <% end %>
+<% end %>

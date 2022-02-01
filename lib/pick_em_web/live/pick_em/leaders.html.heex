@@ -1,12 +1,25 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
-  <p class="text-nd-pink mb-6 mt-14 ml-20 font-open-sans font-bold text-4xl">Pick 'Em Leaders</p>
+  <p class="text-nd-pink mb-6 mt-14 ml-20 font-open-sans font-bold text-4xl">
+    Pick 'Em Leaders
+  </p>
 
   <%= for {leader, index} <- Enum.with_index(@leaders) do %>
     <div class="flex flex-row ml-10 md:ml-20">
-      <p class="text-nd-yellow my-2 mx-2 font-open-sans font-bold text-3xl"><%= index + 1 %>.</p>
-      <p class="text-white my-2 font-open-sans font-bold tracking-wider"><%= get_truncated_username(leader.user) %> <span class="font-light">[<%= leader.total_picks %>]</span></p>
-      <p class="text-nd-yellow my-2 mx-2 flex-1 font-open-sans overflow-hidden"><%= Enum.map(1..100, fn _ -> "." end) %></p>
-      <p class="text-white my-2 font-open-sans font-extrabold"><%= leader.wins %> - <%= leader.losses %></p>
+      <p class="text-nd-yellow my-2 mx-2 font-open-sans font-bold text-3xl">
+        <%= index + 1 %> .
+      </p>
+      <p class="text-white my-2 font-open-sans font-bold tracking-wider">
+        <%= get_truncated_username(leader.user) %>
+        <span class="font-light">
+          [ <%= leader.total_picks %> ]
+        </span>
+      </p>
+      <p class="text-nd-yellow my-2 mx-2 flex-1 font-open-sans overflow-hidden">
+        <%= Enum.map(1..100, fn _ -> "." end) %>
+      </p>
+      <p class="text-white my-2 font-open-sans font-extrabold">
+        <%= leader.wins %> - <%= leader.losses %>
+      </p>
     </div>
   <% end %>
 </div>
