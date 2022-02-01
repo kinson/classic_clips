@@ -42,6 +42,45 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
 
+  def get_todays_matchup() do
+    matchup = get_current_matchup()
+
+    if is_game_today?(matchup) do
+      matchup
+    else
+      nil
+    end
+  end
+
+  def is_game_today?(%MatchUp{} = matchup) do
+    tip_date =
+      matchup
+      |> Map.get(:tip_datetime)
+      |> DateTime.add(-1 * get_est_offset_seconds())
+      |> DateTime.to_date()
+
+    current_date = DateTime.utc_now() |> DateTime.add(-1 * get_est_offset_seconds())
+
+    case Date.compare(current_date, tip_date) do
+      :eq -> true
+      _ -> false
+    end
+  end
+
+  def is_game_today?(%{game_time_utc: game_time_utc}) do
+    tip_date =
+      game_time_utc
+      |> DateTime.add(-1 * get_est_offset_seconds())
+      |> DateTime.to_date()
+
+    current_date = DateTime.utc_now() |> DateTime.add(-1 * get_est_offset_seconds())
+
+    case Date.compare(current_date, tip_date) do
+      :eq -> true
+      _ -> false
+    end
+  end
+
   @trace :get_cached_ndc_pick_for_matchup
   def get_cached_ndc_pick_for_matchup(%MatchUp{id: id} = matchup) do
     Fiat.CacheServer.fetch_object(
