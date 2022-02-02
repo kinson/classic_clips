@@ -83,7 +83,7 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_leaders_cached do
-    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 60)
+    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 100)
   end
 
   def get_leaders do
@@ -92,7 +92,7 @@ defmodule ClassicClips.PickEm do
     from(ur in UserRecord,
       where: ur.month == ^current_month,
       order_by: [desc: ur.wins, asc: ur.losses, desc: ur.updated_at, desc: ur.id],
-      limit: 50
+      limit: 100
     )
     |> Repo.all()
     |> Repo.preload(:user)
