@@ -1,7 +1,8 @@
 defmodule PickEmWeb.PickEmLive.Secaucus do
   use PickEmWeb, :live_view
 
-  alias ClassicClips.PickEm
+  alias ClassicClips.{PickEm, Repo}
+  alias ClassicClips.PickEm.{MatchUp, NdcPick}
   alias PickEmWeb.PickEmLive.{Theme, User}
 
   require Logger
@@ -17,7 +18,17 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     current_matchup = PickEm.get_current_matchup()
 
-    todays_matchup = PickEm.get_todays_matchup() |> IO.inspect(label: "Here")
+    todays_matchup = PickEm.get_todays_matchup()
+
+    todays_ndc_picks =
+      case todays_matchup do
+        nil ->
+          nil
+
+        %MatchUp{id: id} ->
+          Repo.get_by(NdcPick, matchup_id: id)
+          |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :trey_pick_team, :tas_pick_team])
+      end
 
     socket =
       socket
@@ -36,8 +47,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:current_matchup, current_matchup)
       |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
-
-    IO.inspect(socket, label: "socket")
+      |> assign(:todays_ndc_picks, todays_ndc_picks)
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -85,9 +95,31 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         %{"member" => ndc_member, "team-code" => team_code},
         socket
       ) do
+    person = String.to_existing_atom(ndc_member)
+
     socket =
       socket
-      |> assign(:ndc_picks, Map.put(socket.assigns.ndc_picks, ndc_member, team_code))
+      |> assign(:ndc_picks, Map.put(socket.assigns.ndc_picks, person, team_code))
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "create-matchup",
+        %{"matchup" => form_matchup},
+        %{
+          assigns: %{todays_matchup: %{id: _} = todays_matchup}
+        } = socket
+      ) do
+    # update matchup
+
+    changes = %{
+      nba_game_id: "todo"
+    }
+
+    # update ndc picks
+
+    # reset picks if different game 
 
     {:noreply, socket}
   end
@@ -190,7 +222,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     |> Timex.format!("{h12}:{0m} {AM}")
   end
 
-  def game_id_value(nil, %{game_id: game_id}), do: game_id
+  def game_id_value(nil, %{nba_game_id: nba_game_id}), do: nba_game_id
 
   def game_id_value(game_id, _), do: game_id
 
@@ -205,4 +237,37 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   def home_team_id_value(nil, %{home_team_id: home_team_id}), do: home_team_id
 
   def home_team_id_value(team_id, _), do: team_id
+
+  def away_team_code_value(nil, %{away_team: %{abbreviation: abbreviation}}), do: abbreviation
+
+  def away_team_code_value(abbreviation, _), do: abbreviation
+
+  def home_team_code_value(nil, %{home_team: %{abbreviation: abbrevioation}}), do: abbrevioation
+
+  def home_team_code_value(abbreviation, _), do: abbreviation
+
+  def favorite_team_code_value(nil, %{favorite_team: %{abbreviation: abbrevioation}}),
+    do: abbrevioation
+
+  def favorite_team_code_value(abbreviation, _), do: abbreviation
+
+  def game_line_value(nil, %{spread: spread}), do: spread
+
+  def game_line_value(game_line, _), do: game_line
+
+  def ndc_pick_value(person, form_ndc_picks, todays_ndc_picks) do
+    key =
+      person
+      |> person_to_ndc_picks_key()
+      |> String.to_atom()
+
+    case Map.get(form_ndc_picks, person) do
+      nil -> Map.get(todays_ndc_picks, key, %{}) |> Map.get(:abbreviation)
+      pick -> pick
+    end
+  end
+
+  defp person_to_ndc_picks_key(person) do
+    "#{Atom.to_string(person)}_pick_team"
+  end
 end
