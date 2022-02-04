@@ -150,7 +150,7 @@ defmodule Mix.Tasks.LoadTeams do
         location: "Dallas",
         abbreviation: "DAL",
         conference: :west,
-        default_emoji: "🎖"
+        default_emoji: "🐴"
       },
       %{
         name: "Nuggets",
@@ -206,7 +206,7 @@ defmodule Mix.Tasks.LoadTeams do
         location: "New Orleans",
         abbreviation: "NOP",
         conference: :west,
-        default_emoji: "🦩"
+        default_emoji: "🦤"
       },
       %{
         name: "Thunder",
