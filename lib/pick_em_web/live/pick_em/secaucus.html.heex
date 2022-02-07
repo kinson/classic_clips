@@ -23,7 +23,7 @@
         </div>
 
         <%= hidden_input f, :game_id, value: game_id_value(@selected_game_id, @todays_matchup) %>
-        <%= hidden_input f, :tip_datetime, value: @selected_game_tip_datetime %>
+        <%= hidden_input f, :tip_datetime, value: tip_datetime_value(@selected_game_tip_datetime, @todays_matchup) %>
         <%= hidden_input f, :favorite_team_code, value: favorite_team_id_value(@selected_game_favorite_code, @todays_matchup) %>
         <%= hidden_input f, :away_team_code, value: away_team_id_value(@selected_game_away_code, @todays_matchup) %>
         <%= hidden_input f, :home_team_code, value: home_team_id_value(@selected_game_home_code, @todays_matchup) %>

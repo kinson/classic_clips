@@ -707,4 +707,12 @@ defmodule ClassicClips.PickEm do
     User.changeset(user, %{email_new_matchups: enabled?})
     |> Repo.update(returning: true)
   end
+
+  def get_cached_team_for_abbreviation(abbreviation) do
+    Fiat.CacheServer.fetch_object(
+      {:team, abbreviation},
+      fn -> Repo.get_by!(Team, abbreviation: abbreviation) end,
+      3600
+    )
+  end
 end

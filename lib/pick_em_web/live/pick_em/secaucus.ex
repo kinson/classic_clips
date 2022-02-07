@@ -108,16 +108,44 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         "create-matchup",
         %{"matchup" => form_matchup},
         %{
-          assigns: %{todays_matchup: %{id: _} = todays_matchup}
+          assigns: %{todays_matchup: %{id: _} = _todays_matchup, ndc_picks: ndc_picks}
         } = socket
       ) do
     # update matchup
 
-    changes = %{
-      nba_game_id: "todo"
-    }
+    #    form matchup: %{
+    #  "away_team_code" => "5c085b0a-b59e-4d30-bb1e-e0dca3c87099",
+    # "favorite_team_code" => "5c085b0a-b59e-4d30-bb1e-e0dca3c87099",
+    # "game_id" => "0022100798",
+    # "game_line" => "-5.5",
+    # "home_team_code" => "c1231085-bf94-4951-a341-b5a94fd8c71c",
+    # "tip_datetime" => ""
+    # }
+
+    matchup_changes =
+      %{
+        nba_game_id: form_matchup["game_id"],
+        tip_datetime: form_matchup["tip_datetime"],
+        spread: form_matchup["game_line"],
+        away_team_id: team_id_for_abbreviation(form_matchup["away_team_code"]),
+        home_team_id: team_id_for_abbreviation(form_matchup["home_team_code"]),
+        favorite_team_id: team_id_for_abbreviation(form_matchup["favorite_team_code"])
+      }
+      |> Enum.filter(fn {_key, value} ->
+        value !== "" and not is_nil(value)
+      end)
 
     # update ndc picks
+    ndc_changes =
+      %{
+        skeets_pick_team: team_id_for_abbreviation(ndc_picks.skeets),
+        tas_pick_team: team_id_for_abbreviation(ndc_picks.tas),
+        leigh_pick_team: team_id_for_abbreviation(ndc_picks.leigh),
+        trey_pick_team: team_id_for_abbreviation(ndc_picks.trey)
+      }
+      |> Enum.filter(fn {_key, value} ->
+        value !== "" and not is_nil(value)
+      end)
 
     # reset picks if different game 
 
@@ -139,10 +167,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         %{
           assigns: %{
             ndc_picks: %{
-              "tas" => tas_pick,
-              "skeets" => skeets_pick,
-              "leigh" => leigh_pick,
-              "trey" => trey_pick
+              :tas => tas_pick,
+              :skeets => skeets_pick,
+              :leigh => leigh_pick,
+              :trey => trey_pick
             }
           }
         } = socket
@@ -176,8 +204,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     end
   end
 
-  def handle_event("create-matchup", _, socket) do
-    {:noreply, assign(socket, :error, "Failed to create matchup")}
+  def handle_event("create-matchup", form_data, socket) do
+    {:noreply, assign(socket, :error, "Failed to create matchup") |> assign(:message, nil)}
   end
 
   def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
@@ -226,6 +254,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def game_id_value(game_id, _), do: game_id
 
+  def tip_datetime_value(nil, %{tip_datetime: tip_datetime}), do: tip_datetime
+
+  def tip_datetime_value(tip_datetime, _), do: tip_datetime
+
   def favorite_team_id_value(nil, %{favorite_team_id: favorite_team_id}), do: favorite_team_id
 
   def favorite_team_id_value(team_id, _), do: team_id
@@ -255,6 +287,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def game_line_value(game_line, _), do: game_line
 
+  def ndc_pick_value(person, form_ndc_picks, nil) do
+    Map.get(form_ndc_picks, person)
+  end
+
   def ndc_pick_value(person, form_ndc_picks, todays_ndc_picks) do
     key =
       person
@@ -269,5 +305,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   defp person_to_ndc_picks_key(person) do
     "#{Atom.to_string(person)}_pick_team"
+  end
+
+  def team_id_for_abbreviation("") do
+    nil
+  end
+
+  def team_id_for_abbreviation(abbreviation) when is_binary(abbreviation) do
+    PickEm.get_cached_team_for_abbreviation(abbreviation)
   end
 end
