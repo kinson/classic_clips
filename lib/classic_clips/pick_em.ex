@@ -127,6 +127,10 @@ defmodule ClassicClips.PickEm do
     |> Repo.update()
   end
 
+  def remove_user_picks_for_matchup(%MatchUp{id: id}) do
+    from(up in UserPick, where: up.matchup_id == ^id) |> Repo.delete_all()
+  end
+
   @trace :get_cached_pick_spread
   def get_cached_pick_spread(matchup) do
     Fiat.CacheServer.fetch_object(
