@@ -54,6 +54,10 @@ if config_env() == :prod do
   config :logger, :logflare_logger_backend,
     source_id: System.fetch_env!("LOGFLARE_SOURCE_ID"),
     api_key: System.fetch_env!("LOGFLARE_API_KEY")
+
+  config :new_relic_agent,
+    app_name: "classic-clips",
+    license_key: System.fetch_env!("NEW_RELIC_LICENSE_KEY")
 end
 
 config :classic_clips, ClassicClipsWeb.Endpoint, server: true
