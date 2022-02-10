@@ -12,7 +12,17 @@ defmodule ClassicClips.PickEm do
   @new_york_offset 5 * 60 * 60
 
   def get_cached_current_matchup() do
-    Fiat.CacheServer.fetch_object(:current_matchup, &get_current_matchup/0, 60)
+    case Fiat.CacheServer.fetch_object(:current_matchup) do
+      nil ->
+        current_matchup = get_current_matchup()
+        Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
+        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Miss")
+        current_matchup
+
+      current_matchup ->
+        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Hit")
+        current_matchup
+    end
   end
 
   def set_cached_current_matchup() do
@@ -361,7 +371,23 @@ defmodule ClassicClips.PickEm do
   end
 
   def get_cached_teams_for_conference(conference) do
-    Fiat.CacheServer.fetch_object(conference, fn -> get_teams_for_conference(conference) end, 600)
+    case Fiat.CacheServer.fetch_object({:conference_teams, conference}) do
+      nil ->
+        NewRelic.increment_custom_metric(
+          "Custom/ConferenceTeams-#{Atom.to_string(conference)}-Cache/Miss"
+        )
+
+        teams = get_teams_for_conference(conference)
+        Fiat.CacheServer.cache_object({:conference_teams, conference}, teams, 600)
+        teams
+
+      teams ->
+        NewRelic.increment_custom_metric(
+          "Custom/ConferenceTeams-#{Atom.to_string(conference)}-Cache/Hit"
+        )
+
+        teams
+    end
   end
 
   def get_teams_for_conference(conference) do
