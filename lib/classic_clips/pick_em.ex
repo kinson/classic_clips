@@ -3,6 +3,8 @@ defmodule ClassicClips.PickEm do
 
   require Logger
 
+  use NewRelic.Tracer
+
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
   alias ClassicClips.Timeline.User
@@ -426,6 +428,7 @@ defmodule ClassicClips.PickEm do
     @new_york_offset
   end
 
+  @trace :create_matchup
   def create_matchup(
         away_abbreviation,
         home_abbreviation,
@@ -482,7 +485,7 @@ defmodule ClassicClips.PickEm do
   end
 
   def notify_sickos(matchup) do
-    Task.start_link(fn ->
+    NewRelic.Instrumented.Task.start_link(fn ->
       from(u in User,
         where: u.email_new_matchups == true
       )

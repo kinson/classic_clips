@@ -111,7 +111,8 @@ defmodule ClassicClipsWeb.ClipLive.FormComponent do
   end
 
   defp get_clip_data(%{yt_video_url: clip_url}) do
-    {:ok, %HTTPoison.Response{body: body}} = get_base_yt_reqeuest_url(clip_url) |> HTTPoison.get()
+    {:ok, %HTTPoison.Response{body: body}} =
+      get_base_yt_reqeuest_url(clip_url) |> NewRelic.Instrumented.HTTPoison.get()
 
     Jason.decode(body)
   end

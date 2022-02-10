@@ -74,7 +74,7 @@ defmodule ClassicClips.Classics.Services.Youtube do
 
     url = base <> endpoint
 
-    case HTTPoison.get(url) do
+    case NewRelic.Instrumented.HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{body: body}} -> Jason.decode(body)
       {:error, _} = error -> error
     end

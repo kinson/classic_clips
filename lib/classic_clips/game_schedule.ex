@@ -5,7 +5,7 @@ defmodule ClassicClips.GameSchedule do
 
   def get_game_schedule() do
     with {:ok, %HTTPoison.Response{body: body}} <-
-           HTTPoison.get(@todays_games_url),
+           NewRelic.Instrumented.HTTPoison.get(@todays_games_url),
          {:ok, data} <- Jason.decode(body),
          schedule <- parse_game_schedule(data) do
       {:ok, schedule}
