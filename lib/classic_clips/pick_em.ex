@@ -11,6 +11,7 @@ defmodule ClassicClips.PickEm do
 
   @new_york_offset 5 * 60 * 60
 
+  @trace :get_cached_current_matchup
   def get_cached_current_matchup() do
     case Fiat.CacheServer.fetch_object(:current_matchup) do
       nil ->
@@ -25,11 +26,13 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :set_cached_current_matchup
   def set_cached_current_matchup() do
     current_matchup = get_current_matchup()
     Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
   end
 
+  @trace :get_current_matchup
   def get_current_matchup() do
     from(m in MatchUp,
       order_by: [desc: m.tip_datetime],
@@ -39,6 +42,7 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
 
+  @trace :get_cached_ndc_pick_for_matchup
   def get_cached_ndc_pick_for_matchup(%MatchUp{id: id} = matchup) do
     Fiat.CacheServer.fetch_object(
       {:ndc_pick, id},
@@ -47,22 +51,26 @@ defmodule ClassicClips.PickEm do
     )
   end
 
+  @trace :get_ndc_pick_for_matchup
   def get_ndc_pick_for_matchup(%MatchUp{id: id}) do
     Repo.get_by(NdcPick, matchup_id: id)
     |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :tas_pick_team, :trey_pick_team])
   end
 
+  @trace :get_current_ndc_record
   def get_current_ndc_record() do
     Repo.get_by(NdcRecord, month: get_current_month_name())
   end
 
   def get_user_pick_for_matchup(nil, _), do: nil
 
+  @trace :get_user_pick_for_matchup
   def get_user_pick_for_matchup(%User{id: user_id}, %MatchUp{id: matchup_id}) do
     Repo.get_by(UserPick, matchup_id: matchup_id, user_id: user_id)
     |> Repo.preload([:picked_team])
   end
 
+  @trace :save_user_pick
   def save_user_pick(nil, selected_team, %User{id: user_id}, %MatchUp{id: matchup_id}) do
     UserPick.changeset(%UserPick{}, %{
       user_id: user_id,
@@ -72,12 +80,14 @@ defmodule ClassicClips.PickEm do
     |> Repo.insert()
   end
 
+  @trace :save_user_pick
   def save_user_pick(%UserPick{} = user_pick, selected_team, %User{id: user_id}, _)
       when user_pick.user_id == user_id do
     UserPick.changeset(user_pick, %{picked_team_id: selected_team.id})
     |> Repo.update()
   end
 
+  @trace :get_cached_pick_spread
   def get_cached_pick_spread(matchup) do
     Fiat.CacheServer.fetch_object(
       {:matchup_pick_spread, matchup.id},
@@ -88,16 +98,19 @@ defmodule ClassicClips.PickEm do
     )
   end
 
+  @trace :get_pick_spread
   def get_pick_spread(%MatchUp{id: id}) do
     from(up in UserPick, select: up.picked_team_id, where: up.matchup_id == ^id)
     |> Repo.all()
     |> Enum.frequencies()
   end
 
+  @trace :get_leaders_cached
   def get_leaders_cached do
     Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 100)
   end
 
+  @trace :get_leaders
   def get_leaders do
     current_month = get_current_month_name()
 
@@ -110,6 +123,7 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload(:user)
   end
 
+  @trace :update_user_picks_with_matchup_result
   def update_user_picks_with_matchup_result(game_data, matchup) do
     user_picks =
       from(up in UserPick, where: up.matchup_id == ^matchup.id)
@@ -144,6 +158,7 @@ defmodule ClassicClips.PickEm do
     Logger.notice("Updated #{Enum.count(user_picks)} user picks")
   end
 
+  @trace :update_ndc_records_with_matchup_result
   def update_ndc_records_with_matchup_result(game_data, matchup) do
     spread_winning_team_id = get_spread_winning_team_id(game_data, matchup)
     current_month = get_current_month_name()
@@ -157,6 +172,7 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
     ndc_record = %NdcRecord{
       month: current_month,
@@ -176,6 +192,7 @@ defmodule ClassicClips.PickEm do
     |> Repo.insert()
   end
 
+  @trace :update_ndc_record
   defp update_ndc_record(%NdcRecord{} = ndc_record, spread_winning_team_id, %NdcPick{} = ndc_pick) do
     attrs =
       ndc_record
@@ -186,6 +203,7 @@ defmodule ClassicClips.PickEm do
     |> Repo.update()
   end
 
+  @trace :increment_ndc_record_counts
   defp increment_ndc_record_counts(
          %NdcRecord{} = ndc_record,
          spread_winning_team_id,
@@ -370,6 +388,7 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :get_cached_teams_for_conference
   def get_cached_teams_for_conference(conference) do
     case Fiat.CacheServer.fetch_object({:conference_teams, conference}) do
       nil ->
@@ -406,6 +425,7 @@ defmodule ClassicClips.PickEm do
     |> Enum.into(%{})
   end
 
+  @trace :get_picks_for_user_cached
   def get_picks_for_user_cached(user) do
     Fiat.CacheServer.fetch_object(
       {:picks_for_user, user.id},
@@ -414,6 +434,7 @@ defmodule ClassicClips.PickEm do
     )
   end
 
+  @trace :get_picks_for_user
   def get_picks_for_user(%User{id: user_id}) do
     from(up in UserPick,
       where: up.user_id == ^user_id,
@@ -510,6 +531,7 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :notify_sickos
   def notify_sickos(matchup) do
     NewRelic.Instrumented.Task.start_link(fn ->
       from(u in User,
@@ -529,6 +551,7 @@ defmodule ClassicClips.PickEm do
   defp get_ndc_team_id(_, %Team{abbreviation: home_team_abbrev} = home_team, home_team_abbrev),
     do: home_team.id
 
+  @trace :forfeit_missed_games
   def forfeit_missed_games(%User{id: user_id} = user) do
     current_month = get_current_month_name()
 
@@ -586,6 +609,7 @@ defmodule ClassicClips.PickEm do
     )
   end
 
+  @trace :is_missing_picks?
   def is_missing_picks?(%User{id: user_id}) do
     current_month = get_current_month_name()
 
@@ -617,6 +641,7 @@ defmodule ClassicClips.PickEm do
   def disable_matchup_email_notifications(user),
     do: update_matchup_email_notifications(user, false)
 
+  @trace :update_matchup_email_notifications
   def update_matchup_email_notifications(%User{} = user, enabled?) do
     User.changeset(user, %{email_new_matchups: enabled?})
     |> Repo.update(returning: true)

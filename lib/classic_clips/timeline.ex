@@ -3,6 +3,8 @@ defmodule ClassicClips.Timeline do
   The Timeline context.
   """
 
+  use NewRelic.Tracer
+
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
@@ -17,10 +19,12 @@ defmodule ClassicClips.Timeline do
       [%Clip{}, ...]
 
   """
+  @trace :list_clips
   def list_clips do
     Repo.all(Clip) |> Repo.preload(:user) |> Repo.preload(:tags) |> Repo.preload(:video)
   end
 
+  @trace :list_newest_clips
   def list_newest_clips(%{limit: limit, offset: offset}, video_id) do
     clips_query =
       from(c in Clip,
@@ -91,6 +95,7 @@ defmodule ClassicClips.Timeline do
       [%Clip{}, ...]
 
   """
+  @trace :list_top_clips
   def list_top_clips(lower_date_bound, %{limit: limit, offset: offset}, video_id) do
     clips_query =
       from(c in Clip,

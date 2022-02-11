@@ -1,9 +1,11 @@
 defmodule PickEmWeb.GoogleAuthController do
   use PickEmWeb, :controller
+  use NewRelic.Tracer
 
   @doc """
   `index/2` handles the callback from Google Auth API redirect.
   """
+  @trace :index
   def index(conn, %{"code" => code}) do
     {:ok, token} = ElixirAuthGoogle.get_token(code, conn)
     {:ok, profile} = ElixirAuthGoogle.get_user_profile(token.access_token)
@@ -20,6 +22,7 @@ defmodule PickEmWeb.GoogleAuthController do
     |> redirect(to: "/")
   end
 
+  @trace :logout
   def logout(conn, _) do
     conn
     |> clear_session()

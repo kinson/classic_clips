@@ -5,6 +5,8 @@ defmodule ClassicClips.BigBeef do
 
   require Logger
 
+  use NewRelic.Tracer
+
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
@@ -24,6 +26,7 @@ defmodule ClassicClips.BigBeef do
     Repo.all(Beef)
   end
 
+  @trace :get_unclaimed_big_beefs
   def get_unclaimed_big_beefs() do
     last_six_hours = -1 * 60 * 60 * 6
     lower_date_limit = DateTime.utc_now() |> DateTime.add(last_six_hours)
@@ -37,6 +40,7 @@ defmodule ClassicClips.BigBeef do
     |> Repo.all()
   end
 
+  @trace :get_latest_big_beef
   def get_latest_big_beef() do
     from(b in ClassicClips.BigBeef.BigBeefEvent,
       select: b,
@@ -47,6 +51,7 @@ defmodule ClassicClips.BigBeef do
     |> Repo.preload(beef: [:player])
   end
 
+  @trace :check_for_bad_beefs
   def check_for_bad_beefs do
     lower_date_time_limit = DateTime.utc_now() |> DateTime.add(-1 * 60 * 60 * 3)
     upper_date_time_limit = DateTime.utc_now() |> DateTime.add(-1 * 60 * 60 * 5)
@@ -73,12 +78,14 @@ defmodule ClassicClips.BigBeef do
     end
   end
 
+  @trace :get_single_game_leaders
   def get_single_game_leaders() do
     from(b in ClassicClips.BigBeef.Beef, select: b, order_by: [desc: b.beef_count], limit: 5)
     |> Repo.all()
     |> Repo.preload(:player)
   end
 
+  @trace :get_season_single_game_leaders
   def get_season_single_game_leaders() do
     from(b in ClassicClips.BigBeef.Beef,
       select: b,
@@ -92,6 +99,7 @@ defmodule ClassicClips.BigBeef do
     |> Repo.preload(:player)
   end
 
+  @trace :get_big_beef_count_leaders
   def get_big_beef_count_leaders() do
     from(bb in ClassicClips.BigBeef.BigBeefEvent,
       join: b in assoc(bb, :beef),
@@ -104,6 +112,7 @@ defmodule ClassicClips.BigBeef do
     |> Repo.all()
   end
 
+  @trace :get_season_big_beef_count_leaders
   def get_season_big_beef_count_leaders() do
     from(bb in ClassicClips.BigBeef.BigBeefEvent,
       join: b in assoc(bb, :beef),
@@ -134,6 +143,7 @@ defmodule ClassicClips.BigBeef do
   """
   def get_beef!(id), do: Repo.get!(Beef, id)
 
+  @trace :get_recent_beefs_cached
   def get_recent_beefs_cached(offset \\ 12) do
     alias ClassicClips.BigBeef.RecentBeefCache
 
@@ -156,6 +166,7 @@ defmodule ClassicClips.BigBeef do
     get_beefs(12)
   end
 
+  @trace :get_beefs
   def get_beefs(hours_offset) do
     offset = -1 * 60 * 60 * hours_offset
     lower_date_bound = DateTime.utc_now() |> DateTime.add(offset, :second)
@@ -190,12 +201,14 @@ defmodule ClassicClips.BigBeef do
       {:error, %Ecto.Changeset{}}
 
   """
+  @trace :create_beef
   def create_beef(attrs \\ %{}) do
     %Beef{}
     |> Beef.changeset(attrs)
     |> Repo.insert()
   end
 
+  @trace :upsert_beef
   def upsert_beef(%{ext_game_id: ext_game_id, player_id: player_id} = attrs) do
     case Repo.get_by(Beef, ext_game_id: ext_game_id, player_id: player_id) do
       nil -> %Beef{}
@@ -217,6 +230,7 @@ defmodule ClassicClips.BigBeef do
       {:error, %Ecto.Changeset{}}
 
   """
+  @trace :update_beef
   def update_beef(%Beef{} = beef, attrs) do
     beef
     |> Beef.changeset(attrs)
@@ -252,6 +266,7 @@ defmodule ClassicClips.BigBeef do
     Beef.changeset(beef, attrs)
   end
 
+  @trace :fetch_and_broadcast_games
   def fetch_and_broadcast_games(games) do
     alias ClassicClips.BigBeef.Services.Stats
 
@@ -280,6 +295,7 @@ defmodule ClassicClips.BigBeef do
     games_info
   end
 
+  @trace :get_game_data
   def get_game_data(%GameData{id: id}) do
     case ClassicClips.BigBeef.Services.Stats.get_boxscore_for_game(id) do
       {:ok, game} -> game
@@ -287,6 +303,7 @@ defmodule ClassicClips.BigBeef do
     end
   end
 
+  @trace :make_game_data
   defp make_game_data(id, game_start_time, status) do
     {:ok, start_time, _} = DateTime.from_iso8601(game_start_time)
 
@@ -308,6 +325,7 @@ defmodule ClassicClips.BigBeef do
       [%Player{}, ...]
 
   """
+  @trace :list_players
   def list_players do
     Repo.all(Player)
   end
@@ -393,6 +411,7 @@ defmodule ClassicClips.BigBeef do
     Player.changeset(player, attrs)
   end
 
+  @trace :get_or_create_player
   def get_or_create_player(
         %{ext_person_id: ext_person_id} = player_data,
         game_time,
@@ -438,6 +457,7 @@ defmodule ClassicClips.BigBeef do
       [%BigBeefEvent{}, ...]
 
   """
+  @trace :list_big_beef_events
   def list_big_beef_events do
     from(bbe in BigBeefEvent,
       join: b in assoc(bbe, :beef),
@@ -448,6 +468,7 @@ defmodule ClassicClips.BigBeef do
     |> Repo.preload(beef: [:player, :season])
   end
 
+  @trace :get_big_beefs_by_season
   def get_big_beefs_by_season() do
     list_big_beef_events()
     |> Enum.group_by(& &1.beef.season.year_start)

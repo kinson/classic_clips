@@ -1,11 +1,13 @@
 defmodule BigBeefWeb.BeefLive.Index do
   use BigBeefWeb, :live_view
+  use NewRelic.Tracer
 
   alias ClassicClips.BigBeef
   alias ClassicClips.BigBeef.Beef
   alias ClassicClips.BigBeef.{Player, BigBeefEvent}
 
   @impl true
+  @trace :mount
   def mount(_params, _session, socket) do
     if connected?(socket), do: BigBeef.subscribe_new_beef()
 
@@ -91,6 +93,7 @@ defmodule BigBeefWeb.BeefLive.Index do
     {:noreply, assign(socket, :page_type, "pledge")}
   end
 
+  @trace :list_beefs
   defp list_beefs do
     BigBeef.list_beefs()
   end
@@ -99,6 +102,7 @@ defmodule BigBeefWeb.BeefLive.Index do
     DateTime.utc_now() |> DateTime.to_iso8601()
   end
 
+  @trace :get_active_game_count
   defp get_active_game_count() do
     ClassicClips.BeefServer.get_active_game_count()
   end
