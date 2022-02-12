@@ -61,7 +61,7 @@ defmodule ClassicClips.PickEm do
   def get_current_ndc_record() do
     Repo.get_by(NdcRecord, month: get_current_month_name())
   end
-  
+
   @trace :get_users_pick_for_matchup
   def get_user_pick_for_matchup(nil, _), do: nil
 

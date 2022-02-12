@@ -24,10 +24,10 @@ config :classic_clips, BigBeefWeb.Endpoint,
   ]
 
 config :classic_clips, PickEmWeb.Endpoint,
-  url: [host: "pickem.classicclipsinc.com"],
+  url: [host: "nodunkspickem.com"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   check_orign: [
-    "pickem.classicclipsinc.com"
+    "nodunkspickem.com"
   ]
 
 config :classic_clips, :classics_server_enabled, true

@@ -18,11 +18,11 @@ defmodule ClassicClips.Timeline.UserNotifier do
     result =
       new()
       |> to({name, email})
-      |> from({"Pick 'Em", "pickem@classicclipsinc.com"})
+      |> from({"Pick 'Em", "info@nodunkspickem.com"})
       |> subject("New Matchup")
       |> put_provider_option(:template_id, System.get_env("SENDGRID_MATCHUP_TEMPLATE_ID"))
       |> put_provider_option(:dynamic_template_data, %{
-        link: "https://pickem.classicclipsinc.com",
+        link: "https://nodunkspickem.com",
         datestring: datestring,
         matchupline: matchupline
       })
