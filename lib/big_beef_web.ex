@@ -45,7 +45,8 @@ defmodule BigBeefWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {BigBeefWeb.LayoutView, "live.html"}
+        layout: {BigBeefWeb.LayoutView, "live.html"},
+        namespace: BigBeefWeb
 
       unquote(view_helpers())
     end

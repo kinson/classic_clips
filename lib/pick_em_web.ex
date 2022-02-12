@@ -45,7 +45,8 @@ defmodule PickEmWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {PickEmWeb.LayoutView, "live.html"}
+        layout: {PickEmWeb.LayoutView, "live.html"},
+        namespace: PickEmWeb
 
       unquote(view_helpers())
     end
