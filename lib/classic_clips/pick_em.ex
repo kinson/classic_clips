@@ -108,20 +108,41 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_leaders_cached
   def get_leaders_cached do
-    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 100)
+    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 180)
   end
 
   @trace :get_leaders
   def get_leaders do
     current_month = get_current_month_name()
 
+    subquery =
+      from(up in UserPick,
+        left_join: m in assoc(up, :matchup),
+        where: m.month == ^current_month,
+        where: is_nil(up.forfeited_at),
+        group_by: up.user_id,
+        select: %{user_id: up.user_id, total_picks: count(up.id)}
+      )
+
     from(ur in UserRecord,
+      join: up in subquery(subquery),
+      on: up.user_id == ur.user_id,
+      join: u in assoc(ur, :user),
       where: ur.month == ^current_month,
-      order_by: [desc: ur.wins, asc: ur.losses, desc: ur.updated_at, desc: ur.id],
-      limit: 100
+      order_by: [desc: ur.wins, desc: up.total_picks, desc: ur.id],
+      preload: [user: u],
+      limit: 100,
+      select: {up, ur}
     )
     |> Repo.all()
-    |> Repo.preload(:user)
+    |> Enum.map(fn {up, ur} ->
+      %{
+        user: ur.user,
+        wins: ur.wins,
+        losses: ur.losses,
+        total_picks: up.total_picks
+      }
+    end)
   end
 
   @trace :update_user_picks_with_matchup_result
