@@ -45,7 +45,7 @@
          </div>
          <% end %>
 
-          <%= submit "Create Matchup", class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink" %>
+          <%= submit "#{if @todays_matchup, do: "Update", else: "Create"} Matchup", class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink" %>
        <% end %>
       <% end %>
       </.form>

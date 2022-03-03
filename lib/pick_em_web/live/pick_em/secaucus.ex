@@ -209,11 +209,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
          ) do
       {:ok, _} ->
         matchup = PickEm.get_current_matchup()
+        ndc_picks = PickEm.get_ndc_pick_for_matchup(matchup)
 
         {:noreply,
          socket
          |> assign(:current_matchup, matchup)
          |> assign(:todays_matchup, matchup)
+         |> assign(:todays_ndc_picks, ndc_picks)
          |> assign(:message, "Successfully created matchup")
          |> assign(:error, nil)}
 
