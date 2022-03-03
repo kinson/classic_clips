@@ -30,6 +30,7 @@ defmodule ClassicClips.PickEm do
   def set_cached_current_matchup() do
     current_matchup = get_current_matchup()
     Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
+    current_matchup
   end
 
   @trace :get_current_matchup
