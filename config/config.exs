@@ -82,6 +82,8 @@ config :classic_clips,
          Could not find BIG_BEEF_URL environment variable.
          """)
 
+config :classic_clips, twitter_api_pick_em_bearer_token: "Faker"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
