@@ -590,7 +590,8 @@ defmodule ClassicClips.PickEm do
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
          {:ok, _} <- Repo.insert(ndc_pick_changeset),
-         {:ok, _} <- notify_sickos(matchup) do
+         {:ok, _} <- notify_sickos(matchup),
+         {:ok, _} <- post_matchup_on_twitter(matchup) do
       set_cached_current_matchup()
       {:ok, matchup}
     end
@@ -605,6 +606,35 @@ defmodule ClassicClips.PickEm do
       |> Repo.all()
       |> Enum.map(&%{name: &1.username, email: &1.email, matchup: matchup})
       |> Enum.each(&ClassicClips.Timeline.UserNotifier.deliver_new_matchup/1)
+    end)
+
+    {:ok, true}
+  end
+
+  defp post_matchup_on_twitter(matchup) do
+    NewRelic.Instrumented.Task.start_link(fn ->
+      %{away_team: away, home_team: home, favorite_team: favorite} = matchup
+
+      away_string = "#{away.location} #{away.name}"
+      home_string = "#{home.location} #{home.name}"
+      favorite_string = "#{favorite.abbreviation} #{matchup.spread}"
+
+      est_time =
+        matchup.tip_datetime
+        |> DateTime.add(-1 * get_est_offset_seconds())
+        |> DateTime.to_time()
+        |> Timex.format!("{h12}:{0m} {AM}")
+
+      tweet_string = """
+      Today's matchup is live!
+      #{away_string} @ #{home_string} (#{favorite_string})
+      Make your pick before #{est_time} EST!
+      https://nodunkspickem.com
+      """
+
+      IO.inspect(tweet_string)
+
+      ClassicClips.Twitter.post_pick_em_tweet(tweet_string)
     end)
 
     {:ok, true}
