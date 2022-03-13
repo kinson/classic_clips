@@ -1,5 +1,4 @@
 defmodule BigBeefWeb.BeefLive.Helpers do
-  alias ClassicClips.BigBeef
   alias ClassicClips.BigBeef.Beef
   alias ClassicClips.BigBeef.{Player, BigBeefEvent}
 

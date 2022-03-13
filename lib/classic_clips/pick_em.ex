@@ -634,7 +634,7 @@ defmodule ClassicClips.PickEm do
 
       IO.inspect(tweet_string)
 
-      ClassicClips.Twitter.post_pick_em_tweet(tweet_string)
+      ClassicClips.Twitter.post_tweet(tweet_string)
     end)
 
     {:ok, true}
