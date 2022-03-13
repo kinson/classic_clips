@@ -33,7 +33,7 @@ defmodule BigBeefWeb.BeefLive.GraphComponent do
             </div>
             <div id="regulation-end-line"></div>
             <%= for beef <- @beefs do %>
-              <%= live_component(@socket, BigBeefWeb.BeefLive.BeefComponent, beef: beef) %>
+              <BigBeefWeb.BeefLive.BeefComponent.render beef={beef} />
             <% end %>
             <div class="x-axis-label oneq">
               <p>1Q</p>

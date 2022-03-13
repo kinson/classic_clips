@@ -41,13 +41,14 @@
           <%= link("All Clips", to: Routes.clip_index_path(@socket, :index)) %>
         </div>
         <div class="clip-area">
-          <%= live_component(@socket, ClassicClipsWeb.ClipLive.ClipComponent,
-            id: @clip.id,
-            clip: @clip,
-            user: @user,
-            votes: @votes,
-            saves: @saves
-          ) %>
+          <ClassicClipsWeb.ClipLive.ClipComponent.render
+            socket={@socket}
+            id={@clip.id}
+            clip={@clip}
+            user={@user}
+            votes={@votes}
+            saves={@saves}
+          />
         </div>
       </div>
       <button type="button" id="share-clip-text-button">
@@ -106,13 +107,14 @@
       </div>
     <% else %>
       <%= for clip <- @clips do %>
-        <%= live_component(@socket, ClassicClipsWeb.ClipLive.ClipComponent,
-          id: clip.id,
-          clip: clip,
-          user: @user,
-          votes: @votes,
-          saves: @saves
-        ) %>
+        <ClassicClipsWeb.ClipLive.ClipComponent.render
+          socket={@socket}
+          id={clip.id}
+          clip={clip}
+          user={@user}
+          votes={@votes}
+          saves={@saves}
+        />
       <% end %>
     <% end %>
   </div>

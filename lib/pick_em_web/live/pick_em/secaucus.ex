@@ -300,11 +300,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def home_team_code_value(abbreviation, _), do: abbreviation
 
-  def favorite_team_code_value(nil, %{favorite_team: %{abbreviation: abbrevioation}}),
-    do: abbrevioation
-
-  def favorite_team_code_value(abbreviation, _), do: abbreviation
-
   def game_line_value(nil, %{spread: spread}), do: spread
 
   def game_line_value(game_line, _), do: game_line

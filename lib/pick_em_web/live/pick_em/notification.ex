@@ -1,6 +1,5 @@
 defmodule PickEmWeb.PickEmLive.Notification do
   use PickEmWeb, :live_view
-  alias Phoenix.LiveView.JS
 
   def show(socket, message, type \\ :success) when type in [:success, :error] do
     socket
