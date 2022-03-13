@@ -60,7 +60,11 @@ if config_env() == :prod do
     license_key: System.fetch_env!("NEW_RELIC_LICENSE_KEY")
 
   config :classic_clips,
-    twitter_api_pick_em_bearer_token: System.fetch_env!("TWITTER_API_PICK_EM_BEARER_TOKEN")
+    twitter_api_pick_em_bearer_token: System.fetch_env!("TWITTER_API_PICK_EM_BEARER_TOKEN"),
+    twitter_api_token: System.fetch_env!("TWITTER_API_TOKEN"),
+    twitter_api_token_secret: System.fetch_env!("TWITTER_API_TOKEN_SECRET"),
+    twitter_api_pickem_consumer_key: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_KEY"),
+    twitter_api_pickem_consumer_secret: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_SECRET")
 end
 
 config :classic_clips, ClassicClipsWeb.Endpoint, server: true
