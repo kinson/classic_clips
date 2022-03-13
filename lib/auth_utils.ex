@@ -65,6 +65,8 @@ defmodule AuthUtils do
 
   defp timestamp() do
     {megasec, sec, _microsec} = :os.timestamp()
-    megasec * 1_000_000 + sec
+    seconds = megasec * 1_000_000 + sec
+
+    to_string(seconds)
   end
 end
