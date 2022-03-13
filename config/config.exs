@@ -5,7 +5,7 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Mix.Config
 
 config :classic_clips,
   ecto_repos: [ClassicClips.Repo]

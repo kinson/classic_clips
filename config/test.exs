@@ -1,4 +1,4 @@
-use Mix.Config
+import Mix.Config
 
 # Configure your database
 #
@@ -7,7 +7,7 @@ use Mix.Config
 # Run `mix help test` for more information.
 config :classic_clips, ClassicClips.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "password",
   database: "classic_clips_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
@@ -17,6 +17,8 @@ config :classic_clips, ClassicClips.Repo,
 config :classic_clips, ClassicClipsWeb.Endpoint,
   http: [port: 4002],
   server: false
+
+config :classic_clips, :classics_server_enabled, false
 
 # Print only warnings and errors during test
 config :logger, level: :warn
