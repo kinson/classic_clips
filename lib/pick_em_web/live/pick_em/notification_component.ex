@@ -30,4 +30,11 @@ defmodule PickEmWeb.PickEmLive.NotificationComponent do
   defp notification_color(:success), do: "bg-nd-pink"
   defp notification_color(:error), do: "bg-red-500"
   defp notification_color(nil), do: notification_color(:success)
+
+  def show(socket, message, type \\ :success) when type in [:success, :error] do
+    socket
+    |> push_event("show-notification", %{})
+    |> assign(:notification_message, message)
+    |> assign(:notification_type, type)
+  end
 end

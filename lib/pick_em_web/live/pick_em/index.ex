@@ -4,7 +4,7 @@ defmodule PickEmWeb.PickEmLive.Index do
   import PickEmWeb.PickEmLive.Emoji
 
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
-  alias PickEmWeb.PickEmLive.{Notification, Theme, User}
+  alias PickEmWeb.PickEmLive.{NotificationComponent, Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
@@ -66,10 +66,14 @@ defmodule PickEmWeb.PickEmLive.Index do
           {:ok, user_pick} ->
             socket
             |> assign(:user_pick, user_pick)
-            |> Notification.show("Saved your pick", :success)
+            |> NotificationComponent.show("Saved your pick", :success)
 
           {:error, _} ->
-            Notification.show(socket, "Could not save your pick, please try again", :error)
+            NotificationComponent.show(
+              socket,
+              "Could not save your pick, please try again",
+              :error
+            )
         end
       else
         socket

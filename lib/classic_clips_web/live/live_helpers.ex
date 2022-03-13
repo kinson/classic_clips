@@ -18,10 +18,10 @@ defmodule ClassicClipsWeb.LiveHelpers do
         clip: @clip,
         return_to: Routes.clip_index_path(@socket, :index) %>
   """
-  def live_modal(socket, component, opts) do
+  def live_modal(_socket, component, opts) do
     path = Keyword.fetch!(opts, :return_to)
     modal_opts = [id: :modal, return_to: path, component: component, opts: opts]
-    live_component(socket, ClassicClipsWeb.ModalComponent, modal_opts)
+    live_component(ClassicClipsWeb.ModalComponent, modal_opts)
   end
 
   def get_or_create_user(%{"profile" => profile}) do
