@@ -46,7 +46,7 @@ defmodule PickEmWeb.PickEmLive.Settings do
      |> assign(:submit_emoji_enabled, true)
      |> assign(:theme, theme)
      |> assign(:theme_data, Jason.encode!(theme))
-     |> PickEmWeb.PickEmLive.Notification.show("Updated emoji preference")}
+     |> PickEmWeb.PickEmLive.NotificationComponent.show("Updated emoji preference")}
   end
 
   def get_east_teams() do

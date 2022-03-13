@@ -3,7 +3,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   alias ClassicClips.{PickEm, Repo}
   alias ClassicClips.PickEm.{MatchUp, NdcPick}
-  alias PickEmWeb.PickEmLive.{Theme, User, Notification}
+  alias PickEmWeb.PickEmLive.{Theme, User, NotificationComponent}
 
   require Logger
 
@@ -163,7 +163,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       socket
       |> assign(:todays_matchup, updated_matchup)
       |> assign(:current_matchup, updated_matchup)
-      |> Notification.show("Updated matchup")
+      |> NotificationComponent.show("Updated matchup")
 
     {:noreply, socket}
   end
@@ -213,17 +213,17 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
          |> assign(:todays_matchup, matchup)
          |> assign(:todays_ndc_picks, ndc_picks)
          |> assign(:current_matchup, PickEm.get_current_matchup())
-         |> Notification.show("Successfully created matchup")}
+         |> NotificationComponent.show("Successfully created matchup")}
 
       _ = error ->
         Logger.error("Could not create new matchup", error: error)
 
-        {:noreply, Notification.show(socket, "Failed to create matchup", :error)}
+        {:noreply, NotificationComponent.show(socket, "Failed to create matchup", :error)}
     end
   end
 
   def handle_event("create-matchup", _, socket) do
-    {:noreply, Notification.show(socket, "Could not create matchup", :error)}
+    {:noreply, NotificationComponent.show(socket, "Could not create matchup", :error)}
   end
 
   def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
@@ -236,7 +236,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         assign(socket, :games, games)
 
       {:error, _} ->
-        Notification.show(socket, "Could not load todays games", :error) |> assign(:games, [])
+        NotificationComponent.show(socket, "Could not load todays games", :error)
+        |> assign(:games, [])
     end
   end
 
