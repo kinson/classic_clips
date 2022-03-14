@@ -267,7 +267,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   end
 
   def get_time_for_game(tip_datetime) do
-    DateTime.add(tip_datetime, -1 * 5 * 60 * 60)
+    DateTime.add(tip_datetime, -1 * PickEm.get_est_offset_seconds())
     |> DateTime.to_time()
     |> Timex.format!("{h12}:{0m} {AM}")
   end

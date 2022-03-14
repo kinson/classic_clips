@@ -9,7 +9,7 @@ defmodule ClassicClips.PickEm do
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
   alias ClassicClips.Timeline.User
 
-  @new_york_offset 5 * 60 * 60
+  @new_york_offset 4 * 60 * 60
 
   @trace :get_cached_current_matchup
   def get_cached_current_matchup() do
