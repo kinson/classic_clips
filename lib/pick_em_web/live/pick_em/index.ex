@@ -71,6 +71,8 @@ defmodule PickEmWeb.PickEmLive.Index do
           {:error, _} ->
             Notification.show(socket, "Could not save your pick, please try again", :error)
         end
+      else
+        socket
       end
 
     {:noreply, socket}
