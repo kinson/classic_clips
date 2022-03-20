@@ -35,14 +35,18 @@ defmodule AuthUtils do
   def auth_header(oauth_signature, params) do
     tokens =
       params
+      |> Map.put("oauth_signature", oauth_signature)
       |> Enum.filter(fn {key, _value} ->
         String.starts_with?(key, "oauth_")
       end)
+      |> Enum.sort(fn {a, _}, {b, _} ->
+        a <= b
+      end)
       |> Enum.map_join(", ", fn {key, value} ->
-        key <> "=\"" <> value <> "\""
+        ~s(#{key}="#{value}")
       end)
 
-    "OAuth oauth_signature=\"#{oauth_signature}\", #{tokens}"
+    "OAuth #{tokens}"
   end
 
   defp percent_encode(str), do: URI.encode(str, &URI.char_unreserved?/1)

@@ -10,7 +10,7 @@ defmodule ClassicClips.Twitter do
     headers =
       [
         "Content-Type": "application/json",
-        Authorization: "Bearer #{oauth_header}"
+        Authorization: oauth_header
       ]
       |> IO.inspect(label: "headers")
 
@@ -41,10 +41,10 @@ defmodule ClassicClips.Twitter do
           token_secret: token_secret,
           consumer_key: consumer_key,
           consumer_secret: consumer_secret
-        },
+        } |> IO.inspect(),
         url
-      )
+      ) |> IO.inspect()
 
-    AuthUtils.auth_header(signature, oauth_params)
+    AuthUtils.auth_header(signature, oauth_params) |> IO.inspect()
   end
 end
