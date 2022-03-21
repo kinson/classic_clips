@@ -163,7 +163,6 @@ defmodule ClassicClips.PickEm do
       from(up in UserPick,
         left_join: m in assoc(up, :matchup),
         where: m.month == ^current_month,
-        where: is_nil(up.forfeited_at),
         group_by: up.user_id,
         select: %{user_id: up.user_id, total_picks: count(up.id)}
       )
