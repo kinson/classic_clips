@@ -64,7 +64,10 @@ if config_env() == :prod do
     twitter_api_token: System.fetch_env!("TWITTER_API_TOKEN"),
     twitter_api_token_secret: System.fetch_env!("TWITTER_API_TOKEN_SECRET"),
     twitter_api_pickem_consumer_key: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_KEY"),
-    twitter_api_pickem_consumer_secret: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_SECRET")
+    twitter_api_pickem_consumer_secret: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_SECRET"),
+    twitter_api_oauth_2_client_id: System.fetch_env!("TWITTER_API_OAUTH_2_CLIENT_ID"),
+    twitter_api_oauth_2_client_secret: System.fetch_env!("TWITTER_API_OAUTH_2_CLIENT_SECRET"),
+    twitter_auth_callback_url: "https://nodunkspickem.com/auth/twitter/callback"
 end
 
 config :classic_clips,
@@ -72,7 +75,10 @@ config :classic_clips,
   twitter_api_token: System.fetch_env!("TWITTER_API_TOKEN"),
   twitter_api_token_secret: System.fetch_env!("TWITTER_API_TOKEN_SECRET"),
   twitter_api_pickem_consumer_key: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_KEY"),
-  twitter_api_pickem_consumer_secret: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_SECRET")
+  twitter_api_pickem_consumer_secret: System.fetch_env!("TWITTER_API_PICKEM_CONSUMER_SECRET"),
+  twitter_api_oauth_2_client_id: System.fetch_env!("TWITTER_API_OAUTH_2_CLIENT_ID"),
+  twitter_api_oauth_2_client_secret: System.fetch_env!("TWITTER_API_OAUTH_2_CLIENT_SECRET"),
+  twitter_auth_callback_url: "http://15e7-174-63-45-126.ngrok.io/auth/twitter/callback"
 
 config :classic_clips, ClassicClipsWeb.Endpoint, server: true
 config :classic_clips, BigBeefWeb.Endpoint, server: true
