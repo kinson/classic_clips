@@ -1,16 +1,20 @@
 defmodule ClassicClips.Twitter do
   require Logger
 
+  import Ecto.Query
+
+  alias ClassicClips.Repo
+  alias ClassicClips.PickEm.TwitterToken
+
   @twitter_api_base "https://api.twitter.com/2"
 
   def post_tweet(text) do
     url = @twitter_api_base <> "/tweets"
-    oauth_header = get_oauth_signature(url)
 
     headers =
       [
         "Content-Type": "application/json",
-        Authorization: oauth_header
+        Authorization: get_auth_header()
       ]
       |> IO.inspect(label: "headers")
 
@@ -28,23 +32,10 @@ defmodule ClassicClips.Twitter do
     end
   end
 
-  defp get_oauth_signature(url) do
-    token = Application.fetch_env!(:classic_clips, :twitter_api_token)
-    token_secret = Application.fetch_env!(:classic_clips, :twitter_api_token_secret)
-    consumer_key = Application.fetch_env!(:classic_clips, :twitter_api_pickem_consumer_key)
-    consumer_secret = Application.fetch_env!(:classic_clips, :twitter_api_pickem_consumer_secret)
+  def get_auth_header do
+    %{access_token: access_token} =
+      Repo.one!(from t in TwitterToken, order_by: [desc: t.expires_at], limit: 1)
 
-    {_, _, signature, oauth_params} =
-      AuthUtils.sign(
-        %{
-          token: token,
-          token_secret: token_secret,
-          consumer_key: consumer_key,
-          consumer_secret: consumer_secret
-        } |> IO.inspect(),
-        url
-      ) |> IO.inspect()
-
-    AuthUtils.auth_header(signature, oauth_params) |> IO.inspect()
+    "Bearer #{access_token}"
   end
 end
