@@ -632,8 +632,6 @@ defmodule ClassicClips.PickEm do
       https://nodunkspickem.com
       """
 
-      IO.inspect(tweet_string)
-
       ClassicClips.Twitter.post_tweet(tweet_string)
     end)
 

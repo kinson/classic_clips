@@ -11,20 +11,13 @@ defmodule ClassicClips.Twitter do
   def post_tweet(text) do
     url = @twitter_api_base <> "/tweets"
 
-    headers =
-      [
-        "Content-Type": "application/json",
-        Authorization: get_auth_header()
-      ]
-      |> IO.inspect(label: "headers")
+    headers = [
+      "Content-Type": "application/json",
+      Authorization: get_auth_header()
+    ]
 
-    case NewRelic.Instrumented.HTTPoison.post(
-           url |> IO.inspect(),
-           Jason.encode!(%{text: text}) |> IO.inspect(),
-           headers |> IO.inspect()
-         ) do
-      {:ok, %HTTPoison.Response{body: body} = resp} ->
-        IO.inspect(resp, label: "something")
+    case NewRelic.Instrumented.HTTPoison.post(url, Jason.encode!(%{text: text}), headers) do
+      {:ok, %HTTPoison.Response{body: body}} ->
         Jason.decode!(body)
 
       {:error, error} ->
