@@ -615,8 +615,8 @@ defmodule ClassicClips.PickEm do
     NewRelic.Instrumented.Task.start_link(fn ->
       %{away_team: away, home_team: home, favorite_team: favorite} = matchup
 
-      away_string = "#{away.location} #{away.name}"
-      home_string = "#{home.location} #{home.name}"
+      away_string = "#{away.default_emoji} #{away.location} #{away.name}"
+      home_string = "#{home.default_emoji} #{home.location} #{home.name}"
       favorite_string = "#{favorite.abbreviation} #{matchup.spread}"
 
       est_time =
@@ -626,9 +626,9 @@ defmodule ClassicClips.PickEm do
         |> Timex.format!("{h12}:{0m} {AM}")
 
       tweet_string = """
-      Today's matchup is live!
+      Today's matchup is live:
       #{away_string} @ #{home_string} (#{favorite_string})
-      Make your pick before #{est_time} EST!
+      Make your pick before #{est_time} EDT!
       https://nodunkspickem.com
       """
 
