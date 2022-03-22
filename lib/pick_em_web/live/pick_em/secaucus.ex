@@ -230,6 +230,16 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     {:noreply, assign(socket, :selected_game_line, game_line)}
   end
 
+  def handle_event("resend-matchup-email", _, socket) do
+    PickEm.notify_sickos(socket.assigns.todays_matchup)
+    {:noreply, NotificationComponent.show(socket, "Resent matchup emails")}
+  end
+
+  def handle_event("repost-matchup-tweet", _, socket) do
+    PickEm.post_matchup_on_twitter(socket.assigns.todays_matchup)
+    {:noreply, NotificationComponent.show(socket, "Reposted matchup tweet")}
+  end
+
   defp assign_games(socket) do
     case load_games() do
       {:ok, games} ->

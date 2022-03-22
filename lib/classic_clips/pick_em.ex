@@ -599,7 +599,7 @@ defmodule ClassicClips.PickEm do
 
   @trace :notify_sickos
   def notify_sickos(matchup) do
-    NewRelic.Instrumented.Task.start_link(fn ->
+    NewRelic.Instrumented.Task.Supervisor.start_child(ClassicClips.TaskSupervisor, fn ->
       from(u in User,
         where: u.email_new_matchups == true
       )
@@ -611,8 +611,8 @@ defmodule ClassicClips.PickEm do
     {:ok, true}
   end
 
-  defp post_matchup_on_twitter(matchup) do
-    NewRelic.Instrumented.Task.start_link(fn ->
+  def post_matchup_on_twitter(matchup) do
+    NewRelic.Instrumented.Task.Supervisor.start_child(ClassicClips.TaskSupervisor, fn ->
       %{away_team: away, home_team: home, favorite_team: favorite} = matchup
 
       away_string = "#{away.default_emoji} #{away.location} #{away.name}"
