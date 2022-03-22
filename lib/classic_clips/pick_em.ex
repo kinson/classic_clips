@@ -599,41 +599,49 @@ defmodule ClassicClips.PickEm do
 
   @trace :notify_sickos
   def notify_sickos(matchup) do
-    NewRelic.Instrumented.Task.Supervisor.start_child(ClassicClips.TaskSupervisor, fn ->
-      from(u in User,
-        where: u.email_new_matchups == true
-      )
-      |> Repo.all()
-      |> Enum.map(&%{name: &1.username, email: &1.email, matchup: matchup})
-      |> Enum.each(&ClassicClips.Timeline.UserNotifier.deliver_new_matchup/1)
-    end)
+    NewRelic.Instrumented.Task.Supervisor.start_child(
+      ClassicClips.TaskSupervisor,
+      fn ->
+        from(u in User,
+          where: u.email_new_matchups == true
+        )
+        |> Repo.all()
+        |> Enum.map(&%{name: &1.username, email: &1.email, matchup: matchup})
+        |> Enum.each(&ClassicClips.Timeline.UserNotifier.deliver_new_matchup/1)
+      end,
+      shutdown: 30_000
+    )
 
     {:ok, true}
   end
 
   def post_matchup_on_twitter(matchup) do
-    NewRelic.Instrumented.Task.Supervisor.start_child(ClassicClips.TaskSupervisor, fn ->
-      %{away_team: away, home_team: home, favorite_team: favorite} = matchup
+    NewRelic.Instrumented.Task.Supervisor.start_child(
+      ClassicClips.TaskSupervisor,
+      fn ->
+        %{away_team: away, home_team: home, favorite_team: favorite} = matchup
 
-      away_string = "#{away.default_emoji} #{away.location} #{away.name}"
-      home_string = "#{home.default_emoji} #{home.location} #{home.name}"
-      favorite_string = "#{favorite.abbreviation} #{matchup.spread}"
+        away_string = "#{away.default_emoji} #{away.location} #{away.name}"
+        home_string = "#{home.default_emoji} #{home.location} #{home.name}"
+        favorite_string = "#{favorite.abbreviation} #{matchup.spread}"
 
-      est_time =
-        matchup.tip_datetime
-        |> DateTime.add(-1 * get_est_offset_seconds())
-        |> DateTime.to_time()
-        |> Timex.format!("{h12}:{0m} {AM}")
+        est_time =
+          matchup.tip_datetime
+          |> DateTime.add(-1 * get_est_offset_seconds())
+          |> DateTime.to_time()
+          |> Timex.format!("{h12}:{0m} {AM}")
 
-      tweet_string = """
-      Today's matchup is live:
-      #{away_string} @ #{home_string} (#{favorite_string})
-      Make your pick before #{est_time} EDT!
-      https://nodunkspickem.com
-      """
+        tweet_string = """
+        Today's matchup is live:
+        #{away_string} @ #{home_string} (#{favorite_string})
+        Make your pick before #{est_time} EDT!
+        https://nodunkspickem.com
+        """
 
-      ClassicClips.Twitter.post_tweet(tweet_string)
-    end)
+        ClassicClips.Twitter.post_tweet(tweet_string)
+      end,
+      shutdown: 10_000
+    )
 
     {:ok, true}
   end
