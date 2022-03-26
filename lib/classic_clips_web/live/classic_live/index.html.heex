@@ -28,7 +28,7 @@
     </.form>
   </div>
 </div>
-<div id="classics" phx-update="replace">
+<div id="classics">
   <%= for {video, index} <- big_list(@classics) do %>
     <div class={classic_class(index)}>
       <img src={image_url(video)} />

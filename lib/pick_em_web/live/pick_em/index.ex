@@ -3,6 +3,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   import PickEmWeb.PickEmLive.Emoji
 
+  alias Phoenix.LiveView.JS
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
   alias PickEmWeb.PickEmLive.{NotificationComponent, Theme, User}
 
@@ -18,9 +19,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     {:ok, user} = User.get_or_create_user(session)
 
-    user_pick = ClassicClips.PickEm.get_user_pick_for_matchup(user, matchup)
-
-    {selected_team, selection_saved} = get_selected_team(user_pick)
+    existing_user_pick = ClassicClips.PickEm.get_user_pick_for_matchup(user, matchup)
 
     can_save_pick? = can_save_pick?(matchup)
 
@@ -35,9 +34,7 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:pick_spread, matchup_pick_spread)
      |> assign(:ndc_record, ndc_record)
      |> assign(:user, user)
-     |> assign(:user_pick, user_pick)
-     |> assign(:selected_team, selected_team)
-     |> assign(:selection_saved, selection_saved)
+     |> assign(:existing_user_pick, existing_user_pick)
      |> assign(:can_save_pick?, can_save_pick?)
      |> assign(:google_auth_url, generate_oauth_url())
      |> assign(:editing_profile, false)}
@@ -48,24 +45,22 @@ defmodule PickEmWeb.PickEmLive.Index do
     {:noreply, socket}
   end
 
-  def handle_event("away-click", _, socket) do
-    {:noreply, assign(socket, :selected_team, socket.assigns.matchup.away_team)}
+  def handle_event("save-click", %{"value" => "none"}, socket) do
+    {:noreply,
+     NotificationComponent.show(socket, "Click on a team first to save your pick", :error)}
   end
 
-  def handle_event("home-click", _, socket) do
-    {:noreply, assign(socket, :selected_team, socket.assigns.matchup.home_team)}
-  end
+  def handle_event("save-click", %{"value" => team_abbreviation}, socket) do
+    %{existing_user_pick: existing_user_pick, user: user, matchup: matchup} = socket.assigns
 
-  def handle_event("save-click", _, socket) do
-    %{user_pick: user_pick, selected_team: selected_team, user: user, matchup: matchup} =
-      socket.assigns
+    selected_team = get_team_for_abbreviation(team_abbreviation, matchup)
 
     socket =
       if can_save_pick?(socket.assigns.matchup) do
-        case ClassicClips.PickEm.save_user_pick(user_pick, selected_team, user, matchup) do
-          {:ok, user_pick} ->
+        case ClassicClips.PickEm.save_user_pick(existing_user_pick, selected_team, user, matchup) do
+          {:ok, up} ->
             socket
-            |> assign(:user_pick, user_pick)
+            |> assign(:existing_user_pick, up)
             |> NotificationComponent.show("Saved your pick", :success)
 
           {:error, _} ->
@@ -76,7 +71,11 @@ defmodule PickEmWeb.PickEmLive.Index do
             )
         end
       else
-        socket
+        NotificationComponent.show(
+          socket,
+          "Cannot save pick because the game has started!",
+          :error
+        )
       end
 
     {:noreply, socket}
@@ -123,40 +122,76 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   def get_save_button_text(_, false), do: "Pick No Longer Available"
-  def get_save_button_text(false, _), do: "Lock It In"
-  def get_save_button_text(true, _), do: "Update Your Pick"
+  def get_save_button_text(nil, _), do: "Lock It In"
+  def get_save_button_text(%UserPick{}, _), do: "Update Your Pick"
 
   def maybe_disable(class_string, false), do: class_string <> " opacity-60"
   def maybe_disable(class_string, _), do: class_string <> " shadow-brutal"
 
-  def get_team_button_style(nil, _) do
-    get_team_button_class("not selected")
+  def get_initial_team_button_class(%UserPick{picked_team_id: id}, %Team{id: id}, can_save_pick?) do
+    "#{base_button_class()} bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white"
+    |> maybe_disable(can_save_pick?)
   end
 
-  def get_team_button_style(selected_team, %Team{id: team_id}) do
-    if selected_team.id == team_id do
-      get_team_button_class("selected")
+  def get_initial_team_button_class(_, _, can_save_pick?) do
+    "#{base_button_class()} bg-white text-nd-purple border-0" |> maybe_disable(can_save_pick?)
+  end
+
+  def handle_team_click(js \\ %JS{}, team, abbreviation, can_save_pick?) do
+    if can_save_pick? do
+      js
+      |> JS.set_attribute({"value", abbreviation},
+        to: "#save-pick-button"
+      )
+      |> add_selected_class_to_team(team)
+      |> remove_selected_class_from_other_team(team)
     else
-      get_team_button_class("not selected")
+      js
     end
   end
 
-  def get_team_button_class("selected") do
-    "#{base_button_class()} bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white"
+  def add_selected_class_to_team(js, team) do
+    js
+    |> JS.remove_class("bg-white text-nd-purple border-0", to: "##{team}-team-button")
+    |> JS.add_class(
+      "bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white",
+      to: "##{team}-team-button"
+    )
   end
 
-  def get_team_button_class(_) do
-    "#{base_button_class()} bg-white text-nd-purple border-0"
+  def remove_selected_class_from_other_team(js, "home"),
+    do: remove_selected_class_from_team(js, "away")
+
+  def remove_selected_class_from_other_team(js, "away"),
+    do: remove_selected_class_from_team(js, "home")
+
+  def remove_selected_class_from_team(js, team) do
+    js
+    |> JS.remove_class(
+      "bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white",
+      to: "##{team}-team-button"
+    )
+    |> JS.add_class("bg-white text-nd-purple border-0", to: "##{team}-team-button")
   end
+
+  def save_pick do
+    JS.push("save-click")
+  end
+
+  defp get_team_for_abbreviation(
+         abbreviation,
+         %MatchUp{away_team: %{abbreviation: abbreviation} = team}
+       ),
+       do: team
+
+  defp get_team_for_abbreviation(
+         abbreviation,
+         %MatchUp{home_team: %{abbreviation: abbreviation} = team}
+       ),
+       do: team
 
   def base_button_class do
     "leading-none rounded-none font-open-sans font-bold text-2xl hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-11/24 px-0 flex justify-center items-center"
-  end
-
-  defp get_selected_team(nil), do: {nil, false}
-
-  defp get_selected_team(%UserPick{picked_team: picked_team}) do
-    {picked_team, true}
   end
 
   def get_time_for_game(%MatchUp{tip_datetime: tip_datetime}) do

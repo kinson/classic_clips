@@ -116,17 +116,19 @@
       <div class="flex flex-col md:flex-row gap-6">
         <button
           type="button"
-          phx-click="away-click"
+          id="away-team-button"
+          phx-click={handle_team_click("away", @matchup.away_team.abbreviation, @can_save_pick?)}
           phx-value-enabled={"#{@can_save_pick?}"}
-          class={get_team_button_style(@selected_team, @matchup.away_team) |> maybe_disable(@can_save_pick?)}
+          class={get_initial_team_button_class(@existing_user_pick, @matchup.away_team, @can_save_pick?)}
         >
           <%= render_team_location(@matchup.away_team, @theme, "mx-auto") %>
         </button>
         <button
           type="button"
-          phx-click="home-click"
+          id="home-team-button"
+          phx-click={handle_team_click("home", @matchup.home_team.abbreviation, @can_save_pick?)}
           phx-value-enabled={"#{@can_save_pick?}"}
-          class={get_team_button_style(@selected_team, @matchup.home_team) |> maybe_disable(@can_save_pick?)}
+          class={get_initial_team_button_class(@existing_user_pick, @matchup.home_team, @can_save_pick?)}
         >
           <%= render_team_location(@matchup.home_team, @theme) %>
         </button>
@@ -134,14 +136,15 @@
       <%= if @user do %>
         <button
           type="button"
+          id="save-pick-button"
           phx-click="save-click"
+          value="none"
           phx-value-enabled={"#{@can_save_pick?}"}
           class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}
         >
-          <%= get_save_button_text(@selection_saved, @can_save_pick?) %>
+          <%= get_save_button_text(@existing_user_pick, @can_save_pick?) %>
         </button>
-      <% end %>
-      <%= unless @user do %>
+      <% else %>
         <div class="flex flex-row rounded-lg shadow-xl bg-white items-center w-max px-6 py-4 my-6">
           <img
             class="w-14 mr-4"
