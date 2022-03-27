@@ -21,7 +21,8 @@ module.exports = {
           '13/12': '108%'
         },
         boxShadow: {
-          'brutal': '4px 5px 0px #111'
+          'brutal': '4px 5px 0px #111',
+          'notification': '6px 8px 3px #333'
         }
     }
   },

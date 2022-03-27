@@ -10,12 +10,13 @@ defmodule PickEmWeb.PickEmLive.NotificationComponent do
 
     ~H"""
     <div
-      class="w-full absolute translate-y-0 transition-all flex justify-center align-center invisible z-10 h-0 overflow-hidden bottom-0"
-      id="notification"
+      class="w-screen h-max transition-all flex justify-center invisible z-10 h-0 bottom-0 fixed"
+      id="notification-container"
     >
       <div
-        class={"#{notification_color(@type)} px-8 py-4 text-white rounded-none shadow-lg flex"}
+        class={"#{notification_color(@type)} w-max h-fit px-8 py-4 translate-y-0 transition-all text-white rounded-none shadow-notification bottom-0 absolute"}
         phx-click={hide()}
+        id="notification"
       >
         <%= @message %>
       </div>
