@@ -19,11 +19,11 @@ defmodule PickEmWeb.PickEmLive.Leaders do
      |> assign(:user, user)}
   end
 
-  def get_leaders() do
+  defp get_leaders do
     PickEm.get_leaders_cached()
   end
 
-  def get_truncated_username(%ClassicClips.Timeline.User{username: username}) do
+  defp get_truncated_username(%ClassicClips.Timeline.User{username: username}) do
     if String.length(username) > 22 do
       truncated = String.slice(username, 0..19) |> String.trim_trailing()
 
