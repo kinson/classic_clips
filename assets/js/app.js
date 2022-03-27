@@ -49,25 +49,32 @@ let notificationTimeout;
 
 function hideNotification() {
   if (notificationTimeout) clearTimeout(notificationTimeout);
-  let el = document.getElementById('notification');
 
-  if (el) {
-    el.classList.replace('-translate-y-12', 'translate-y-0');
-    el.classList.add('opacity-0');
+  let notificationContainer = document.getElementById('notification-container');
+  let notification = document.getElementById('notification');
+
+  if (notificationContainer) {
+    notification.classList.replace('-translate-y-12', 'translate-y-0');
+    notificationContainer.classList.add('opacity-0');
 
     setTimeout(() => {
-      el.classList.add('invisible', 'h-0');
+      notificationContainer.classList.add('invisible', 'h-0');
     }, 150);
   }
 }
 
 function showNotification() {
   if (notificationTimeout) clearTimeout(notificationTimeout);
-  let el = document.getElementById('notification');
 
-  if (el) {
-    el.classList.remove('invisible', 'h-0', 'opacity-0');
-    el.classList.replace('translate-y-0', '-translate-y-12');
+  let notificationContainer = document.getElementById('notification-container');
+  let notification = document.getElementById('notification');
+
+  if (notificationContainer) {
+    // if the notification is already showing, dont change the class again
+    if (notification.classList.contains('translate-y-0')) {
+      notificationContainer.classList.remove('invisible', 'h-0', 'opacity-0');
+      notification.classList.replace('translate-y-0', '-translate-y-12');
+    }
 
     notificationTimeout = setTimeout(hideNotification, 2500);
   }
