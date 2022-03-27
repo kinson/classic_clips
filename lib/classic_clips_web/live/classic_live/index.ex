@@ -87,7 +87,7 @@ defmodule ClassicClipsWeb.ClassicLive.Index do
   end
 
   defp get_classic_types() do
-    Classics.get_classic_types() |> Enum.into([ALL: ""], fn x -> {x, x} end)
+    [ALL: ""] ++ Enum.into(Classics.get_classic_types(), [], fn x -> {x, x} end)
   end
 
   defp default_pagination() do
