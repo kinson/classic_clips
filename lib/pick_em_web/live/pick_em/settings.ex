@@ -49,11 +49,11 @@ defmodule PickEmWeb.PickEmLive.Settings do
      |> PickEmWeb.PickEmLive.NotificationComponent.show("Updated emoji preference")}
   end
 
-  def get_east_teams() do
+  defp get_east_teams do
     PickEm.get_cached_teams_for_conference(:east)
   end
 
-  def get_west_teams() do
+  defp get_west_teams do
     PickEm.get_cached_teams_for_conference(:west)
   end
 end

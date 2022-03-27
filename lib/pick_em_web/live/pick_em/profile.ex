@@ -71,34 +71,34 @@ defmodule PickEmWeb.PickEmLive.Profile do
     end
   end
 
-  def get_matchup_date(%UserPick{matchup: matchup}) do
+  defp get_matchup_date(%UserPick{matchup: matchup}) do
     %{day: day, month: month, year: year} =
       DateTime.add(matchup.tip_datetime, -1 * PickEm.get_est_offset_seconds())
 
     "#{month}/#{day}/#{year}"
   end
 
-  def get_matchup_outcome(%UserPick{result: :win}) do
+  defp get_matchup_outcome(%UserPick{result: :win}) do
     "WIN"
   end
 
-  def get_matchup_outcome(%UserPick{result: :loss, forfeited_at: nil}) do
+  defp get_matchup_outcome(%UserPick{result: :loss, forfeited_at: nil}) do
     "LOSS"
   end
 
-  def get_matchup_outcome(%UserPick{result: :loss}) do
+  defp get_matchup_outcome(%UserPick{result: :loss}) do
     "FORFEIT"
   end
 
-  def get_matchup_outcome(_) do
+  defp get_matchup_outcome(_) do
     "PENDING"
   end
 
-  def get_forfeit_button_class(true) do
+  defp get_forfeit_button_class(true) do
     "rounded-none bg-nd-pink text-nd-purple font-open-sans mt-4 mb-0 border-none text-2xl ml-10 md:ml-20 hover:bg-nd-pink hover:text-nd-yellow focus:bg-nd-pink focus:text-nd-purple"
   end
 
-  def get_forfeit_button_class(_) do
+  defp get_forfeit_button_class(_) do
     get_forfeit_button_class(true) <> " opacity-50 hover:text-nd-purple cursor-default"
   end
 end

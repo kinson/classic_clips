@@ -81,26 +81,17 @@ defmodule PickEmWeb.PickEmLive.Index do
     {:noreply, socket}
   end
 
-  def generate_oauth_url do
+  defp generate_oauth_url do
     %{host: PickEmWeb.Endpoint.host(), port: System.get_env("PORT", "4002")}
     |> ElixirAuthGoogle.generate_oauth_url()
   end
 
-  def get_matchup_title(%MatchUp{
-        away_team: away_team,
-        home_team: home_team,
-        favorite_team: favorite_team,
-        spread: spread
-      }) do
-    "#{away_team.abbreviation} @ #{home_team.abbreviation} (#{favorite_team.abbreviation} #{spread})"
-  end
+  defp get_ndc_pick("skeets", %NdcPick{skeets_pick_team: team}), do: team
+  defp get_ndc_pick("tas", %NdcPick{tas_pick_team: team}), do: team
+  defp get_ndc_pick("leigh", %NdcPick{leigh_pick_team: team}), do: team
+  defp get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team
 
-  def get_ndc_pick("skeets", %NdcPick{skeets_pick_team: team}), do: team
-  def get_ndc_pick("tas", %NdcPick{tas_pick_team: team}), do: team
-  def get_ndc_pick("leigh", %NdcPick{leigh_pick_team: team}), do: team
-  def get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team
-
-  def get_time_left(%MatchUp{tip_datetime: tip_datetime} = matchup) do
+  defp get_time_left(%MatchUp{tip_datetime: tip_datetime} = matchup) do
     time_left =
       tip_datetime
       |> DateTime.diff(DateTime.utc_now())
@@ -117,27 +108,27 @@ defmodule PickEmWeb.PickEmLive.Index do
   defp get_time_left_to_pick_string(minutes) when minutes > 120, do: "#{div(minutes, 60)} hours"
   defp get_time_left_to_pick_string(minutes), do: "#{minutes} minutes"
 
-  def can_save_pick?(%MatchUp{tip_datetime: tip_datetime}) do
+  defp can_save_pick?(%MatchUp{tip_datetime: tip_datetime}) do
     DateTime.compare(DateTime.utc_now(), tip_datetime) == :lt
   end
 
-  def get_save_button_text(_, false), do: "Pick No Longer Available"
-  def get_save_button_text(nil, _), do: "Lock It In"
-  def get_save_button_text(%UserPick{}, _), do: "Update Your Pick"
+  defp get_save_button_text(_, false), do: "Pick No Longer Available"
+  defp get_save_button_text(nil, _), do: "Lock It In"
+  defp get_save_button_text(%UserPick{}, _), do: "Update Your Pick"
 
-  def maybe_disable(class_string, false), do: class_string <> " opacity-60"
-  def maybe_disable(class_string, _), do: class_string <> " shadow-brutal"
+  defp maybe_disable(class_string, false), do: class_string <> " opacity-60"
+  defp maybe_disable(class_string, _), do: class_string <> " shadow-brutal"
 
-  def get_initial_team_button_class(%UserPick{picked_team_id: id}, %Team{id: id}, can_save_pick?) do
+  defp get_initial_team_button_class(%UserPick{picked_team_id: id}, %Team{id: id}, can_save_pick?) do
     "#{base_button_class()} bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white"
     |> maybe_disable(can_save_pick?)
   end
 
-  def get_initial_team_button_class(_, _, can_save_pick?) do
+  defp get_initial_team_button_class(_, _, can_save_pick?) do
     "#{base_button_class()} bg-white text-nd-purple border-0" |> maybe_disable(can_save_pick?)
   end
 
-  def handle_team_click(js \\ %JS{}, team, abbreviation, can_save_pick?) do
+  defp handle_team_click(js \\ %JS{}, team, abbreviation, can_save_pick?) do
     if can_save_pick? do
       js
       |> JS.set_attribute({"value", abbreviation},
@@ -150,7 +141,7 @@ defmodule PickEmWeb.PickEmLive.Index do
     end
   end
 
-  def add_selected_class_to_team(js, team) do
+  defp add_selected_class_to_team(js, team) do
     js
     |> JS.remove_class("bg-white text-nd-purple border-0", to: "##{team}-team-button")
     |> JS.add_class(
@@ -159,23 +150,19 @@ defmodule PickEmWeb.PickEmLive.Index do
     )
   end
 
-  def remove_selected_class_from_other_team(js, "home"),
+  defp remove_selected_class_from_other_team(js, "home"),
     do: remove_selected_class_from_team(js, "away")
 
-  def remove_selected_class_from_other_team(js, "away"),
+  defp remove_selected_class_from_other_team(js, "away"),
     do: remove_selected_class_from_team(js, "home")
 
-  def remove_selected_class_from_team(js, team) do
+  defp remove_selected_class_from_team(js, team) do
     js
     |> JS.remove_class(
       "bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white",
       to: "##{team}-team-button"
     )
     |> JS.add_class("bg-white text-nd-purple border-0", to: "##{team}-team-button")
-  end
-
-  def save_pick do
-    JS.push("save-click")
   end
 
   defp get_team_for_abbreviation(
@@ -190,45 +177,41 @@ defmodule PickEmWeb.PickEmLive.Index do
        ),
        do: team
 
-  def base_button_class do
+  defp base_button_class do
     "leading-none rounded-none font-open-sans font-bold text-2xl hover:bg-nd-pink focus:bg-nd-pink w-8/12 md:w-11/24 px-0 flex justify-center items-center"
   end
 
-  def get_time_for_game(%MatchUp{tip_datetime: tip_datetime}) do
+  defp get_time_for_game(%MatchUp{tip_datetime: tip_datetime}) do
     DateTime.add(tip_datetime, -1 * ClassicClips.PickEm.get_est_offset_seconds())
     |> DateTime.to_time()
     |> Timex.format!("{h12}:{0m} {AM}")
   end
 
-  def get_ndc_record() do
-    ClassicClips.PickEm.get_current_ndc_record()
-  end
-
-  def get_ndc_record_string(_, nil) do
+  defp get_ndc_record_string(_, nil) do
     "0 - 0"
   end
 
-  def get_ndc_record_string(:tas, %NdcRecord{} = ndc_record) do
+  defp get_ndc_record_string(:tas, %NdcRecord{} = ndc_record) do
     "#{ndc_record.tas_wins} - #{ndc_record.tas_losses}"
   end
 
-  def get_ndc_record_string(:trey, %NdcRecord{} = ndc_record) do
+  defp get_ndc_record_string(:trey, %NdcRecord{} = ndc_record) do
     "#{ndc_record.trey_wins} - #{ndc_record.trey_losses}"
   end
 
-  def get_ndc_record_string(:leigh, %NdcRecord{} = ndc_record) do
+  defp get_ndc_record_string(:leigh, %NdcRecord{} = ndc_record) do
     "#{ndc_record.leigh_wins} - #{ndc_record.leigh_losses}"
   end
 
-  def get_ndc_record_string(:skeets, %NdcRecord{} = ndc_record) do
+  defp get_ndc_record_string(:skeets, %NdcRecord{} = ndc_record) do
     "#{ndc_record.skeets_wins} - #{ndc_record.skeets_losses}"
   end
 
-  def get_pick_spread_string(pick_spread, %MatchUp{
-        away_team_id: away_team_id,
-        home_team_id: home_team_id
-      })
-      when is_map_key(pick_spread, away_team_id) and is_map_key(pick_spread, home_team_id) do
+  defp get_pick_spread_string(pick_spread, %MatchUp{
+         away_team_id: away_team_id,
+         home_team_id: home_team_id
+       })
+       when is_map_key(pick_spread, away_team_id) and is_map_key(pick_spread, home_team_id) do
     away_picks = Map.get(pick_spread, away_team_id, 0)
     home_picks = Map.get(pick_spread, home_team_id, 0)
     total = away_picks + home_picks
@@ -239,5 +222,5 @@ defmodule PickEmWeb.PickEmLive.Index do
     "PICK SPREAD #{away_percent}% @ #{home_percent}%"
   end
 
-  def get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
+  defp get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
 end
