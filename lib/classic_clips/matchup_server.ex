@@ -47,7 +47,7 @@ defmodule ClassicClips.MatchupServer do
     lower_date_limit = DateTime.utc_now() |> DateTime.add(two_hours_ago)
 
     # don't check on games that started less than two hours ago
-    if matchup.tip_datetime < lower_date_limit do
+    if DateTime.compare(matchup.tip_datetime, lower_date_limit) == :lt do
       Logger.notice("Fetching matchup data from nba")
       matchup = check_game_data(matchup)
       {:noreply, %{state | matchup: matchup}, @interval}
