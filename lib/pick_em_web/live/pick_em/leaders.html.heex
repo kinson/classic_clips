@@ -39,7 +39,7 @@
       <p class="ml-2 text-nd-yellow font-open-sans font-bold text-xl my-2">
         <%= season.name %>
       </p>
-      <div class="flex flex-row gap-4">
+      <div class="flex flex-row gap-4 flex-wrap">
         <%= for month <- months do %>
           <%= live_patch(String.capitalize(month),
             to: Routes.pick_em_leaders_path(@socket, :leaders, month: month, season: season.year_end),

@@ -3,6 +3,7 @@ defmodule PickEmWeb.PickEmLive.Leaders do
 
   alias ClassicClips.PickEm
   alias PickEmWeb.PickEmLive.{Theme, User}
+  alias ClassicClips.BigBeef.Season
 
   @impl true
   def mount(_params, session, socket) do
@@ -54,8 +55,8 @@ defmodule PickEmWeb.PickEmLive.Leaders do
     "#{String.capitalize(month)} Leaders"
   end
 
-  defp page_title(season, month) do
-    "#{String.capitalize(month)} #{season.name} Leaders"
+  defp page_title(%Season{name: name}, month) when is_binary(month) do
+    "#{String.capitalize(month)} #{name} Leaders"
   end
 
   defp page_title(_, _) do

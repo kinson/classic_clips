@@ -220,10 +220,11 @@ defmodule ClassicClips.PickEm do
       %{
         season: season,
         months:
-          Enum.filter(seasons_months, fn {season_id, month, _} ->
+          Enum.filter(seasons_months, fn {season_id, _, _} ->
             season_id == season.id
           end)
           |> Enum.map(fn {_, month, _} -> month end)
+          |> Enum.sort(fn a, b -> get_nba_month_index(a) < get_nba_month_index(b) end)
       }
     end)
   end
@@ -599,6 +600,19 @@ defmodule ClassicClips.PickEm do
   def get_month_name(10), do: "october"
   def get_month_name(11), do: "november"
   def get_month_name(12), do: "december"
+
+  def get_nba_month_index("january"), do: 4
+  def get_nba_month_index("february"), do: 5
+  def get_nba_month_index("march"), do: 6
+  def get_nba_month_index("april"), do: 7
+  def get_nba_month_index("may"), do: 8
+  def get_nba_month_index("june"), do: 9
+  def get_nba_month_index("july"), do: 10
+  def get_nba_month_index("august"), do: 11
+  def get_nba_month_index("september"), do: 12
+  def get_nba_month_index("october"), do: 1
+  def get_nba_month_index("november"), do: 2
+  def get_nba_month_index("december"), do: 3
 
   def get_est_offset_seconds do
     @new_york_offset
