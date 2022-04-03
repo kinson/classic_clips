@@ -1,7 +1,7 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
-  <p class="text-nd-pink mb-6 mt-14 ml-20 font-open-sans font-bold text-4xl">
-    Pick 'Em Leaders
-  </p>
+  <h2 class="text-nd-pink mb-6 mt-14 ml-20 font-open-sans font-bold text-4xl">
+    <%= page_title(@selected_season, @selected_month) %>
+  </h2>
 
   <%= for {leader, index} <- Enum.with_index(@leaders) do %>
     <div class="flex flex-row ml-10 md:ml-20">
@@ -22,4 +22,31 @@
       </p>
     </div>
   <% end %>
+
+  <%= if Enum.empty?(@leaders) do %>
+    <div class="flex flex-row ml-10 md:ml-20">
+      <p class="text-white my-2 font-open-sans font-bold text-2xl">
+        No Leaders Yet
+      </p>
+    </div>
+  <% end %>
+
+  <div class="ml-10 md:ml-20 mt-10">
+    <h2 class="font-open-sans text-nd-pink text-4xl font-bold mb-6">
+      Archive
+    </h2>
+    <%= for %{season: season, months: months} <- @leaders_seasons do %>
+      <p class="ml-2 text-nd-yellow font-open-sans font-bold text-xl my-2">
+        <%= season.name %>
+      </p>
+      <div class="flex flex-row gap-4">
+        <%= for month <- months do %>
+          <%= live_patch(String.capitalize(month),
+            to: Routes.pick_em_leaders_path(@socket, :leaders, month: month, season: season.year_end),
+            class: "ml-2 text-white font-open-sans font-light underline"
+          ) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

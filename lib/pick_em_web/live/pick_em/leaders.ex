@@ -14,13 +14,30 @@ defmodule PickEmWeb.PickEmLive.Leaders do
      socket
      |> assign(:page, "leaders")
      |> assign(:theme, theme)
-     |> assign(:total_picks_today, 0)
-     |> assign(:leaders, get_leaders())
+     |> assign(:leaders_seasons, PickEm.get_months_seasons_for_leaders_cached())
      |> assign(:user, user)}
   end
 
-  defp get_leaders do
-    PickEm.get_leaders_cached()
+  @impl true
+  def handle_params(%{"month" => month, "season" => season_year_end}, _, socket) do
+    season = PickEm.get_season_by_year_end_cached(season_year_end)
+
+    {:noreply,
+     socket
+     |> assign(:leaders, PickEm.get_leaders_cached(season, month))
+     |> assign(:selected_month, month)
+     |> assign(:selected_season, season)}
+  end
+
+  def handle_params(_, _, socket) do
+    current_season = PickEm.get_current_season_cached()
+    current_month = PickEm.get_current_month_name()
+
+    {:noreply,
+     socket
+     |> assign(:leaders, PickEm.get_leaders_cached(current_season, current_month))
+     |> assign(:selected_month, current_month)
+     |> assign(:selected_season, current_season)}
   end
 
   defp get_truncated_username(%ClassicClips.Timeline.User{username: username}) do
@@ -31,5 +48,17 @@ defmodule PickEmWeb.PickEmLive.Leaders do
     else
       username
     end
+  end
+
+  defp page_title(%{current: true} = _season, month) do
+    "#{String.capitalize(month)} Leaders"
+  end
+
+  defp page_title(season, month) do
+    "#{String.capitalize(month)} #{season.name} Leaders"
+  end
+
+  defp page_title(_, _) do
+    "Pick 'Em Leaders"
   end
 end

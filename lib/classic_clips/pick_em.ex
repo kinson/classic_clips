@@ -8,6 +8,7 @@ defmodule ClassicClips.PickEm do
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
   alias ClassicClips.Timeline.User
+  alias ClassicClips.BigBeef.Season
 
   @new_york_offset 4 * 60 * 60
 
@@ -151,18 +152,20 @@ defmodule ClassicClips.PickEm do
   end
 
   @trace :get_leaders_cached
-  def get_leaders_cached do
-    Fiat.CacheServer.fetch_object(:leaders, &get_leaders/0, 180)
+  def get_leaders_cached(season, month) do
+    Fiat.CacheServer.fetch_object(
+      {:leaders, month, season.id},
+      fn -> get_leaders(season, month) end,
+      180
+    )
   end
 
   @trace :get_leaders
-  def get_leaders do
-    current_month = get_current_month_name()
-
+  def get_leaders(%Season{id: season_id}, month) do
     subquery =
       from(up in UserPick,
         left_join: m in assoc(up, :matchup),
-        where: m.month == ^current_month,
+        where: m.month == ^month,
         group_by: up.user_id,
         select: %{user_id: up.user_id, total_picks: count(up.id)}
       )
@@ -171,7 +174,8 @@ defmodule ClassicClips.PickEm do
       join: up in subquery(subquery),
       on: up.user_id == ur.user_id,
       join: u in assoc(ur, :user),
-      where: ur.month == ^current_month,
+      where: ur.month == ^month,
+      where: ur.season_id == ^season_id,
       order_by: [desc: ur.wins, desc: up.total_picks, desc: ur.id],
       preload: [user: u],
       limit: 100,
@@ -184,6 +188,42 @@ defmodule ClassicClips.PickEm do
         wins: ur.wins,
         losses: ur.losses,
         total_picks: up.total_picks
+      }
+    end)
+  end
+
+  def get_months_seasons_for_leaders_cached do
+    Fiat.CacheServer.fetch_object(
+      :months_seasons_for_leaders,
+      &get_months_seasons_for_leaders/0,
+      100
+    )
+  end
+
+  def get_months_seasons_for_leaders do
+    seasons_months =
+      from(ur in UserRecord,
+        group_by: [ur.season_id, ur.month],
+        select: {ur.season_id, ur.month, count(ur.id)}
+      )
+      |> Repo.all()
+
+    season_ids =
+      Enum.map(seasons_months, fn {season_id, _, _} ->
+        season_id
+      end)
+      |> Enum.uniq()
+
+    from(s in Season, where: s.id in ^season_ids, order_by: [desc: s.year_end])
+    |> Repo.all()
+    |> Enum.map(fn %Season{} = season ->
+      %{
+        season: season,
+        months:
+          Enum.filter(seasons_months, fn {season_id, month, _} ->
+            season_id == season.id
+          end)
+          |> Enum.map(fn {_, month, _} -> month end)
       }
     end)
   end
@@ -514,6 +554,30 @@ defmodule ClassicClips.PickEm do
     |> Enum.sort(fn pick_one, pick_two ->
       DateTime.compare(pick_one.matchup.tip_datetime, pick_two.matchup.tip_datetime) != :lt
     end)
+  end
+
+  @trace :get_current_season_cached
+  def get_current_season_cached do
+    Fiat.CacheServer.fetch_object(:current_season, &get_current_season/0, 600)
+  end
+
+  @trace :get_current_season
+  def get_current_season do
+    from(s in Season, where: s.current) |> Repo.one!()
+  end
+
+  @trace :get_season_by_year_end_cached
+  def get_season_by_year_end_cached(year_end) do
+    Fiat.CacheServer.fetch_object(
+      {:season_by_year_end, year_end},
+      fn -> get_season_by_year_end(year_end) end,
+      600
+    )
+  end
+
+  @trace :get_season_by_year_end
+  def get_season_by_year_end(year_end) do
+    from(s in Season, where: s.year_end == ^year_end) |> Repo.one!()
   end
 
   def get_current_month_name do
