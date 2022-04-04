@@ -100,7 +100,11 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_current_ndc_record
   def get_current_ndc_record() do
-    Repo.get_by(NdcRecord, month: get_current_month_name())
+    Repo.all(NdcRecord)
+    |> Enum.sort(fn %{month: a}, %{month: b} ->
+      get_nba_month_index(a) > get_nba_month_index(b)
+    end)
+    |> hd()
   end
 
   @trace :get_users_pick_for_matchup
