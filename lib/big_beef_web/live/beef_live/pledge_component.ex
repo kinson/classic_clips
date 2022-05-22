@@ -13,10 +13,10 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
 
         <div class="raised">
           <p class="amount">
-            $832
+            $894
           </p>
           <p class="description">
-            donated as of May 9th, 2022
+            donated as of May 21st, 2022
           </p>
         </div>
 
