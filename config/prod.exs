@@ -31,6 +31,7 @@ config :classic_clips, PickEmWeb.Endpoint,
   ]
 
 config :classic_clips, :classics_server_enabled, true
+config :classic_clips, :big_beef_url, "https://bigbeeftracker.com"
 
 config :logger,
   backends: [

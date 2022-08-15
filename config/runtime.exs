@@ -17,8 +17,9 @@ if config_env() == :prod do
     api_key: System.fetch_env!("SENDGRID_API_KEY")
 
   config :classic_clips, ClassicClips.Repo,
-    ssl: true,
+    ssl: false,
     url: database_url,
+    socket_options: [:inet6],
     pool_size: 8,
     queue_target: 500,
     queue_interval: 5000
@@ -58,6 +59,12 @@ if config_env() == :prod do
   config :new_relic_agent,
     app_name: "classic-clips",
     license_key: System.fetch_env!("NEW_RELIC_LICENSE_KEY")
+
+  config :sentry,
+    dsn: System.get_env("SENTRY_DSN")
+
+  config :classic_clips,
+    service: System.get_env("SERVICE_TO_START", "all") |> String.to_atom()
 
   config :classic_clips,
     twitter_api_token: System.fetch_env!("TWITTER_API_TOKEN"),

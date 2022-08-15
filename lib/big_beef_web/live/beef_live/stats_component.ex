@@ -108,6 +108,10 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
     """
   end
 
+  def get_season_beef_count([]) do
+    0
+  end
+
   def get_season_beef_count([{_, big_beefs} | _]) do
     Enum.count(big_beefs)
   end

@@ -33,7 +33,6 @@ config :classic_clips, PickEmWeb.Endpoint,
   live_view: [signing_salt: "ISFu52hQ"]
 
 config :sentry,
-  dsn: System.get_env("SENTRY_DSN"),
   environment_name: Mix.env(),
   enable_source_code_context: true,
   root_source_code_path: File.cwd!(),
@@ -67,20 +66,6 @@ config :dart_sass,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
-
-config :classic_clips,
-       :dash_pass,
-       System.get_env("DASH_PASS") ||
-         raise("""
-         Could not find DASH_PASS environment variable.
-         """)
-
-config :classic_clips,
-       :big_beef_url,
-       System.get_env("BIG_BEEF_URL") ||
-         raise("""
-         Could not find BIG_BEEF_URL environment variable.
-         """)
 
 config :classic_clips, twitter_api_pick_em_bearer_token: "Faker"
 
