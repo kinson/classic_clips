@@ -18,6 +18,7 @@ defmodule ClassicClips.PickEm.MatchUp do
     belongs_to :winning_team, Team, type: :binary_id
 
     has_many :user_picks, ClassicClips.PickEm.UserPick, foreign_key: :matchup_id
+    has_one :ndc_picks, ClassicClips.PickEm.NdcPick, foreign_key: :matchup_id
 
     timestamps()
   end

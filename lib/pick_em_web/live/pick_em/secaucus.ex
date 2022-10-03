@@ -17,6 +17,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     todays_matchup = PickEm.get_todays_matchup()
 
+    current_season = PickEm.get_current_season()
+
     todays_ndc_picks =
       case todays_matchup do
         nil ->
@@ -38,11 +40,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_away_code, nil)
       |> assign(:selected_game_home_code, nil)
       |> assign(:selected_game_favorite_code, nil)
+      |> assign(:current_season, current_season)
       |> assign(:current_matchup, current_matchup)
       |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
       |> assign(:todays_ndc_picks, todays_ndc_picks)
-      |> assign_games()
+      |> assign_matchup_date()
+      |> assign_games(Date.utc_today() |> Date.to_iso8601())
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -226,8 +230,22 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     {:noreply, NotificationComponent.show(socket, "Could not create matchup", :error)}
   end
 
-  def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
-    {:noreply, assign(socket, :selected_game_line, game_line)}
+  def handle_event(
+        "matchup-change-form",
+        %{"matchup" => %{"matchup_date" => matchup_date, "game_line" => game_line}},
+        socket
+      ) do
+    {:noreply,
+     assign(socket, :selected_game_line, game_line)
+     |> assign_games(matchup_date)}
+  end
+
+  def handle_event(
+        "matchup-change-form",
+        %{"matchup" => %{"matchup_date" => matchup_date}},
+        socket
+      ) do
+    {:noreply, assign_games(socket, matchup_date)}
   end
 
   def handle_event("resend-matchup-email", _, socket) do
@@ -240,15 +258,51 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     {:noreply, NotificationComponent.show(socket, "Reposted matchup tweet")}
   end
 
-  defp assign_games(socket) do
-    case load_games() do
-      {:ok, games} ->
-        assign(socket, :games, games)
+  defp assign_games(socket, form_matchup_date) do
+    form_matchup_date = Date.from_iso8601!(form_matchup_date)
+    current_matchup_date = socket.assigns.matchup_date
 
-      {:error, _} ->
-        NotificationComponent.show(socket, "Could not load todays games", :error)
-        |> assign(:games, [])
+    if is_nil(Map.get(socket.assigns, :games)) or
+         Date.compare(form_matchup_date, current_matchup_date) != :eq do
+      games = get_games_for_date(form_matchup_date, socket.assigns.current_season)
+
+      matchup = PickEm.get_matchup_for_day(form_matchup_date)
+
+      socket =
+        socket
+        |> assign(:games, games)
+        |> assign_matchup_date(form_matchup_date)
+        |> assign(:current_matchup, matchup)
+
+      if matchup do
+        ndc_picks =
+          Repo.get_by(NdcPick, matchup_id: matchup.id)
+          |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :trey_pick_team, :tas_pick_team])
+
+        socket
+        |> assign(:selected_game_id, matchup.nba_game_id)
+        |> assign(:selected_game_favorite_code, matchup.favorite_team.abbreviation)
+        |> assign(:selected_game_tip_datetime, matchup.tip_datetime)
+        |> assign(:selected_game_away_code, matchup.away_team.abbreviation)
+        |> assign(:selected_game_home_code, matchup.home_team.abbreviation)
+        |> assign(:selected_game_line, matchup.spread)
+        |> assign(:todays_ndc_picks, ndc_picks)
+      else
+        socket
+      end
+    else
+      socket
     end
+  end
+
+  defp assign_matchup_date(socket, date \\ Date.utc_today()) do
+    assign(socket, :matchup_date, date)
+  end
+
+  defp get_matchup_date(matchup_date_string), do: Date.to_iso8601(matchup_date_string)
+
+  defp get_games_for_date(date, current_season) do
+    games = ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
   end
 
   def load_games do

@@ -11,7 +11,15 @@
       phx-change="matchup-change-form"
       class="mb-0"
     >
-      <%= if Enum.any?(@games, &PickEm.is_game_today?/1) do %>
+      <p class="text-white font-open-sans font-bold">
+        Game Date
+      </p>
+      <%= date_input(f, :matchup_date,
+        value: get_matchup_date(@matchup_date),
+        min: "2022-10-18",
+        max: "2023-04-09"
+      ) %>
+      <%= if length(@games) > 0 do %>
         <p class="text-white font-open-sans font-bold">
           Choose a Game from Today&apos;s Schedule
         </p>

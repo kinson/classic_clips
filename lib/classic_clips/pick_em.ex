@@ -54,6 +54,19 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  def get_matchup_for_day(%Date{} = date) do
+    lower_date = DateTime.new!(date, Time.from_iso8601!("03:59:59.00"))
+    upper_date = DateTime.new!(Date.add(date, 1), Time.from_iso8601!("03:59:59.00"))
+
+    from(m in MatchUp,
+      where: m.tip_datetime > ^lower_date,
+      where: m.tip_datetime < ^upper_date,
+      limit: 1
+    )
+    |> Repo.one()
+    |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
+  end
+
   def is_game_today?(%MatchUp{} = matchup) do
     tip_date =
       matchup

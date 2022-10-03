@@ -133,6 +133,8 @@ config :classic_clips, :classics_server_enabled, true
 
 config :classic_clips, :big_beef_url, "http://localhost:4001"
 
+config :classic_clips, :service, :all
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
