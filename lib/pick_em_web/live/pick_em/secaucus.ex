@@ -13,14 +13,12 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     theme = Theme.get_theme_from_session(session)
 
-    current_matchup = PickEm.get_current_matchup()
-
-    todays_matchup = PickEm.get_todays_matchup()
+    current_matchup = PickEm.get_todays_matchup()
 
     current_season = PickEm.get_current_season()
 
-    todays_ndc_picks =
-      case todays_matchup do
+    current_ndc_picks =
+      case current_matchup do
         nil ->
           nil
 
@@ -42,11 +40,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_favorite_code, nil)
       |> assign(:current_season, current_season)
       |> assign(:current_matchup, current_matchup)
-      |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
-      |> assign(:todays_ndc_picks, todays_ndc_picks)
+      |> assign(:current_ndc_picks, current_ndc_picks)
       |> assign_matchup_date()
-      |> assign_games(Date.utc_today() |> Date.to_iso8601())
+      |> assign_games(PickEm.get_current_est_date() |> Date.to_iso8601())
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -108,8 +105,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         %{"matchup" => form_matchup},
         %{
           assigns: %{
-            todays_matchup: %{id: _} = todays_matchup,
-            todays_ndc_picks: todays_ndc_picks,
+            current_matchup: %{id: _} = current_matchup,
+            current_ndc_picks: current_ndc_picks,
             ndc_picks: ndc_picks
           }
         } = socket
@@ -129,7 +126,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    MatchUp.changeset(todays_matchup, matchup_changes)
+    MatchUp.changeset(current_matchup, matchup_changes)
     |> Repo.update()
 
     # update ndc picks
@@ -153,19 +150,18 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    NdcPick.changeset(todays_ndc_picks, ndc_changes)
+    NdcPick.changeset(current_ndc_picks, ndc_changes)
     |> Repo.update()
 
     # reset picks if different game
-    if(form_matchup["game_id"] != todays_matchup.nba_game_id) do
-      PickEm.remove_user_picks_for_matchup(todays_matchup)
+    if(form_matchup["game_id"] != current_matchup.nba_game_id) do
+      PickEm.remove_user_picks_for_matchup(current_matchup)
     end
 
     updated_matchup = PickEm.set_cached_current_matchup()
 
     socket =
       socket
-      |> assign(:todays_matchup, updated_matchup)
       |> assign(:current_matchup, updated_matchup)
       |> NotificationComponent.show("Updated matchup")
 
@@ -213,9 +209,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
         {:noreply,
          socket
-         |> assign(:current_matchup, matchup)
-         |> assign(:todays_matchup, matchup)
-         |> assign(:todays_ndc_picks, ndc_picks)
+         |> assign(:current_ndc_picks, ndc_picks)
          |> assign(:current_matchup, PickEm.get_current_matchup())
          |> NotificationComponent.show("Successfully created matchup")}
 
@@ -249,12 +243,12 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   end
 
   def handle_event("resend-matchup-email", _, socket) do
-    PickEm.notify_sickos(socket.assigns.todays_matchup)
+    PickEm.notify_sickos(socket.assigns.current_matchup)
     {:noreply, NotificationComponent.show(socket, "Resent matchup emails")}
   end
 
   def handle_event("repost-matchup-tweet", _, socket) do
-    PickEm.post_matchup_on_twitter(socket.assigns.todays_matchup)
+    PickEm.post_matchup_on_twitter(socket.assigns.current_matchup)
     {:noreply, NotificationComponent.show(socket, "Reposted matchup tweet")}
   end
 
@@ -286,20 +280,32 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         |> assign(:selected_game_away_code, matchup.away_team.abbreviation)
         |> assign(:selected_game_home_code, matchup.home_team.abbreviation)
         |> assign(:selected_game_line, matchup.spread)
-        |> assign(:todays_ndc_picks, ndc_picks)
+        |> assign(:current_ndc_picks, ndc_picks)
+        |> assign(:ndc_picks, %{})
       else
         socket
+        |> assign(:ndc_picks, %{})
+        |> assign(:selected_game_line, nil)
+        |> assign(:current_ndc_picks, nil)
+        |> assign(:current_matchup, nil)
+        |> assign(:selected_game_id, nil)
+        |> assign(:selected_game_line, nil)
+        |> assign(:selected_game_tip_datetime, nil)
+        |> assign(:selected_game_away_code, nil)
+        |> assign(:selected_game_home_code, nil)
+        |> assign(:selected_game_favorite_code, nil)
       end
     else
       socket
     end
   end
 
-  defp assign_matchup_date(socket, date \\ Date.utc_today()) do
+  defp assign_matchup_date(socket, date \\ PickEm.get_current_est_date()) do
     assign(socket, :matchup_date, date)
   end
 
-  defp get_matchup_date(matchup_date_string), do: Date.to_iso8601(matchup_date_string)
+  defp get_matchup_date(matchup_date_string),
+    do: Date.to_iso8601(matchup_date_string)
 
   defp get_games_for_date(date, current_season) do
     games = ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)

@@ -605,6 +605,12 @@ defmodule ClassicClips.PickEm do
     |> get_month_name()
   end
 
+  def get_current_est_date do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * get_est_offset_seconds())
+    |> DateTime.to_date()
+  end
+
   def get_month_name(1), do: "january"
   def get_month_name(2), do: "february"
   def get_month_name(3), do: "march"
