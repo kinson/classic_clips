@@ -337,6 +337,30 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     "border-2 border-transparent box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
   end
 
+  def get_status_text_class(nil) do
+    ""
+  end
+
+  def get_status_text_class(%{status: "unpublished"}) do
+    "bg-blue-700 text-white px-4 py-1 my-0 ml-12 rounded-md"
+  end
+
+  def get_status_text_class(%{status: "completed"}) do
+    "bg-nd-pink text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(%{status: "published"}) do
+    "bg-green-600 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(%{status: "live"}) do
+    "bg-rose-700 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(_) do
+    "bg-nd-pink text-white px-4 py-1 my-0 ml-4 rounded-md text-3xl"
+  end
+
   def get_time_for_game(tip_datetime) do
     DateTime.add(tip_datetime, -1 * PickEm.get_est_offset_seconds())
     |> DateTime.to_time()
@@ -390,6 +414,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       pick -> pick
     end
   end
+
+  defp get_matchup_status(nil), do: ""
+
+  defp get_matchup_status(%{status: status}), do: status
 
   defp person_to_ndc_picks_key(person) do
     "#{Atom.to_string(person)}_pick_team"

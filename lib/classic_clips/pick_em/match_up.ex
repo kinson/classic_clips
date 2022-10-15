@@ -11,6 +11,8 @@ defmodule ClassicClips.PickEm.MatchUp do
     field :spread, :string
     field :tip_datetime, :utc_datetime
     field :nba_game_id, :string
+    field :status, :string
+    field :publish_at, :utc_datetime
 
     belongs_to :away_team, Team, type: :binary_id
     belongs_to :home_team, Team, type: :binary_id

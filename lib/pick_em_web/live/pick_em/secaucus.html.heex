@@ -11,14 +11,20 @@
       phx-change="matchup-change-form"
       class="mb-0"
     >
-      <p class="text-white font-open-sans font-bold">
+      <p class="text-white font-open-sans font-bold mb-4">
         Game Date
       </p>
-      <%= date_input(f, :matchup_date,
-        value: get_matchup_date(@matchup_date),
-        min: "2022-10-11",
-        max: "2023-04-09"
-      ) %>
+      <div class="flex flex-row items-center h-28">
+        <%= date_input(f, :matchup_date,
+          value: get_matchup_date(@matchup_date),
+          min: "2022-10-11",
+          max: "2023-04-09",
+          class: "my-0 text-3xl p-1 rounded"
+        ) %>
+        <p class={get_status_text_class(@current_matchup)}>
+          <%= get_matchup_status(@current_matchup) %>
+        </p>
+      </div>
       <%= if length(@games) > 0 do %>
         <p class="text-white font-open-sans font-bold">
           Choose a Game from Today&apos;s Schedule
