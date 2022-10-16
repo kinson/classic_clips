@@ -11,7 +11,7 @@ defmodule ClassicClips.PickEm.MatchUp do
     field :spread, :string
     field :tip_datetime, :utc_datetime
     field :nba_game_id, :string
-    field :status, :string
+    field :status, Ecto.Enum, values: [:unpublished, :published, :completed, :live]
     field :publish_at, :utc_datetime
 
     belongs_to :away_team, Team, type: :binary_id
@@ -33,6 +33,7 @@ defmodule ClassicClips.PickEm.MatchUp do
       :spread,
       :score,
       :month,
+      :publish_at,
       :away_team_id,
       :home_team_id,
       :nba_game_id,

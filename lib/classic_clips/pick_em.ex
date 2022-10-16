@@ -649,6 +649,7 @@ defmodule ClassicClips.PickEm do
         spread,
         game_id,
         game_tip_time,
+        publish_at,
         leigh_pick_team,
         skeets_pick_team,
         tas_pick_team,
@@ -674,7 +675,9 @@ defmodule ClassicClips.PickEm do
         nba_game_id: game_id,
         away_team_id: away_team.id,
         home_team_id: home_team.id,
-        favorite_team_id: favorite_team.id
+        favorite_team_id: favorite_team.id,
+        status: :unpublished,
+        publish_at: publish_at
       })
 
     ndc_attrs = %{

@@ -112,9 +112,15 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         } = socket
       ) do
     # update matchup
+    publish_date = form_matchup |> Map.get("publish_at")
+    publish_date_string = publish_date <> ":00.000Z"
+    {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
+    publish_date_time_est = DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+
     matchup_changes =
       %{
         nba_game_id: form_matchup["game_id"],
+        publish_at: publish_date_time_est,
         tip_datetime: form_matchup["tip_datetime"],
         spread: form_matchup["game_line"],
         away_team_id: team_id_for_abbreviation(form_matchup["away_team_code"]),
@@ -177,7 +183,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
             "favorite_team_code" => favorite_team,
             "away_team_code" => away_team_code,
             "home_team_code" => home_team_code,
-            "game_line" => spread
+            "game_line" => spread,
+            "publish_at" => publish_at
           }
         },
         %{
@@ -191,6 +198,9 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
           }
         } = socket
       ) do
+    IO.inspect(publish_at, label: "STUFF TO DO")
+    IO.inspect(DateTime.from_iso8601(publish_at))
+
     case ClassicClips.PickEm.create_matchup(
            away_team_code,
            home_team_code,
@@ -198,6 +208,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
            spread,
            game_id,
            tip_datetime,
+           publish_at,
            leigh_pick,
            skeets_pick,
            tas_pick,
@@ -307,6 +318,20 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   defp get_matchup_date(matchup_date_string),
     do: Date.to_iso8601(matchup_date_string)
 
+  defp get_publish_at_date(nil),
+    do: nil
+
+  defp get_publish_at_date(%MatchUp{publish_at: nil}),
+    do: nil
+
+  defp get_publish_at_date(%MatchUp{publish_at: publish_at}) do
+    # TODO: FIGURE OUT HOW TO CATCH DATE STRING FORMATTING ISSUES
+    publish_at
+    |> DateTime.add(-1 * PickEm.get_est_offset_seconds())
+    |> DateTime.to_iso8601()
+    |> String.trim_trailing(":00Z")
+  end
+
   defp get_games_for_date(date, current_season) do
     games = ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
   end
@@ -341,19 +366,19 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     ""
   end
 
-  def get_status_text_class(%{status: "unpublished"}) do
+  def get_status_text_class(%{status: :unpublished}) do
     "bg-blue-700 text-white px-4 py-1 my-0 ml-12 rounded-md"
   end
 
-  def get_status_text_class(%{status: "completed"}) do
+  def get_status_text_class(%{status: :completed}) do
     "bg-nd-pink text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
   end
 
-  def get_status_text_class(%{status: "published"}) do
+  def get_status_text_class(%{status: :published}) do
     "bg-green-600 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
   end
 
-  def get_status_text_class(%{status: "live"}) do
+  def get_status_text_class(%{status: :live}) do
     "bg-rose-700 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
   end
 

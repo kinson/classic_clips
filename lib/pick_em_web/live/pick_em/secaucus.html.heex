@@ -127,6 +127,25 @@
             </div>
           <% end %>
 
+          <div class="flex flex-row items-center gap-x-5 my-12">
+
+            <p class="text-white my-0">
+              Publish Date:
+            </p>
+
+            <%= datetime_local_input(f, :publish_at,
+              value: get_publish_at_date(@current_matchup),
+              min: PickEm.get_current_est_date(),
+              max: "2023-04-09",
+              class: "my-0 text-3xl rounded"
+            ) %>
+
+            <p class="text-white my-0">
+              EST
+            </p>
+
+          </div>
+
           <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
             class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
           ) %>
