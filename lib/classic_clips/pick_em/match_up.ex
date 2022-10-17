@@ -38,6 +38,7 @@ defmodule ClassicClips.PickEm.MatchUp do
       :home_team_id,
       :nba_game_id,
       :favorite_team_id,
+      :status,
       :winning_team_id
     ])
     |> validate_required([
@@ -47,7 +48,8 @@ defmodule ClassicClips.PickEm.MatchUp do
       :nba_game_id,
       :away_team_id,
       :home_team_id,
-      :favorite_team_id
+      :favorite_team_id,
+      :status
     ])
   end
 end

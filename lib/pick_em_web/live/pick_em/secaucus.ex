@@ -112,15 +112,25 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         } = socket
       ) do
     # update matchup
-    publish_date = form_matchup |> Map.get("publish_at")
-    publish_date_string = publish_date <> ":00.000Z"
-    {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
-    publish_date_time_est = DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+    publish_date = form_matchup |> Map.get("publish_at") |> IO.inspect(label: "WONDER")
+
+    publish_at =
+      if publish_date not in [nil, ""] do
+        publish_date_string = publish_date <> ":00.000Z"
+        {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
+        DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+      end
+
+    new_status =
+      if form_matchup["publish_now"] == "true" and current_matchup.status == :unpublished,
+        do: :published,
+        else: current_matchup.status
 
     matchup_changes =
       %{
         nba_game_id: form_matchup["game_id"],
-        publish_at: publish_date_time_est,
+        publish_at: publish_at,
+        status: new_status,
         tip_datetime: form_matchup["tip_datetime"],
         spread: form_matchup["game_line"],
         away_team_id: team_id_for_abbreviation(form_matchup["away_team_code"]),
@@ -132,8 +142,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    MatchUp.changeset(current_matchup, matchup_changes)
-    |> Repo.update()
+    {:ok, updated_matchup} =
+      current_matchup
+      |> MatchUp.changeset(matchup_changes)
+      |> Repo.update(returning: true)
 
     # update ndc picks
 
@@ -164,8 +176,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       PickEm.remove_user_picks_for_matchup(current_matchup)
     end
 
-    updated_matchup = PickEm.set_cached_current_matchup()
-
     socket =
       socket
       |> assign(:current_matchup, updated_matchup)
@@ -184,7 +194,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
             "away_team_code" => away_team_code,
             "home_team_code" => home_team_code,
             "game_line" => spread,
-            "publish_at" => publish_at
+            "publish_at" => publish_at,
+            "publish_now" => publish_now
           }
         },
         %{
@@ -198,8 +209,19 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
           }
         } = socket
       ) do
-    IO.inspect(publish_at, label: "STUFF TO DO")
-    IO.inspect(DateTime.from_iso8601(publish_at))
+    publish_at =
+      if publish_at && publish_now != "true" do
+        publish_date_string = publish_at <> ":00.000Z"
+        {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
+        DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+      else
+        nil
+      end
+
+    status =
+      if publish_now == "true",
+        do: :published,
+        else: :unpublished
 
     case ClassicClips.PickEm.create_matchup(
            away_team_code,
@@ -209,19 +231,19 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
            game_id,
            tip_datetime,
            publish_at,
+           status,
            leigh_pick,
            skeets_pick,
            tas_pick,
            trey_pick
          ) do
-      {:ok, _} ->
-        matchup = PickEm.get_current_matchup()
+      {:ok, matchup} ->
         ndc_picks = PickEm.get_ndc_pick_for_matchup(matchup)
 
         {:noreply,
          socket
          |> assign(:current_ndc_picks, ndc_picks)
-         |> assign(:current_matchup, PickEm.get_current_matchup())
+         |> assign(:current_matchup, matchup)
          |> NotificationComponent.show("Successfully created matchup")}
 
       _ = error ->
@@ -443,6 +465,17 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   defp get_matchup_status(nil), do: ""
 
   defp get_matchup_status(%{status: status}), do: status
+
+  defp show_publish_form(%MatchUp{status: :unpublished}), do: true
+  defp show_publish_form(_), do: false
+
+  defp show_notification_buttons(nil), do: false
+
+  defp show_notification_buttons(%MatchUp{status: status})
+       when status in [:unpublished, :completed],
+       do: false
+
+  defp show_notification_buttons(_), do: true
 
   defp person_to_ndc_picks_key(person) do
     "#{Atom.to_string(person)}_pick_team"

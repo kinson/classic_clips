@@ -126,25 +126,36 @@
               </div>
             </div>
           <% end %>
+          <%= if show_publish_form(@current_matchup) do %>
+            <div class="flex flex-row items-center gap-x-5 my-12">
 
-          <div class="flex flex-row items-center gap-x-5 my-12">
+              <p class="text-white my-0">
+                Publish Now:
+              </p>
 
-            <p class="text-white my-0">
-              Publish Date:
-            </p>
+              <%= checkbox(f, :publish_now, class: "my-0 text-3xl rounded") %>
 
-            <%= datetime_local_input(f, :publish_at,
-              value: get_publish_at_date(@current_matchup),
-              min: PickEm.get_current_est_date(),
-              max: "2023-04-09",
-              class: "my-0 text-3xl rounded"
-            ) %>
+            </div>
 
-            <p class="text-white my-0">
-              EST
-            </p>
+            <div class="flex flex-row items-center gap-x-5 my-12">
 
-          </div>
+              <p class="text-white my-0">
+                Publish Date:
+              </p>
+
+              <%= datetime_local_input(f, :publish_at,
+                value: get_publish_at_date(@current_matchup),
+                min: PickEm.get_current_est_date(),
+                max: "2023-04-09",
+                class: "my-0 text-3xl rounded"
+              ) %>
+
+              <p class="text-white my-0">
+                EST
+              </p>
+
+            </div>
+          <% end %>
 
           <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
             class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
@@ -153,7 +164,7 @@
       <% end %>
     </.form>
 
-    <%= if @current_matchup do %>
+    <%= if show_notification_buttons(@current_matchup) do %>
       <button
         data-confirm="Are you sure you want to resend email?"
         phx-click="resend-matchup-email"

@@ -22,7 +22,7 @@ defmodule ClassicClips.MatchupServer do
   @impl true
   def handle_info(:timeout, %{matchup: nil} = state) do
     # query for matchup in db 
-    case PickEm.get_current_matchup() do
+    case PickEm.get_most_recent_matchup() do
       nil ->
         Logger.notice("No matchup to monitor")
         {:noreply, state, @long_interval}

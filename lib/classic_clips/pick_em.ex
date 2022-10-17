@@ -12,48 +12,6 @@ defmodule ClassicClips.PickEm do
 
   @new_york_offset 4 * 60 * 60
 
-  @trace :get_cached_current_matchup
-  def get_cached_current_matchup() do
-    case Fiat.CacheServer.fetch_object(:current_matchup) do
-      nil ->
-        current_matchup = get_current_matchup()
-        Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
-        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Miss")
-        current_matchup
-
-      current_matchup ->
-        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Hit")
-        current_matchup
-    end
-  end
-
-  @trace :set_cached_current_matchup
-  def set_cached_current_matchup() do
-    current_matchup = get_current_matchup()
-    Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
-    current_matchup
-  end
-
-  @trace :get_current_matchup
-  def get_current_matchup() do
-    from(m in MatchUp,
-      order_by: [desc: m.tip_datetime],
-      limit: 1
-    )
-    |> Repo.one()
-    |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
-  end
-
-  def get_todays_matchup() do
-    matchup = get_current_matchup()
-
-    if is_game_today?(matchup) do
-      matchup
-    else
-      nil
-    end
-  end
-
   def get_matchup_for_day(%Date{} = date) do
     lower_date = DateTime.new!(date, Time.from_iso8601!("03:59:59.00"))
     upper_date = DateTime.new!(Date.add(date, 1), Time.from_iso8601!("03:59:59.00"))
@@ -61,6 +19,20 @@ defmodule ClassicClips.PickEm do
     from(m in MatchUp,
       where: m.tip_datetime > ^lower_date,
       where: m.tip_datetime < ^upper_date,
+      limit: 1
+    )
+    |> Repo.one()
+    |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
+  end
+
+  def get_most_recent_matchup() do
+    upper_date =
+      DateTime.new!(Date.add(get_current_est_date(), 1), Time.from_iso8601!("03:59:59.00"))
+
+    from(m in MatchUp,
+      where: m.tip_datetime < ^upper_date,
+      where: m.status != :unpublished,
+      order_by: [desc: m.tip_datetime],
       limit: 1
     )
     |> Repo.one()
@@ -650,6 +622,7 @@ defmodule ClassicClips.PickEm do
         game_id,
         game_tip_time,
         publish_at,
+        status,
         leigh_pick_team,
         skeets_pick_team,
         tas_pick_team,
@@ -676,7 +649,7 @@ defmodule ClassicClips.PickEm do
         away_team_id: away_team.id,
         home_team_id: home_team.id,
         favorite_team_id: favorite_team.id,
-        status: :unpublished,
+        status: status,
         publish_at: publish_at
       })
 
@@ -694,9 +667,9 @@ defmodule ClassicClips.PickEm do
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
          {:ok, _} <- Repo.insert(ndc_pick_changeset),
+         ## TODO MOVE THIS LOGIC
          {:ok, _} <- notify_sickos(matchup),
          {:ok, _} <- post_matchup_on_twitter(matchup) do
-      set_cached_current_matchup()
       {:ok, matchup}
     end
   end
