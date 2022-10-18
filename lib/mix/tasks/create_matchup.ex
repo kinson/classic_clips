@@ -18,7 +18,6 @@ defmodule Mix.Tasks.CreateMatchup do
          spread,
          game_id,
          game_tip_time_est,
-         leigh_pick_team,
          skeets_pick_team,
          tas_pick_team,
          trey_pick_team
@@ -61,8 +60,7 @@ defmodule Mix.Tasks.CreateMatchup do
       matchup_id: matchup.id,
       skeets_pick_team_id: get_ndc_team_id(away_team, home_team, skeets_pick_team),
       tas_pick_team_id: get_ndc_team_id(away_team, home_team, tas_pick_team),
-      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team),
-      leigh_pick_team_id: get_ndc_team_id(away_team, home_team, leigh_pick_team)
+      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team)
     })
     |> Repo.insert!()
   end

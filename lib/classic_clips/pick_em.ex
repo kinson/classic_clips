@@ -95,7 +95,7 @@ defmodule ClassicClips.PickEm do
   @trace :get_ndc_pick_for_matchup
   def get_ndc_pick_for_matchup(%MatchUp{id: id}) do
     Repo.get_by(NdcPick, matchup_id: id)
-    |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :tas_pick_team, :trey_pick_team])
+    |> Repo.preload([:skeets_pick_team, :tas_pick_team, :trey_pick_team])
   end
 
   @trace :get_current_ndc_record
@@ -291,9 +291,7 @@ defmodule ClassicClips.PickEm do
       trey_losses: 0,
       trey_wins: 0,
       skeets_losses: 0,
-      skeets_wins: 0,
-      leigh_losses: 0,
-      leigh_wins: 0
+      skeets_wins: 0
     }
 
     attrs = increment_ndc_record_counts(ndc_record, spread_winning_team_id, ndc_pick)
@@ -321,15 +319,6 @@ defmodule ClassicClips.PickEm do
        ) do
     %{}
     |> Map.put(
-      :leigh_losses,
-      get_ndc_record_attribute(
-        :losses,
-        ndc_record.leigh_losses,
-        ndc_pick.leigh_pick_team_id,
-        spread_winning_team_id
-      )
-    )
-    |> Map.put(
       :skeets_losses,
       get_ndc_record_attribute(
         :losses,
@@ -353,15 +342,6 @@ defmodule ClassicClips.PickEm do
         :losses,
         ndc_record.tas_losses,
         ndc_pick.tas_pick_team_id,
-        spread_winning_team_id
-      )
-    )
-    |> Map.put(
-      :leigh_wins,
-      get_ndc_record_attribute(
-        :wins,
-        ndc_record.leigh_wins,
-        ndc_pick.leigh_pick_team_id,
         spread_winning_team_id
       )
     )
@@ -630,7 +610,6 @@ defmodule ClassicClips.PickEm do
         spread,
         game_id,
         game_tip_time,
-        leigh_pick_team,
         skeets_pick_team,
         tas_pick_team,
         trey_pick_team
@@ -661,8 +640,7 @@ defmodule ClassicClips.PickEm do
     ndc_attrs = %{
       skeets_pick_team_id: get_ndc_team_id(away_team, home_team, skeets_pick_team),
       tas_pick_team_id: get_ndc_team_id(away_team, home_team, tas_pick_team),
-      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team),
-      leigh_pick_team_id: get_ndc_team_id(away_team, home_team, leigh_pick_team)
+      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team)
     }
 
     with {:ok, matchup} <-
