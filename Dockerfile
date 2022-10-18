@@ -44,10 +44,14 @@ RUN mix deps.compile
 
 COPY priv priv
 
-# note: if your project uses a tool like https://purgecss.com/,
 # which customizes asset compilation based on what it finds in
+COPY lib lib
 # your Elixir templates, you will need to move the asset compilation
+
 # step down so that `lib` is available.
+RUN mix compile
+
+# Copy and compile assets
 COPY assets assets
 
 # install node deps
@@ -55,11 +59,6 @@ RUN cd assets && npm install
 
 # compile assets
 RUN mix assets.deploy
-
-# Compile the release
-COPY lib lib
-
-RUN mix compile
 
 # Changes to config/runtime.exs don't require recompiling the code
 COPY config/runtime.exs config/
@@ -90,10 +89,6 @@ COPY --from=builder --chown=nobody:root /app/_build/prod/rel/classic_clips ./
 USER nobody
 
 CMD ["/app/bin/server"]
-
-# Appended by flyctl
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
 
 # Appended by flyctl
 ENV ECTO_IPV6 true
