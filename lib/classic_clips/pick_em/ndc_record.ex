@@ -5,8 +5,6 @@ defmodule ClassicClips.PickEm.NdcRecord do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "ndc_records" do
     field :month, :string, null: false
-    field :leigh_wins, :integer, default: 0
-    field :leigh_losses, :integer, default: 0
     field :skeets_wins, :integer, default: 0
     field :skeets_losses, :integer, default: 0
     field :tas_wins, :integer, default: 0
@@ -24,8 +22,6 @@ defmodule ClassicClips.PickEm.NdcRecord do
     ndc_record
     |> cast(attrs, [
       :month,
-      :leigh_wins,
-      :leigh_losses,
       :skeets_wins,
       :skeets_losses,
       :tas_wins,

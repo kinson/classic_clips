@@ -44,7 +44,7 @@ RUN mix deps.compile
 
 COPY priv priv
 
-# Compile the release
+# which customizes asset compilation based on what it finds in
 COPY lib lib
 
 RUN mix compile

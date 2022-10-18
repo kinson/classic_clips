@@ -9,7 +9,6 @@ defmodule ClassicClips.PickEm.NdcPick do
     belongs_to :matchup, MatchUp, type: :binary_id
     belongs_to :skeets_pick_team, Team, type: :binary_id
     belongs_to :tas_pick_team, Team, type: :binary_id
-    belongs_to :leigh_pick_team, Team, type: :binary_id
     belongs_to :trey_pick_team, Team, type: :binary_id
 
     timestamps()
@@ -21,7 +20,6 @@ defmodule ClassicClips.PickEm.NdcPick do
     |> cast(attrs, [
       :skeets_pick_team_id,
       :tas_pick_team_id,
-      :leigh_pick_team_id,
       :trey_pick_team_id,
       :matchup_id
     ])

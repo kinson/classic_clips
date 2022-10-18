@@ -24,7 +24,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
         %MatchUp{id: id} ->
           Repo.get_by(NdcPick, matchup_id: id)
-          |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :trey_pick_team, :tas_pick_team])
+          |> Repo.preload([:skeets_pick_team, :trey_pick_team, :tas_pick_team])
       end
 
     socket =
@@ -160,7 +160,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       %{
         skeets_pick_team_id: ndc_pick_or_nil.(:skeets),
         tas_pick_team_id: ndc_pick_or_nil.(:tas),
-        leigh_pick_team_id: ndc_pick_or_nil.(:leigh),
         trey_pick_team_id: ndc_pick_or_nil.(:trey)
       }
       |> Enum.filter(fn {_key, value} ->
@@ -203,7 +202,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
             ndc_picks: %{
               :tas => tas_pick,
               :skeets => skeets_pick,
-              :leigh => leigh_pick,
               :trey => trey_pick
             }
           }
@@ -232,7 +230,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
            tip_datetime,
            publish_at,
            status,
-           leigh_pick,
            skeets_pick,
            tas_pick,
            trey_pick
@@ -304,7 +301,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       if matchup do
         ndc_picks =
           Repo.get_by(NdcPick, matchup_id: matchup.id)
-          |> Repo.preload([:skeets_pick_team, :leigh_pick_team, :trey_pick_team, :tas_pick_team])
+          |> Repo.preload([:skeets_pick_team, :trey_pick_team, :tas_pick_team])
 
         socket
         |> assign(:selected_game_id, matchup.nba_game_id)

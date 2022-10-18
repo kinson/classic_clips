@@ -88,7 +88,6 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp get_ndc_pick("skeets", %NdcPick{skeets_pick_team: team}), do: team
   defp get_ndc_pick("tas", %NdcPick{tas_pick_team: team}), do: team
-  defp get_ndc_pick("leigh", %NdcPick{leigh_pick_team: team}), do: team
   defp get_ndc_pick("trey", %NdcPick{trey_pick_team: team}), do: team
 
   defp get_time_left(%MatchUp{tip_datetime: tip_datetime} = matchup) do
@@ -197,10 +196,6 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp get_ndc_record_string(:trey, %NdcRecord{} = ndc_record) do
     "#{ndc_record.trey_wins} - #{ndc_record.trey_losses}"
-  end
-
-  defp get_ndc_record_string(:leigh, %NdcRecord{} = ndc_record) do
-    "#{ndc_record.leigh_wins} - #{ndc_record.leigh_losses}"
   end
 
   defp get_ndc_record_string(:skeets, %NdcRecord{} = ndc_record) do
