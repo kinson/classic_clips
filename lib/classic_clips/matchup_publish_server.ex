@@ -5,7 +5,7 @@ defmodule ClassicClips.MatchupPublishServer do
 
   alias ClassicClips.PickEm
 
-  @interval :timer.minutes(1)
+  @interval :timer.seconds(30)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)

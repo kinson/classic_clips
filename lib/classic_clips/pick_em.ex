@@ -733,7 +733,7 @@ defmodule ClassicClips.PickEm do
     now = DateTime.utc_now()
 
     from(m in MatchUp,
-      where: m.status == :published,
+      where: m.status == :unpublished,
       where: m.publish_at < ^now,
       limit: 1,
       order_by: [asc: m.publish_at]
@@ -745,9 +745,11 @@ defmodule ClassicClips.PickEm do
     with {:ok, updated_matchup} <-
            MatchUp.changeset(matchup, %{status: :published})
            |> Repo.update(returning: true),
-         {:ok, _} <- notify_sickos(updated_matchup),
-         {:ok, _} <- post_matchup_on_twitter(updated_matchup) do
-      Logger.notice("Published matchup starting at: #{inspect(matchup.tip_datetime)}")
+         preloaded_matchup <-
+           Repo.preload(updated_matchup, [:home_team, :away_team, :favorite_team]),
+         {:ok, _} <- notify_sickos(preloaded_matchup),
+         {:ok, _} <- post_matchup_on_twitter(preloaded_matchup) do
+      Logger.notice("Published matchup starting at: #{inspect(preloaded_matchup.tip_datetime)}")
     end
   end
 

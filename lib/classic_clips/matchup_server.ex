@@ -7,7 +7,7 @@ defmodule ClassicClips.MatchupServer do
   alias ClassicClips.PickEm.MatchUp
 
   @interval :timer.minutes(2)
-  @long_interval :timer.minutes(30)
+  @long_interval :timer.minutes(10)
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -95,7 +95,7 @@ defmodule ClassicClips.MatchupServer do
 
       _ ->
         Logger.notice("Matchup still in progress")
-        PickEm.update_ndc_records_with_matchup_result(matchup)
+        PickEm.update_matchup_to_live(matchup)
     end
   end
 
