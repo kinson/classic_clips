@@ -12,6 +12,7 @@ defmodule ClassicClips.PickEm.NdcRecord do
     field :trey_wins, :integer, default: 0
     field :trey_losses, :integer, default: 0
 
+    belongs_to :season, ClassicClips.BigBeef.Season, type: :binary_id
     belongs_to :latest_matchup, ClassicClips.PickEm.MatchUp, type: :binary_id
 
     timestamps()
