@@ -66,7 +66,8 @@ defmodule ClassicClips.Application do
   defp pick_em_children() do
     [
       PickEmWeb.Endpoint,
-      ClassicClips.MatchupServer
+      ClassicClips.MatchupServer,
+      ClassicClips.MatchupPublishServer
     ]
   end
 end

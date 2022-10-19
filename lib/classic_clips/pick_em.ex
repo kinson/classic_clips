@@ -675,10 +675,7 @@ defmodule ClassicClips.PickEm do
            Repo.preload(matchup, [:away_team, :home_team, :favorite_team]),
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
-         {:ok, _} <- Repo.insert(ndc_pick_changeset),
-         ## TODO MOVE THIS LOGIC
-         {:ok, _} <- notify_sickos(matchup),
-         {:ok, _} <- post_matchup_on_twitter(matchup) do
+         {:ok, _} <- Repo.insert(ndc_pick_changeset) do
       {:ok, matchup}
     end
   end
@@ -730,6 +727,28 @@ defmodule ClassicClips.PickEm do
     )
 
     {:ok, true}
+  end
+
+  def get_matchup_ready_for_publishing do
+    now = DateTime.utc_now()
+
+    from(m in MatchUp,
+      where: m.status == :published,
+      where: m.publish_at < ^now,
+      limit: 1,
+      order_by: [asc: m.publish_at]
+    )
+    |> Repo.one()
+  end
+
+  def publish_matchup(matchup) do
+    with {:ok, updated_matchup} <-
+           MatchUp.changeset(matchup, %{status: :published})
+           |> Repo.update(returning: true),
+         {:ok, _} <- notify_sickos(updated_matchup),
+         {:ok, _} <- post_matchup_on_twitter(updated_matchup) do
+      Logger.notice("Published matchup starting at: #{inspect(matchup.tip_datetime)}")
+    end
   end
 
   defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),
