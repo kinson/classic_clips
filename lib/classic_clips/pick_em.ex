@@ -25,6 +25,11 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
 
+  def get_todays_matchup do
+    get_current_est_date()
+    |> get_matchup_for_day()
+  end
+
   def get_most_recent_matchup() do
     upper_date =
       DateTime.new!(Date.add(get_current_est_date(), 1), Time.from_iso8601!("03:59:59.00"))
@@ -274,7 +279,6 @@ defmodule ClassicClips.PickEm do
 
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
-
     current_season = Repo.get_by!(Season, current: true)
 
     ndc_record = %NdcRecord{

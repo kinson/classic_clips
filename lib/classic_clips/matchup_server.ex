@@ -22,10 +22,14 @@ defmodule ClassicClips.MatchupServer do
   @impl true
   def handle_info(:timeout, %{matchup: nil} = state) do
     # query for matchup in db 
-    case PickEm.get_most_recent_matchup() do
+    case PickEm.get_todays_matchup() do
       nil ->
         Logger.notice("No matchup to monitor")
         {:noreply, state, @long_interval}
+
+      %MatchUp{status: status} when status in [:unpublished, :completed] ->
+        Logger.notice("No valid matchup to monitor, found matchup in #{status} status")
+        {:noreply, state, @interval}
 
       %MatchUp{winning_team_id: wti} when not is_nil(wti) ->
         Logger.notice("No active matchup to monitor")

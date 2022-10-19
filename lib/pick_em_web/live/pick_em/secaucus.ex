@@ -112,7 +112,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         } = socket
       ) do
     # update matchup
-    publish_date = form_matchup |> Map.get("publish_at") |> IO.inspect(label: "WONDER")
+    publish_date = form_matchup |> Map.get("publish_at")
 
     publish_at =
       if publish_date not in [nil, ""] do
@@ -464,7 +464,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   defp get_matchup_status(%{status: status}), do: status
 
   defp show_publish_form(%MatchUp{status: :unpublished}), do: true
-  defp show_publish_form(_), do: false
+  defp show_publish_form(%MatchUp{}), do: false
+  defp show_publish_form(nil), do: true
 
   defp show_notification_buttons(nil), do: false
 
