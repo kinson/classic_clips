@@ -289,8 +289,12 @@ defmodule ClassicClips.PickEm do
 
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
+
+    current_season = Repo.get_by!(Season, current: true)
+
     ndc_record = %NdcRecord{
       month: current_month,
+      season: current_season,
       tas_losses: 0,
       tas_wins: 0,
       trey_losses: 0,
