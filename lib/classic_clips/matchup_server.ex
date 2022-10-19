@@ -54,6 +54,7 @@ defmodule ClassicClips.MatchupServer do
     if DateTime.compare(matchup.tip_datetime, lower_date_limit) == :lt do
       Logger.notice("Fetching matchup data from nba")
       matchup = check_game_data(matchup)
+
       {:noreply, %{state | matchup: matchup}, @interval}
     else
       Logger.notice(
@@ -94,7 +95,7 @@ defmodule ClassicClips.MatchupServer do
 
       _ ->
         Logger.notice("Matchup still in progress")
-        matchup
+        PickEm.update_ndc_records_with_matchup_result(matchup)
     end
   end
 

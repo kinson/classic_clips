@@ -277,6 +277,20 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :update_matchup_to_live
+  def update_matchup_to_live(%MatchUp{status: status} = matchup)
+      when status in [:live, :completed] do
+    matchup
+  end
+
+  def update_matchup_to_live(%MatchUp{} = matchup) do
+    {:ok, matchup} =
+      MatchUp.changeset(matchup, %{status: :live})
+      |> Repo.update(returning: true)
+
+    matchup
+  end
+
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
     current_season = Repo.get_by!(Season, current: true)
@@ -449,7 +463,11 @@ defmodule ClassicClips.PickEm do
        }) do
     game_score = "#{away_team_score} - #{home_team_score}"
 
-    MatchUp.changeset(matchup, %{winning_team_id: winning_team_id, score: game_score})
+    MatchUp.changeset(matchup, %{
+      winning_team_id: winning_team_id,
+      score: game_score,
+      status: :completed
+    })
     |> Repo.update()
   end
 
