@@ -85,7 +85,12 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_current_ndc_record
   def get_current_ndc_record() do
-    Repo.all(NdcRecord)
+    from(n in NdcRecord,
+      join: s in assoc(n, :season),
+      where: s.current,
+      select: n
+    )
+    |> Repo.all()
     |> Enum.sort(fn %{month: a}, %{month: b} ->
       get_nba_month_index(a) > get_nba_month_index(b)
     end)
@@ -269,8 +274,12 @@ defmodule ClassicClips.PickEm do
 
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
+
+    current_season = Repo.get_by!(Season, current: true)
+
     ndc_record = %NdcRecord{
       month: current_month,
+      season: current_season,
       tas_losses: 0,
       tas_wins: 0,
       trey_losses: 0,
