@@ -12,46 +12,36 @@ defmodule ClassicClips.PickEm do
 
   @new_york_offset 4 * 60 * 60
 
-  @trace :get_cached_current_matchup
-  def get_cached_current_matchup() do
-    case Fiat.CacheServer.fetch_object(:current_matchup) do
-      nil ->
-        current_matchup = get_current_matchup()
-        Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
-        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Miss")
-        current_matchup
+  def get_matchup_for_day(%Date{} = date) do
+    lower_date = DateTime.new!(date, Time.from_iso8601!("03:59:59.00"))
+    upper_date = DateTime.new!(Date.add(date, 1), Time.from_iso8601!("03:59:59.00"))
 
-      current_matchup ->
-        NewRelic.increment_custom_metric("Custom/CurrentMatchupCache/Hit")
-        current_matchup
-    end
-  end
-
-  @trace :set_cached_current_matchup
-  def set_cached_current_matchup() do
-    current_matchup = get_current_matchup()
-    Fiat.CacheServer.cache_object(:current_matchup, current_matchup, 60)
-    current_matchup
-  end
-
-  @trace :get_current_matchup
-  def get_current_matchup() do
     from(m in MatchUp,
-      order_by: [desc: m.tip_datetime],
+      where: m.tip_datetime > ^lower_date,
+      where: m.tip_datetime < ^upper_date,
       limit: 1
     )
     |> Repo.one()
     |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
 
-  def get_todays_matchup() do
-    matchup = get_current_matchup()
+  def get_todays_matchup do
+    get_current_est_date()
+    |> get_matchup_for_day()
+  end
 
-    if is_game_today?(matchup) do
-      matchup
-    else
-      nil
-    end
+  def get_most_recent_matchup() do
+    upper_date =
+      DateTime.new!(Date.add(get_current_est_date(), 1), Time.from_iso8601!("03:59:59.00"))
+
+    from(m in MatchUp,
+      where: m.tip_datetime < ^upper_date,
+      where: m.status != :unpublished,
+      order_by: [desc: m.tip_datetime],
+      limit: 1
+    )
+    |> Repo.one()
+    |> Repo.preload([:home_team, :away_team, :favorite_team, :winning_team])
   end
 
   def is_game_today?(%MatchUp{} = matchup) do
@@ -97,6 +87,8 @@ defmodule ClassicClips.PickEm do
     Repo.get_by(NdcPick, matchup_id: id)
     |> Repo.preload([:skeets_pick_team, :tas_pick_team, :trey_pick_team])
   end
+
+  def get_ndc_pick_for_matchup(nil), do: nil
 
   @trace :get_current_ndc_record
   def get_current_ndc_record() do
@@ -287,9 +279,22 @@ defmodule ClassicClips.PickEm do
     end
   end
 
+  @trace :update_matchup_to_live
+  def update_matchup_to_live(%MatchUp{status: status} = matchup)
+      when status in [:live, :completed] do
+    matchup
+  end
+
+  def update_matchup_to_live(%MatchUp{} = matchup) do
+    {:ok, matchup} =
+      MatchUp.changeset(matchup, %{status: :live})
+      |> Repo.update(returning: true)
+
+    matchup
+  end
+
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
-
     current_season = Repo.get_by!(Season, current: true)
 
     ndc_record = %NdcRecord{
@@ -460,7 +465,11 @@ defmodule ClassicClips.PickEm do
        }) do
     game_score = "#{away_team_score} - #{home_team_score}"
 
-    MatchUp.changeset(matchup, %{winning_team_id: winning_team_id, score: game_score})
+    MatchUp.changeset(matchup, %{
+      winning_team_id: winning_team_id,
+      score: game_score,
+      status: :completed
+    })
     |> Repo.update()
   end
 
@@ -581,6 +590,12 @@ defmodule ClassicClips.PickEm do
     |> get_month_name()
   end
 
+  def get_current_est_date do
+    DateTime.utc_now()
+    |> DateTime.add(-1 * get_est_offset_seconds())
+    |> DateTime.to_date()
+  end
+
   def get_month_name(1), do: "january"
   def get_month_name(2), do: "february"
   def get_month_name(3), do: "march"
@@ -619,6 +634,8 @@ defmodule ClassicClips.PickEm do
         spread,
         game_id,
         game_tip_time,
+        publish_at,
+        status,
         skeets_pick_team,
         tas_pick_team,
         trey_pick_team
@@ -643,7 +660,9 @@ defmodule ClassicClips.PickEm do
         nba_game_id: game_id,
         away_team_id: away_team.id,
         home_team_id: home_team.id,
-        favorite_team_id: favorite_team.id
+        favorite_team_id: favorite_team.id,
+        status: status,
+        publish_at: publish_at
       })
 
     ndc_attrs = %{
@@ -658,10 +677,7 @@ defmodule ClassicClips.PickEm do
            Repo.preload(matchup, [:away_team, :home_team, :favorite_team]),
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
-         {:ok, _} <- Repo.insert(ndc_pick_changeset),
-         {:ok, _} <- notify_sickos(matchup),
-         {:ok, _} <- post_matchup_on_twitter(matchup) do
-      set_cached_current_matchup()
+         {:ok, _} <- Repo.insert(ndc_pick_changeset) do
       {:ok, matchup}
     end
   end
@@ -713,6 +729,30 @@ defmodule ClassicClips.PickEm do
     )
 
     {:ok, true}
+  end
+
+  def get_matchup_ready_for_publishing do
+    now = DateTime.utc_now()
+
+    from(m in MatchUp,
+      where: m.status == :unpublished,
+      where: m.publish_at < ^now,
+      limit: 1,
+      order_by: [asc: m.publish_at]
+    )
+    |> Repo.one()
+  end
+
+  def publish_matchup(matchup) do
+    with {:ok, updated_matchup} <-
+           MatchUp.changeset(matchup, %{status: :published})
+           |> Repo.update(returning: true),
+         preloaded_matchup <-
+           Repo.preload(updated_matchup, [:home_team, :away_team, :favorite_team]),
+         {:ok, _} <- notify_sickos(preloaded_matchup),
+         {:ok, _} <- post_matchup_on_twitter(preloaded_matchup) do
+      Logger.notice("Published matchup starting at: #{inspect(preloaded_matchup.tip_datetime)}")
+    end
   end
 
   defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),

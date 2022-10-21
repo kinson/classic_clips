@@ -11,48 +11,59 @@
       phx-change="matchup-change-form"
       class="mb-0"
     >
-      <%= if Enum.any?(@games, &PickEm.is_game_today?/1) do %>
-        <p class="text-white font-open-sans font-bold">
-          Choose a Game from Today&apos;s Schedule
+      <p class="text-white font-open-sans font-bold mb-4">
+        Game Date
+      </p>
+      <div class="flex flex-row items-center h-28">
+        <%= date_input(f, :matchup_date,
+          value: get_matchup_date(@matchup_date),
+          min: "2022-10-11",
+          max: "2023-04-09",
+          class: "my-0 text-3xl p-1 rounded"
+        ) %>
+        <p class={get_status_text_class(@current_matchup)}>
+          <%= get_matchup_status(@current_matchup) %>
         </p>
-        <div class="flex flex-col gap-6 mb-10">
+      </div>
+      <%= if length(@games) > 0 do %>
+        <p class="text-white font-open-sans font-bold">
+          Choose a Game from The Schedule
+        </p>
+        <div class="flex flex-row gap-6 mb-10 flex-wrap">
           <%= for game <- @games do %>
             <div
-              class={game_button_class(game.game_id, game_id_value(@selected_game_id, @todays_matchup))}
+              class={game_button_class(game.game_id, game_id_value(@selected_game_id, @current_matchup))}
               phx-click="select-game"
               phx-value-id={game.game_id}
               phx-value-away-team={game.away_team_code}
               phx-value-home-team={game.home_team_code}
               phx-value-tip-datetime={game.game_time_utc}
             >
-              <p class="my-0 w-40">
+              <p class="my-0 font-bold">
                 <%= game.away_team_code %> @ <%= game.home_team_code %>
               </p>
-              <p class="my-0 text-center">
-                <%= get_time_for_game(game.game_time_utc) %>
-              </p>
               <p class="my-0">
-                <%= game.game_id %>
+                <%= get_time_for_game(game.game_time_utc) %>
               </p>
             </div>
           <% end %>
         </div>
 
-        <%= hidden_input(f, :game_id, value: game_id_value(@selected_game_id, @todays_matchup)) %>
+        <%= hidden_input(f, :game_id, value: game_id_value(@selected_game_id, @current_matchup)) %>
         <%= hidden_input(f, :tip_datetime,
-          value: tip_datetime_value(@selected_game_tip_datetime, @todays_matchup)
+          value: tip_datetime_value(@selected_game_tip_datetime, @current_matchup)
         ) %>
         <%= hidden_input(f, :favorite_team_code,
-          value: favorite_team_code_value(@selected_game_favorite_code, @todays_matchup)
+          value: favorite_team_code_value(@selected_game_favorite_code, @current_matchup)
         ) %>
         <%= hidden_input(f, :away_team_code,
-          value: away_team_code_value(@selected_game_away_code, @todays_matchup)
+          value: away_team_code_value(@selected_game_away_code, @current_matchup)
         ) %>
         <%= hidden_input(f, :home_team_code,
-          value: home_team_code_value(@selected_game_home_code, @todays_matchup)
+          value: home_team_code_value(@selected_game_home_code, @current_matchup)
         ) %>
 
-        <%= if away_team_code_value(@selected_game_away_code, @todays_matchup) do %>
+        <%= if away_team_code_value(@selected_game_away_code, @current_matchup) do %>
           <p class="text-white font-open-sans font-bold">
             Set Favorite Team and No Dunks Picks
           </p>
@@ -62,26 +73,26 @@
             </p>
             <div
               phx-click="select-favorite-team"
-              phx-value-favorite-code={away_team_code_value(@selected_game_away_code, @todays_matchup)}
-              class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}
+              phx-value-favorite-code={away_team_code_value(@selected_game_away_code, @current_matchup)}
+              class={team_button_class(away_team_code_value(@selected_game_away_code, @current_matchup), favorite_team_code_value(@selected_game_favorite_code, @current_matchup))}
             >
               <p class="my-0 bg-nd-pink text-white">
-                <%= away_team_code_value(@selected_game_away_code, @todays_matchup) %>
+                <%= away_team_code_value(@selected_game_away_code, @current_matchup) %>
               </p>
             </div>
             <div
               phx-click="select-favorite-team"
-              phx-value-favorite-code={home_team_code_value(@selected_game_home_code, @todays_matchup)}
-              class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), favorite_team_code_value(@selected_game_favorite_code, @todays_matchup))}
+              phx-value-favorite-code={home_team_code_value(@selected_game_home_code, @current_matchup)}
+              class={team_button_class(home_team_code_value(@selected_game_home_code, @current_matchup), favorite_team_code_value(@selected_game_favorite_code, @current_matchup))}
             >
               <p class="my-0 bg-nd-pink text-white">
-                <%= home_team_code_value(@selected_game_home_code, @todays_matchup) %>
+                <%= home_team_code_value(@selected_game_home_code, @current_matchup) %>
               </p>
             </div>
             <%= text_input(f, :game_line,
               placeholder: "-7.5",
               class: "my-0 text-white !w-28",
-              value: game_line_value(@selected_game_line, @todays_matchup)
+              value: game_line_value(@selected_game_line, @current_matchup)
             ) %>
           </div>
 
@@ -93,34 +104,65 @@
               <div
                 phx-click="select-ndc-member-pick"
                 phx-value-member={ndc_member}
-                phx-value-team-code={away_team_code_value(@selected_game_away_code, @todays_matchup)}
-                class={team_button_class(away_team_code_value(@selected_game_away_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))}
+                phx-value-team-code={away_team_code_value(@selected_game_away_code, @current_matchup)}
+                class={team_button_class(away_team_code_value(@selected_game_away_code, @current_matchup), ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks))}
               >
                 <p class="my-0 bg-nd-pink text-white">
-                  <%= away_team_code_value(@selected_game_away_code, @todays_matchup) %>
+                  <%= away_team_code_value(@selected_game_away_code, @current_matchup) %>
                 </p>
               </div>
               <div
-                class={team_button_class(home_team_code_value(@selected_game_home_code, @todays_matchup), ndc_pick_value(ndc_member, @ndc_picks, @todays_ndc_picks))}
+                class={team_button_class(home_team_code_value(@selected_game_home_code, @current_matchup), ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks))}
                 phx-click="select-ndc-member-pick"
                 phx-value-member={ndc_member}
-                phx-value-team-code={home_team_code_value(@selected_game_home_code, @todays_matchup)}
+                phx-value-team-code={home_team_code_value(@selected_game_home_code, @current_matchup)}
               >
                 <p class="my-0 bg-nd-pink text-white">
-                  <%= home_team_code_value(@selected_game_home_code, @todays_matchup) %>
+                  <%= home_team_code_value(@selected_game_home_code, @current_matchup) %>
                 </p>
               </div>
             </div>
           <% end %>
+          <%= if show_publish_form(@current_matchup) do %>
+            <div class="flex flex-row items-center gap-x-5 my-12">
 
-          <%= submit("#{if @todays_matchup, do: "Update", else: "Create"} Matchup",
-            class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
-          ) %>
+              <p class="text-white my-0">
+                Publish Now:
+              </p>
+
+              <%= checkbox(f, :publish_now, class: "my-0 text-3xl rounded") %>
+
+            </div>
+
+            <div class="flex flex-row items-center gap-x-5 my-12">
+
+              <p class="text-white my-0">
+                Publish Date:
+              </p>
+
+              <%= datetime_local_input(f, :publish_at,
+                value: get_publish_at_date(@current_matchup),
+                min: PickEm.get_current_est_date(),
+                max: "2023-04-09",
+                class: "my-0 text-3xl rounded"
+              ) %>
+
+              <p class="text-white my-0">
+                EST
+              </p>
+
+            </div>
+          <% end %>
+          <%= if show_submit_button(@current_matchup) do %>
+            <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
+              class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
+            ) %>
+          <% end %>
         <% end %>
       <% end %>
     </.form>
 
-    <%= if @todays_matchup do %>
+    <%= if show_notification_buttons(@current_matchup) do %>
       <button
         data-confirm="Are you sure you want to resend email?"
         phx-click="resend-matchup-email"

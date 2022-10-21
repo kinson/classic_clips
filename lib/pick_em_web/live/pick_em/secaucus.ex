@@ -13,19 +13,11 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     theme = Theme.get_theme_from_session(session)
 
-    current_matchup = PickEm.get_current_matchup()
+    current_matchup = PickEm.get_todays_matchup()
 
-    todays_matchup = PickEm.get_todays_matchup()
+    current_season = PickEm.get_current_season()
 
-    todays_ndc_picks =
-      case todays_matchup do
-        nil ->
-          nil
-
-        %MatchUp{id: id} ->
-          Repo.get_by(NdcPick, matchup_id: id)
-          |> Repo.preload([:skeets_pick_team, :trey_pick_team, :tas_pick_team])
-      end
+    current_ndc_picks = PickEm.get_ndc_pick_for_matchup(current_matchup)
 
     socket =
       socket
@@ -38,11 +30,12 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_away_code, nil)
       |> assign(:selected_game_home_code, nil)
       |> assign(:selected_game_favorite_code, nil)
+      |> assign(:current_season, current_season)
       |> assign(:current_matchup, current_matchup)
-      |> assign(:todays_matchup, todays_matchup)
       |> assign(:ndc_picks, %{})
-      |> assign(:todays_ndc_picks, todays_ndc_picks)
-      |> assign_games()
+      |> assign(:current_ndc_picks, current_ndc_picks)
+      |> assign_matchup_date()
+      |> assign_games(PickEm.get_current_est_date() |> Date.to_iso8601())
 
     case user do
       %ClassicClips.Timeline.User{role: :super_sicko} ->
@@ -104,16 +97,32 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         %{"matchup" => form_matchup},
         %{
           assigns: %{
-            todays_matchup: %{id: _} = todays_matchup,
-            todays_ndc_picks: todays_ndc_picks,
+            current_matchup: %{id: _} = current_matchup,
+            current_ndc_picks: current_ndc_picks,
             ndc_picks: ndc_picks
           }
         } = socket
       ) do
     # update matchup
+    publish_date = form_matchup |> Map.get("publish_at")
+
+    publish_at =
+      if publish_date not in [nil, ""] do
+        publish_date_string = publish_date <> ":00.000Z"
+        {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
+        DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+      end
+
+    new_status =
+      if form_matchup["publish_now"] == "true" and current_matchup.status == :unpublished,
+        do: :published,
+        else: current_matchup.status
+
     matchup_changes =
       %{
         nba_game_id: form_matchup["game_id"],
+        publish_at: publish_at,
+        status: new_status,
         tip_datetime: form_matchup["tip_datetime"],
         spread: form_matchup["game_line"],
         away_team_id: team_id_for_abbreviation(form_matchup["away_team_code"]),
@@ -125,8 +134,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    MatchUp.changeset(todays_matchup, matchup_changes)
-    |> Repo.update()
+    {:ok, updated_matchup} =
+      current_matchup
+      |> MatchUp.changeset(matchup_changes)
+      |> Repo.update(returning: true)
 
     # update ndc picks
 
@@ -148,19 +159,16 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    NdcPick.changeset(todays_ndc_picks, ndc_changes)
+    NdcPick.changeset(current_ndc_picks, ndc_changes)
     |> Repo.update()
 
     # reset picks if different game
-    if(form_matchup["game_id"] != todays_matchup.nba_game_id) do
-      PickEm.remove_user_picks_for_matchup(todays_matchup)
+    if(form_matchup["game_id"] != current_matchup.nba_game_id) do
+      PickEm.remove_user_picks_for_matchup(current_matchup)
     end
-
-    updated_matchup = PickEm.set_cached_current_matchup()
 
     socket =
       socket
-      |> assign(:todays_matchup, updated_matchup)
       |> assign(:current_matchup, updated_matchup)
       |> NotificationComponent.show("Updated matchup")
 
@@ -176,7 +184,9 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
             "favorite_team_code" => favorite_team,
             "away_team_code" => away_team_code,
             "home_team_code" => home_team_code,
-            "game_line" => spread
+            "game_line" => spread,
+            "publish_at" => publish_at,
+            "publish_now" => publish_now
           }
         },
         %{
@@ -189,6 +199,20 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
           }
         } = socket
       ) do
+    publish_at =
+      if publish_at && publish_now != "true" do
+        publish_date_string = publish_at <> ":00.000Z"
+        {:ok, publish_date_time, _} = DateTime.from_iso8601(publish_date_string)
+        DateTime.add(publish_date_time, PickEm.get_est_offset_seconds())
+      else
+        nil
+      end
+
+    status =
+      if publish_now == "true",
+        do: :published,
+        else: :unpublished
+
     case ClassicClips.PickEm.create_matchup(
            away_team_code,
            home_team_code,
@@ -196,20 +220,19 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
            spread,
            game_id,
            tip_datetime,
+           publish_at,
+           status,
            skeets_pick,
            tas_pick,
            trey_pick
          ) do
-      {:ok, _} ->
-        matchup = PickEm.get_current_matchup()
+      {:ok, matchup} ->
         ndc_picks = PickEm.get_ndc_pick_for_matchup(matchup)
 
         {:noreply,
          socket
+         |> assign(:current_ndc_picks, ndc_picks)
          |> assign(:current_matchup, matchup)
-         |> assign(:todays_matchup, matchup)
-         |> assign(:todays_ndc_picks, ndc_picks)
-         |> assign(:current_matchup, PickEm.get_current_matchup())
          |> NotificationComponent.show("Successfully created matchup")}
 
       _ = error ->
@@ -223,29 +246,105 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     {:noreply, NotificationComponent.show(socket, "Could not create matchup", :error)}
   end
 
-  def handle_event("matchup-change-form", %{"matchup" => %{"game_line" => game_line}}, socket) do
-    {:noreply, assign(socket, :selected_game_line, game_line)}
+  def handle_event(
+        "matchup-change-form",
+        %{"matchup" => %{"matchup_date" => matchup_date, "game_line" => game_line}},
+        socket
+      ) do
+    {:noreply,
+     assign(socket, :selected_game_line, game_line)
+     |> assign_games(matchup_date)}
+  end
+
+  def handle_event(
+        "matchup-change-form",
+        %{"matchup" => %{"matchup_date" => matchup_date}},
+        socket
+      ) do
+    {:noreply, assign_games(socket, matchup_date)}
   end
 
   def handle_event("resend-matchup-email", _, socket) do
-    PickEm.notify_sickos(socket.assigns.todays_matchup)
+    PickEm.notify_sickos(socket.assigns.current_matchup)
     {:noreply, NotificationComponent.show(socket, "Resent matchup emails")}
   end
 
   def handle_event("repost-matchup-tweet", _, socket) do
-    PickEm.post_matchup_on_twitter(socket.assigns.todays_matchup)
+    PickEm.post_matchup_on_twitter(socket.assigns.current_matchup)
     {:noreply, NotificationComponent.show(socket, "Reposted matchup tweet")}
   end
 
-  defp assign_games(socket) do
-    case load_games() do
-      {:ok, games} ->
-        assign(socket, :games, games)
+  defp assign_games(socket, form_matchup_date) do
+    form_matchup_date = Date.from_iso8601!(form_matchup_date)
+    current_matchup_date = socket.assigns.matchup_date
 
-      {:error, _} ->
-        NotificationComponent.show(socket, "Could not load todays games", :error)
-        |> assign(:games, [])
+    if is_nil(Map.get(socket.assigns, :games)) or
+         Date.compare(form_matchup_date, current_matchup_date) != :eq do
+      games = get_games_for_date(form_matchup_date, socket.assigns.current_season)
+
+      matchup = PickEm.get_matchup_for_day(form_matchup_date)
+
+      socket =
+        socket
+        |> assign(:games, games)
+        |> assign_matchup_date(form_matchup_date)
+        |> assign(:current_matchup, matchup)
+
+      if matchup do
+        ndc_picks =
+          Repo.get_by(NdcPick, matchup_id: matchup.id)
+          |> Repo.preload([:skeets_pick_team, :trey_pick_team, :tas_pick_team])
+
+        socket
+        |> assign(:selected_game_id, matchup.nba_game_id)
+        |> assign(:selected_game_favorite_code, matchup.favorite_team.abbreviation)
+        |> assign(:selected_game_tip_datetime, matchup.tip_datetime)
+        |> assign(:selected_game_away_code, matchup.away_team.abbreviation)
+        |> assign(:selected_game_home_code, matchup.home_team.abbreviation)
+        |> assign(:selected_game_line, matchup.spread)
+        |> assign(:current_ndc_picks, ndc_picks)
+        |> assign(:ndc_picks, %{})
+      else
+        socket
+        |> assign(:ndc_picks, %{})
+        |> assign(:selected_game_line, nil)
+        |> assign(:current_ndc_picks, nil)
+        |> assign(:current_matchup, nil)
+        |> assign(:selected_game_id, nil)
+        |> assign(:selected_game_line, nil)
+        |> assign(:selected_game_tip_datetime, nil)
+        |> assign(:selected_game_away_code, nil)
+        |> assign(:selected_game_home_code, nil)
+        |> assign(:selected_game_favorite_code, nil)
+      end
+    else
+      socket
     end
+  end
+
+  defp assign_matchup_date(socket, date \\ PickEm.get_current_est_date()) do
+    assign(socket, :matchup_date, date)
+  end
+
+  defp get_matchup_date(matchup_date_string),
+    do: Date.to_iso8601(matchup_date_string)
+
+  defp get_publish_at_date(nil),
+    do: nil
+
+  defp get_publish_at_date(%MatchUp{publish_at: nil}),
+    do: nil
+
+  defp get_publish_at_date(%MatchUp{publish_at: publish_at}) do
+    # TODO: FIGURE OUT HOW TO CATCH DATE STRING FORMATTING ISSUES
+    publish_at
+    |> DateTime.add(-1 * PickEm.get_est_offset_seconds())
+    |> DateTime.to_iso8601()
+    |> String.trim_trailing(":00Z")
+  end
+
+  defp get_games_for_date(date, current_season) do
+    ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
   end
 
   def load_games do
@@ -267,11 +366,35 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   end
 
   def game_button_class(game_id, game_id) do
-    "border-2 border-white box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
+    "border-2 border-white box-border shadow-md flex flex-col bg-nd-pink text-white px-4 py-3 items-center cursor-pointer w-1/4 gap-y-3"
   end
 
   def game_button_class(_, _) do
-    "border-2 border-transparent box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
+    "border-2 border-transparent box-border shadow-md flex flex-col bg-nd-pink text-white px-4 py-3 items-center cursor-pointer w-1/4 gap-y-3"
+  end
+
+  def get_status_text_class(nil) do
+    ""
+  end
+
+  def get_status_text_class(%{status: :unpublished}) do
+    "bg-blue-700 text-white px-4 py-1 my-0 ml-12 rounded-md"
+  end
+
+  def get_status_text_class(%{status: :completed}) do
+    "bg-nd-pink text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(%{status: :published}) do
+    "bg-green-600 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(%{status: :live}) do
+    "bg-rose-700 text-white px-4 py-1 my-0 ml-12 rounded-md text-3xl"
+  end
+
+  def get_status_text_class(_) do
+    "bg-nd-pink text-white px-4 py-1 my-0 ml-4 rounded-md text-3xl"
   end
 
   def get_time_for_game(tip_datetime) do
@@ -327,6 +450,25 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       pick -> pick
     end
   end
+
+  defp get_matchup_status(nil), do: ""
+
+  defp get_matchup_status(%{status: status}), do: status
+
+  defp show_publish_form(%MatchUp{status: :unpublished}), do: true
+  defp show_publish_form(%MatchUp{}), do: false
+  defp show_publish_form(nil), do: true
+
+  defp show_notification_buttons(nil), do: false
+
+  defp show_notification_buttons(%MatchUp{status: status})
+       when status in [:unpublished, :live, :completed],
+       do: false
+
+  defp show_notification_buttons(_), do: true
+
+  defp show_submit_button(%MatchUp{status: status}) when status in [:completed, :live], do: false
+  defp show_submit_button(_), do: true
 
   defp person_to_ndc_picks_key(person) do
     "#{Atom.to_string(person)}_pick_team"

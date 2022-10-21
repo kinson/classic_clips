@@ -8,6 +8,7 @@ defmodule ClassicClips.BigBeef.Season do
     field :year_end, :integer
     field :name, :string
     field :current, :boolean
+    field :schedule, :map
 
     has_many :beefs, ClassicClips.BigBeef.Beef
 
