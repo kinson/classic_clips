@@ -88,6 +88,8 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload([:skeets_pick_team, :tas_pick_team, :trey_pick_team])
   end
 
+  def get_ndc_pick_for_matchup(nil), do: nil
+
   @trace :get_current_ndc_record
   def get_current_ndc_record() do
     from(n in NdcRecord,

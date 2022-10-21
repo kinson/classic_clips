@@ -17,15 +17,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     current_season = PickEm.get_current_season()
 
-    current_ndc_picks =
-      case current_matchup do
-        nil ->
-          nil
-
-        %MatchUp{id: id} ->
-          Repo.get_by(NdcPick, matchup_id: id)
-          |> Repo.preload([:skeets_pick_team, :trey_pick_team, :tas_pick_team])
-      end
+    current_ndc_picks = PickEm.get_ndc_pick_for_matchup(current_matchup)
 
     socket =
       socket
@@ -352,7 +344,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   end
 
   defp get_games_for_date(date, current_season) do
-    games = ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
+    ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
   end
 
   def load_games do
@@ -374,11 +366,11 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   end
 
   def game_button_class(game_id, game_id) do
-    "border-2 border-white box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
+    "border-2 border-white box-border shadow-md flex flex-col bg-nd-pink text-white px-4 py-3 items-center cursor-pointer w-1/4 gap-y-3"
   end
 
   def game_button_class(_, _) do
-    "border-2 border-transparent box-border shadow-md flex flex-row bg-nd-pink text-white px-4 py-3 justify-between cursor-pointer"
+    "border-2 border-transparent box-border shadow-md flex flex-col bg-nd-pink text-white px-4 py-3 items-center cursor-pointer w-1/4 gap-y-3"
   end
 
   def get_status_text_class(nil) do
@@ -470,10 +462,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   defp show_notification_buttons(nil), do: false
 
   defp show_notification_buttons(%MatchUp{status: status})
-       when status in [:unpublished, :completed],
+       when status in [:unpublished, :live, :completed],
        do: false
 
   defp show_notification_buttons(_), do: true
+
+  defp show_submit_button(%MatchUp{status: status}) when status in [:completed, :live], do: false
+  defp show_submit_button(_), do: true
 
   defp person_to_ndc_picks_key(person) do
     "#{Atom.to_string(person)}_pick_team"

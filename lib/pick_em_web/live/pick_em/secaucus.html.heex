@@ -27,9 +27,9 @@
       </div>
       <%= if length(@games) > 0 do %>
         <p class="text-white font-open-sans font-bold">
-          Choose a Game from Today&apos;s Schedule
+          Choose a Game from The Schedule
         </p>
-        <div class="flex flex-col gap-6 mb-10">
+        <div class="flex flex-row gap-6 mb-10 flex-wrap">
           <%= for game <- @games do %>
             <div
               class={game_button_class(game.game_id, game_id_value(@selected_game_id, @current_matchup))}
@@ -39,14 +39,11 @@
               phx-value-home-team={game.home_team_code}
               phx-value-tip-datetime={game.game_time_utc}
             >
-              <p class="my-0 w-40">
+              <p class="my-0 font-bold">
                 <%= game.away_team_code %> @ <%= game.home_team_code %>
               </p>
-              <p class="my-0 text-center">
-                <%= get_time_for_game(game.game_time_utc) %>
-              </p>
               <p class="my-0">
-                <%= game.game_id %>
+                <%= get_time_for_game(game.game_time_utc) %>
               </p>
             </div>
           <% end %>
@@ -156,10 +153,11 @@
 
             </div>
           <% end %>
-
-          <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
-            class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
-          ) %>
+          <%= if show_submit_button(@current_matchup) do %>
+            <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
+              class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
+            ) %>
+          <% end %>
         <% end %>
       <% end %>
     </.form>
