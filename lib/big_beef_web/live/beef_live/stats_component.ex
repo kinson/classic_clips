@@ -8,7 +8,7 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
     <div class={"stats-beef saucy #{is_active(@page_type, "stats")}"}>
       <div class="latest">
         <p class="beef-card-label">
-          LATEST BIG BEEF [# <%= get_season_beef_count(@big_beefs) %> ]
+          LATEST BIG BEEF [# <%= get_season_beef_count(@big_beefs) %>]
         </p>
         <div class="card">
           <img id="player-pic" src={player_headshot_link(@latest.beef.player)}>

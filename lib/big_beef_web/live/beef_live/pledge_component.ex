@@ -13,14 +13,14 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
 
         <div class="raised">
           <p class="amount">
-            $894
+            $23
           </p>
           <p class="description">
-            donated as of May 21st, 2022
+            donated as of October 24th, 2022
           </p>
         </div>
 
-        <p>For the second season, Big Beef Tracker is giving back by donating to
+        <p>For the third season, Big Beef Tracker is giving back by donating to
           <a href="https://www.feedingamerica.org/">
             Feeding America
           </a>
