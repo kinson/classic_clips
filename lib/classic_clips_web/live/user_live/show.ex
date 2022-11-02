@@ -24,7 +24,7 @@ defmodule ClassicClipsWeb.UserLive.Show do
       |> assign(:thumbs_up_total, get_user_thumbs_up(user))
       |> assign(:clip_area_content, "your_clips")
       |> assign(:show_edit, false)
-      |> assign(:page_title, "Your Profile")
+      |> assign(:page_title, "Profile")
       |> assign(:changeset, changeset)
 
     {:ok, modifed_socket}

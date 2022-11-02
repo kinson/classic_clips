@@ -680,7 +680,9 @@ defmodule ClassicClips.PickEm do
            Repo.preload(matchup, [:away_team, :home_team, :favorite_team]),
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
-         {:ok, _} <- Repo.insert(ndc_pick_changeset) do
+         {:ok, _} <- Repo.insert(ndc_pick_changeset),
+         {:ok, _} <- notify_sickos(matchup),
+         {:ok, _} <- post_matchup_on_twitter(matchup) do
       {:ok, matchup}
     end
   end

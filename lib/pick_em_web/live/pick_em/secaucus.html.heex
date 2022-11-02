@@ -1,9 +1,12 @@
 <div class="border-nd-yellow border-l-2 w-11/12 mx-auto md:w-full">
   <div class="ml-10 md:ml-20">
-    <p class="text-center text-nd-pink w-max mb-6 mt-14 font-open-sans font-bold text-4xl">
+    <p class="text-center text-nd-pink w-max mb-2 mt-14 font-open-sans font-bold text-4xl">
       Secaucus
     </p>
 
+    <p class="text-white font-open-sans text-2xl font-light mt-2 mb-8">
+      This is the control center for No Dunks Pick 'Em, where you can create and edit matchups.
+    </p>
     <.form
       let={f}
       for={:matchup}
@@ -12,9 +15,9 @@
       class="mb-0"
     >
       <p class="text-white font-open-sans font-bold mb-4">
-        Game Date
+        1. Choose a Date
       </p>
-      <div class="flex flex-row items-center h-28">
+      <div class="flex flex-row items-center mb-10">
         <%= date_input(f, :matchup_date,
           value: get_matchup_date(@matchup_date),
           min: "2022-10-11",
@@ -26,8 +29,8 @@
         </p>
       </div>
       <%= if length(@games) > 0 do %>
-        <p class="text-white font-open-sans font-bold">
-          Choose a Game from The Schedule
+        <p class="text-white font-open-sans font-bold mb-4">
+          2. Choose a Game from The Schedule
         </p>
         <div class="flex flex-row gap-6 mb-10 flex-wrap">
           <%= for game <- @games do %>
@@ -64,8 +67,8 @@
         ) %>
 
         <%= if away_team_code_value(@selected_game_away_code, @current_matchup) do %>
-          <p class="text-white font-open-sans font-bold">
-            Set Favorite Team and No Dunks Picks
+          <p class="text-white font-open-sans font-bold mb-4">
+            3. Set the Line and No Dunks Crew Picks
           </p>
           <div class="flex flex-row my-4 gap-x-4">
             <p class="text-white w-24 my-0">
@@ -124,7 +127,11 @@
             </div>
           <% end %>
           <%= if show_publish_form(@current_matchup) do %>
-            <div class="flex flex-row items-center gap-x-5 my-12">
+
+            <p class="text-white font-open-sans font-bold mt-10 mb-4">
+              4. Publish Now or Set Future Publish Time
+            </p>
+            <div class="flex flex-row items-center gap-x-5 my-0">
 
               <p class="text-white my-0">
                 Publish Now:
@@ -134,7 +141,7 @@
 
             </div>
 
-            <div class="flex flex-row items-center gap-x-5 my-12">
+            <div class="flex flex-row items-center gap-x-5 my-8">
 
               <p class="text-white my-0">
                 Publish Date:
@@ -155,7 +162,7 @@
           <% end %>
           <%= if show_submit_button(@current_matchup) do %>
             <%= submit("#{if @current_matchup, do: "Update", else: "Create"} Matchup",
-              class: "rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink"
+              class: "rounded-none bg-nd-pink shadow-lg mt-10 w-full hover:bg-nd-yellow hover:text-nd-pink"
             ) %>
           <% end %>
         <% end %>

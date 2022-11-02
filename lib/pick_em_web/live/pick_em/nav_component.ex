@@ -12,7 +12,7 @@ defmodule PickEmWeb.PickEmLive.NavComponent do
       </a>
       <%= if @user do %>
         <a href="/profile" class={get_class("profile", @active)}>
-          Your Profile
+          Profile
         </a>
         <%= if @user.role == :super_sicko do %>
           <a href="/secaucus" class={get_class("secaucus", @active)}>
