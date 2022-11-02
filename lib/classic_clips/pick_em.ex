@@ -163,10 +163,13 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_leaders
   def get_leaders(%Season{id: season_id}, month) do
+    current_season = from(s in Season, where: s.current == true, select: s.id)
+
     subquery =
       from(up in UserPick,
         left_join: m in assoc(up, :matchup),
         where: m.month == ^month,
+        where: m.season_id in subquery(current_season),
         group_by: up.user_id,
         select: %{user_id: up.user_id, total_picks: count(up.id)}
       )
