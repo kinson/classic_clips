@@ -773,9 +773,12 @@ defmodule ClassicClips.PickEm do
         limit: 25
       )
 
+    current_season = from(s in Season, where: s.current == true, select: s.id)
+
     new_picks =
       from(m in MatchUp,
         where: m.month == ^current_month,
+        where: m.season_id in subquery(current_season),
         where: m.id not in subquery(user_picks),
         where: not is_nil(m.winning_team_id),
         select: {m.id, m.winning_team_id, m.away_team_id, m.home_team_id}
@@ -822,6 +825,7 @@ defmodule ClassicClips.PickEm do
   @trace :is_missing_picks?
   def is_missing_picks?(%User{id: user_id}) do
     current_month = get_current_month_name()
+    current_season = from(s in Season, where: s.current == true, select: s.id)
 
     user_pick_query =
       from(up in UserPick,
@@ -834,6 +838,7 @@ defmodule ClassicClips.PickEm do
     missing_matchups =
       from(m in MatchUp,
         where: m.month == ^current_month,
+        where: m.season_id in subquery(current_season),
         where: m.id not in subquery(user_pick_query),
         where: not is_nil(m.winning_team_id)
       )
