@@ -10,7 +10,7 @@ defmodule ClassicClips.PickEm do
   alias ClassicClips.Timeline.User
   alias ClassicClips.BigBeef.Season
 
-  @new_york_offset 4 * 60 * 60
+  @new_york_offset 5 * 60 * 60
 
   def get_matchup_for_day(%Date{} = date) do
     lower_date = DateTime.new!(date, Time.from_iso8601!("03:59:59.00"))
