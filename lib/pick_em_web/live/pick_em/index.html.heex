@@ -112,7 +112,7 @@
           phx-value-enabled={"#{@can_save_pick?}"}
           class={get_initial_team_button_class(@existing_user_pick, @matchup.away_team, @can_save_pick?)}
         >
-          <%= render_team_location(@matchup.away_team, @theme, "mx-auto") %>
+          <%= render_team_name(@matchup.away_team, @theme, "mx-auto") %>
         </button>
         <button
           type="button"
@@ -121,7 +121,7 @@
           phx-value-enabled={"#{@can_save_pick?}"}
           class={get_initial_team_button_class(@existing_user_pick, @matchup.home_team, @can_save_pick?)}
         >
-          <%= render_team_location(@matchup.home_team, @theme) %>
+          <%= render_team_name(@matchup.home_team, @theme) %>
         </button>
       </div>
       <%= if @user do %>

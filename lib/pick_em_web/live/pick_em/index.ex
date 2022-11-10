@@ -9,7 +9,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    matchup = ClassicClips.PickEm.get_most_recent_matchup()
+    matchup = ClassicClips.PickEm.get_cached_most_recent_matchup()
 
     ndc_pick = ClassicClips.PickEm.get_cached_ndc_pick_for_matchup(matchup)
 
