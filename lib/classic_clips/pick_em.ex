@@ -30,6 +30,14 @@ defmodule ClassicClips.PickEm do
     |> get_matchup_for_day()
   end
 
+  def get_cached_most_recent_matchup() do
+    Fiat.CacheServer.fetch_object(
+      :most_recent_matchup,
+      &get_most_recent_matchup/0,
+      15
+    )
+  end
+
   def get_most_recent_matchup() do
     upper_date =
       DateTime.new!(Date.add(get_current_est_date(), 1), Time.from_iso8601!("03:59:59.00"))
@@ -78,7 +86,7 @@ defmodule ClassicClips.PickEm do
     Fiat.CacheServer.fetch_object(
       {:ndc_pick, id},
       fn -> get_ndc_pick_for_matchup(matchup) end,
-      60
+      10
     )
   end
 
@@ -115,19 +123,29 @@ defmodule ClassicClips.PickEm do
 
   @trace :save_user_pick
   def save_user_pick(nil, selected_team, %User{id: user_id}, %MatchUp{id: matchup_id}) do
-    UserPick.changeset(%UserPick{}, %{
-      user_id: user_id,
-      matchup_id: matchup_id,
-      picked_team_id: selected_team.id
-    })
-    |> Repo.insert()
+    with {:ok, pick} <-
+           UserPick.changeset(%UserPick{}, %{
+             user_id: user_id,
+             matchup_id: matchup_id,
+             picked_team_id: selected_team.id
+           })
+           |> Repo.insert() do
+      Fiat.CacheServer.remove_key({:picks_for_user, pick.user_id})
+
+      {:ok, pick}
+    end
   end
 
   @trace :save_user_pick
   def save_user_pick(%UserPick{} = user_pick, selected_team, %User{id: user_id}, _)
       when user_pick.user_id == user_id do
-    UserPick.changeset(user_pick, %{picked_team_id: selected_team.id})
-    |> Repo.update()
+    with {:ok, pick} <-
+           UserPick.changeset(user_pick, %{picked_team_id: selected_team.id})
+           |> Repo.update(returning: true) do
+      Fiat.CacheServer.remove_key({:picks_for_user, pick.user_id})
+
+      {:ok, pick}
+    end
   end
 
   def remove_user_picks_for_matchup(%MatchUp{id: id}) do
@@ -163,8 +181,6 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_leaders
   def get_leaders(%Season{id: season_id}, month) do
-    current_season = from(s in Season, where: s.current == true, select: s.id)
-
     subquery =
       from(up in UserPick,
         left_join: m in assoc(up, :matchup),
@@ -655,6 +671,8 @@ defmodule ClassicClips.PickEm do
 
     month = get_month_name(tip_datetime_est.month)
 
+    current_season = get_current_season_cached()
+
     matchup_changeset =
       MatchUp.changeset(%MatchUp{}, %{
         month: month,
@@ -665,7 +683,8 @@ defmodule ClassicClips.PickEm do
         home_team_id: home_team.id,
         favorite_team_id: favorite_team.id,
         status: status,
-        publish_at: publish_at
+        publish_at: publish_at,
+        season_id: current_season.id
       })
 
     ndc_attrs = %{
@@ -681,6 +700,7 @@ defmodule ClassicClips.PickEm do
          ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
          ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
          {:ok, _} <- Repo.insert(ndc_pick_changeset),
+         true <- Fiat.CacheServer.remove_key(:most_recent_matchup),
          {:ok, _} <- notify_sickos(matchup),
          {:ok, _} <- post_matchup_on_twitter(matchup) do
       {:ok, matchup}
@@ -817,6 +837,7 @@ defmodule ClassicClips.PickEm do
 
     Fiat.CacheServer.cache_object({:is_missing_picks?, user_id}, false, 1)
     Fiat.CacheServer.cache_object({:picks_for_user, user_id}, get_picks_for_user(user), 10)
+    Fiat.CacheServer.remove_key({:leaders, current_month, season.id})
   end
 
   def is_missing_picks_cached?(user) do

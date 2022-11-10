@@ -3,6 +3,7 @@ defmodule ClassicClips.PickEm.MatchUp do
   import Ecto.Changeset
 
   alias ClassicClips.PickEm.Team
+  alias ClassicClips.BigBeef.Season
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "matchups" do
@@ -18,6 +19,7 @@ defmodule ClassicClips.PickEm.MatchUp do
     belongs_to :home_team, Team, type: :binary_id
     belongs_to :favorite_team, Team, type: :binary_id
     belongs_to :winning_team, Team, type: :binary_id
+    belongs_to :season, Season, type: :binary_id
 
     has_many :user_picks, ClassicClips.PickEm.UserPick, foreign_key: :matchup_id
     has_one :ndc_picks, ClassicClips.PickEm.NdcPick, foreign_key: :matchup_id
@@ -38,6 +40,7 @@ defmodule ClassicClips.PickEm.MatchUp do
       :home_team_id,
       :nba_game_id,
       :favorite_team_id,
+      :season_id,
       :status,
       :winning_team_id
     ])
@@ -49,6 +52,7 @@ defmodule ClassicClips.PickEm.MatchUp do
       :away_team_id,
       :home_team_id,
       :favorite_team_id,
+      :season_id,
       :status
     ])
   end
