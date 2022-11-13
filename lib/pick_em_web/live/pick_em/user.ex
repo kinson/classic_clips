@@ -13,4 +13,14 @@ defmodule PickEmWeb.PickEmLive.User do
   def get_or_create_user(_) do
     {:ok, nil}
   end
+
+  def get_truncated_username(%ClassicClips.Timeline.User{username: username}) do
+    if String.length(username) > 22 do
+      truncated = String.slice(username, 0..19) |> String.trim_trailing()
+
+      "#{truncated}..."
+    else
+      username
+    end
+  end
 end

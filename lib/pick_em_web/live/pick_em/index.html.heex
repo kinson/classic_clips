@@ -60,7 +60,7 @@
       No Dunks Crew Picks
     </p>
 
-    <div class="grid grid-cols-4 text-white max-w-xs my-2 font-bold">
+    <div class="grid grid-cols-4 text-white max-w-md my-2 font-bold">
       <p class="col-span-3 my-1">
         TAS
         <span class="font-light ml-4">
@@ -89,6 +89,24 @@
         <%= render_team_abbreviation(get_ndc_pick("trey", @ndc_pick), @theme) %>
       </div>
     </div>
+
+    <%= if @user do %>
+      <p class="text-center text-nd-pink w-max mt-8 mb-4 font-open-sans font-bold text-4xl">
+        Your Pick
+      </p>
+
+      <div class="flex flex-row text-white my-2 font-bold">
+        <p class="min-w-21 pr-10 my-1">
+          <%= User.get_truncated_username(@user) %>
+          <span class="font-light ml-4">
+            <%= get_user_record(@current_user_month_record) %>
+          </span>
+        </p>
+        <div class="my-1">
+          <%= get_picked_team(@existing_user_pick, @theme) %>
+        </div>
+      </div>
+    <% end %>
   </div>
 
   <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
@@ -96,7 +114,7 @@
   <div class="ml-10 md:ml-20">
     <div>
       <p class="text-nd-pink w-max mb-0 font-open-sans font-bold text-4xl">
-        Your Pick
+        Lock In Your Pick
       </p>
       <p class="text-white font-open-sans text-2xl font-light mt-2 mb-1">
         <%= get_time_left(@matchup) %>

@@ -20,6 +20,9 @@ module.exports = {
           '27/24': '112.5%',
           '13/12': '108%'
         },
+        minWidth: {
+          '21': '21rem'
+        },
         boxShadow: {
           'brutal': '4px 5px 0px #111',
           'notification': '6px 8px 3px #333'

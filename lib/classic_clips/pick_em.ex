@@ -121,6 +121,14 @@ defmodule ClassicClips.PickEm do
     |> Repo.preload([:picked_team])
   end
 
+  def get_current_month_record(nil), do: nil
+
+  def get_current_month_record(%User{id: user_id}) do
+    current_month = get_current_month_name()
+    current_season = get_current_season_cached()
+    Repo.get_by(UserRecord, user_id: user_id, month: current_month, season_id: current_season.id)
+  end
+
   @trace :save_user_pick
   def save_user_pick(nil, selected_team, %User{id: user_id}, %MatchUp{id: matchup_id}) do
     with {:ok, pick} <-
@@ -129,7 +137,8 @@ defmodule ClassicClips.PickEm do
              matchup_id: matchup_id,
              picked_team_id: selected_team.id
            })
-           |> Repo.insert() do
+           |> Repo.insert(),
+         pick <- Repo.preload(pick, :picked_team, force: true) do
       Fiat.CacheServer.remove_key({:picks_for_user, pick.user_id})
 
       {:ok, pick}
@@ -141,7 +150,8 @@ defmodule ClassicClips.PickEm do
       when user_pick.user_id == user_id do
     with {:ok, pick} <-
            UserPick.changeset(user_pick, %{picked_team_id: selected_team.id})
-           |> Repo.update(returning: true) do
+           |> Repo.update(returning: true),
+         pick <- Repo.preload(pick, :picked_team, force: true) do
       Fiat.CacheServer.remove_key({:picks_for_user, pick.user_id})
 
       {:ok, pick}

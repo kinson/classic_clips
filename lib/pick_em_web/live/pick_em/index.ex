@@ -4,22 +4,25 @@ defmodule PickEmWeb.PickEmLive.Index do
   import PickEmWeb.PickEmLive.Emoji
 
   alias Phoenix.LiveView.JS
-  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, Team, NdcRecord}
+  alias ClassicClips.PickEm
+  alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, UserRecord, Team, NdcRecord}
   alias PickEmWeb.PickEmLive.{NotificationComponent, Theme, User}
 
   @impl true
   def mount(_params, session, socket) do
-    matchup = ClassicClips.PickEm.get_cached_most_recent_matchup()
+    matchup = PickEm.get_cached_most_recent_matchup()
 
-    ndc_pick = ClassicClips.PickEm.get_cached_ndc_pick_for_matchup(matchup)
+    ndc_pick = PickEm.get_cached_ndc_pick_for_matchup(matchup)
 
-    ndc_record = ClassicClips.PickEm.get_current_ndc_record()
+    ndc_record = PickEm.get_current_ndc_record()
 
-    matchup_pick_spread = ClassicClips.PickEm.get_cached_pick_spread(matchup)
+    matchup_pick_spread = PickEm.get_cached_pick_spread(matchup)
 
     {:ok, user} = User.get_or_create_user(session)
 
-    existing_user_pick = ClassicClips.PickEm.get_user_pick_for_matchup(user, matchup)
+    existing_user_pick = PickEm.get_user_pick_for_matchup(user, matchup)
+
+    current_user_month_record = PickEm.get_current_month_record(user)
 
     can_save_pick? = can_save_pick?(matchup)
 
@@ -33,6 +36,7 @@ defmodule PickEmWeb.PickEmLive.Index do
      |> assign(:ndc_pick, ndc_pick)
      |> assign(:pick_spread, matchup_pick_spread)
      |> assign(:ndc_record, ndc_record)
+     |> assign(:current_user_month_record, current_user_month_record)
      |> assign(:user, user)
      |> assign(:existing_user_pick, existing_user_pick)
      |> assign(:can_save_pick?, can_save_pick?)
@@ -117,6 +121,28 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp maybe_disable(class_string, false), do: class_string <> " opacity-60"
   defp maybe_disable(class_string, _), do: class_string <> " shadow-brutal"
+
+  defp get_user_record(nil), do: "[ 0 - 0 ]"
+
+  defp get_user_record(%UserRecord{wins: wins, losses: losses}) do
+    "[ #{wins} - #{losses} ]"
+  end
+
+  defp get_picked_team(nil, %{"emojis_enabled" => true} = theme) do
+    if Map.get(theme, "emojis_only") do
+      "❓"
+    else
+      "❓ TBD"
+    end
+  end
+
+  defp get_picked_team(nil, _theme) do
+    "TBD"
+  end
+
+  defp get_picked_team(%UserPick{picked_team: picked_team}, theme) do
+    render_team_abbreviation(picked_team, theme)
+  end
 
   defp get_initial_team_button_class(%UserPick{picked_team_id: id}, %Team{id: id}, can_save_pick?) do
     "#{base_button_class()} bg-nd-pink text-nd-yellow border-2 border-white hover:border-white focus:border-white"
