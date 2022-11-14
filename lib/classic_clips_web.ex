@@ -45,7 +45,7 @@ defmodule ClassicClipsWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ClassicClipsWeb.LayoutView, "live.html"},
+        layout: {ClassicClipsWeb.LayoutView, :live},
         namespace: ClassicClipsWeb
 
       unquote(view_helpers())
@@ -83,7 +83,7 @@ defmodule ClassicClipsWeb do
       use Phoenix.HTML
 
       # Import LiveView helpers (live_render, live_component, live_patch, etc)
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
       import ClassicClipsWeb.LiveHelpers
 
       # Import basic rendering functionality (render, render_layout, etc)

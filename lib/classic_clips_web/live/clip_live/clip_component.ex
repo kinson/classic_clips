@@ -25,7 +25,8 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
             class={"save-button #{get_save_class(@saves, @clip)}"}
             phx-click="save_clip"
             phx-value-clip={@id}
-          ></div>
+          >
+          </div>
           <%= link to: @clip.yt_video_url, class: "tas-text", target: "_blank" do %>
             <%= @clip.title |> String.upcase() %>
             <span>
@@ -44,7 +45,8 @@ defmodule ClassicClipsWeb.ClipLive.ClipComponent do
                       id="Rectangle"
                       transform="translate(95.297759, 155) rotate(-315.000000) translate(-95.297759, -155) "
                       points="77.2665364 137.557089 113.328982 137.557089 113.328982 173.619535"
-                    ></polyline>
+                    >
+                    </polyline>
                   </g>
                 </g>
               </svg>

@@ -12,9 +12,12 @@
   <p class="text-nd-pink mb-6 mt-10 ml-10 md:ml-20 font-open-sans font-bold text-4xl">
     Account Settings
   </p>
-  <.form let={f} for={:matchup_emails} phx-change="toggle-email-notifications">
+  <.form :let={f} for={:matchup_emails} phx-change="toggle-email-notifications">
     <div class="flex flex-row items-baseline gap-6 mb-10 ml-10 md:ml-20">
-      <%= checkbox(f, :email_notifications, value: @subscribed_to_email_notifications?, class: "my-0") %>
+      <%= checkbox(f, :email_notifications,
+        value: @subscribed_to_email_notifications?,
+        class: "my-0"
+      ) %>
       <p class="text-white my-0 font-open-sans font-bold text-3xl">
         Get Matchup Email Notifications
       </p>

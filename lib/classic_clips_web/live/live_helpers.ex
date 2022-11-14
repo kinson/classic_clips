@@ -1,5 +1,5 @@
 defmodule ClassicClipsWeb.LiveHelpers do
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
 
   alias ClassicClips.Timeline.User
   alias ClassicClips.{Repo, Timeline}
@@ -20,8 +20,16 @@ defmodule ClassicClipsWeb.LiveHelpers do
   """
   def live_modal(_socket, component, opts) do
     path = Keyword.fetch!(opts, :return_to)
-    modal_opts = [id: :modal, return_to: path, component: component, opts: opts]
-    live_component(ClassicClipsWeb.ModalComponent, modal_opts)
+
+    modal_opts = [
+      module: ClassicClipsWeb.ModalComponent,
+      id: :modal,
+      return_to: path,
+      component: component,
+      opts: opts
+    ]
+
+    live_component(modal_opts)
   end
 
   def get_or_create_user(%{"profile" => profile}) do

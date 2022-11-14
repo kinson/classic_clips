@@ -31,13 +31,14 @@ defmodule PickEmWeb.PickEmLive.AccountInfoComponent do
           <% end %>
         </div>
         <%= if @editing_profile do %>
-          <.form let={f} for={:user} phx-submit="save" phx-target={@myself} class="mb-0">
+          <.form :let={f} for={:user} phx-submit="save" phx-target={@myself} class="mb-0">
             <%= text_input(f, :username,
               value: @user.username,
               class: "!w-full block font-open-sans text-3xl tracking-wide"
             ) %>
             <%= submit("Save",
-              class: "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 w-full"
+              class:
+                "text-nd-yellow bg-nd-pink hover:bg-nd-pink focus:bg-nd-pink border-0 mb-0 w-full"
             ) %>
           </.form>
         <% else %>

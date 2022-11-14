@@ -1,6 +1,6 @@
 <div class="border-l-2 border-nd-yellow w-11/12 mx-auto md:w-full">
   <.form
-    let={f}
+    :let={f}
     for={:team_emojis}
     action={Routes.theme_path(@socket, :create)}
     phx-change="toggle_emojis"
@@ -31,11 +31,17 @@
       Team Emojis
     </p>
     <%= if @is_editing_teams do %>
-      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="cancel">
+      <p
+        class="my-0 underline cursor-pointer font-open-sans font-light text-white"
+        phx-click="cancel"
+      >
         cancel
       </p>
     <% else %>
-      <p class="my-0 underline cursor-pointer font-open-sans font-light text-white" phx-click="edit">
+      <p
+        class="my-0 underline cursor-pointer font-open-sans font-light text-white"
+        phx-click="edit"
+      >
         edit
       </p>
     <% end %>
@@ -47,7 +53,7 @@
     </p>
   <% end %>
 
-  <.form let={f} for={:custom_emojis} action={Routes.theme_path(@socket, :create)}>
+  <.form :let={f} for={:custom_emojis} action={Routes.theme_path(@socket, :create)}>
     <div class="flex flex-row ml-10 md:ml-20">
       <div class="flex flex-col flex-1">
         <%= for team <- @east_teams do %>

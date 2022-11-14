@@ -11,7 +11,9 @@ defmodule BigBeefWeb.BeefLive.GraphComponent do
       </p>
       <div class="graph-floater">
         <p class="active-count">
-          <%= if @active_game_count == 1, do: "1 active game", else: "#{@active_game_count} active games" %>
+          <%= if @active_game_count == 1,
+            do: "1 active game",
+            else: "#{@active_game_count} active games" %>
           <span class={if @active_game_count > 0, do: "active"}></span>
         </p>
         <div class="graph-container">

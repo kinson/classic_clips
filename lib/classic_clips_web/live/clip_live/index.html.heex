@@ -16,7 +16,8 @@
 <%= if @live_action in [:show] do %>
   <%= if is_nil(@clip) do %>
     <div class="clip-not-found">
-      <p>Hmmm, it looks like we couldn't find that clip. Tweet or message
+      <p>
+        Hmmm, it looks like we couldn't find that clip. Tweet or message
         <a href="https://twitter.com/bigbeeftracker">
           @BigBeefTracker
         </a>
@@ -72,8 +73,8 @@
       <div id="search-area">
         <i class="fas fa-search"></i>
         <.form
+          :let={d}
           for={:search}
-          let={d}
           action={Routes.clip_index_path(@socket, :index)}
           phx-change="change_search"
           class="search-form"
@@ -86,8 +87,8 @@
       viewing:
     </p>
     <.form
+      :let={f}
       for={:sort}
-      let={f}
       action={Routes.clip_index_path(@socket, :index)}
       phx-change="change_sort"
       class="sort-form"
