@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Follow nightly big beef prospects across the NBA">
+    <meta name="description" content="Follow nightly big beef prospects across the NBA" />
     <meta name="og:description" content="Follow nightly big beef prospects across the NBA" />
-    <meta name="keywords" content="Big, Beef, No Dunks, Rebounds, Arbys">
-    <meta name="author" content="Sam H">
-    <meta name="url" content="http://www.bigbeeftracker.com">
+    <meta name="keywords" content="Big, Beef, No Dunks, Rebounds, Arbys" />
+    <meta name="author" content="Sam H" />
+    <meta name="url" content="http://www.bigbeeftracker.com" />
     <meta name="og:url" content="http://www.bigbeeftracker.com" />
     <meta name="title" content="Big Beef Tracker" />
     <meta name="og:title" content="Big Beef Tracker" />
@@ -18,33 +18,35 @@
     <script defer data-domain="bigbeeftracker.com" src="https://plausible.io/js/plausible.js">
     </script>
     <%= csrf_meta_tag() %>
-    <%= live_title_tag(assigns[:page_title] || "Classic Clips") %>
+    <.live_title>
+      <%= assigns[:metadata_title] || "Classic Clips" %>
+    </.live_title>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/lib.css")} />
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cutive+Mono:wght@300;400;600;700&family=Rokkitt:wght@400;700&display=swap"
       rel="stylesheet"
-    >
+    />
 
     <link
       rel="apple-touch-icon"
       sizes="180x180"
       href={Routes.static_path(@conn, "/images/apple-touch-icon.png")}
-    >
+    />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
       href={Routes.static_path(@conn, "/images/favicon-32x32.png")}
-    >
+    />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
       href={Routes.static_path(@conn, "/images/favicon-16x16.png")}
-    >
-    <link rel="manifest" href={Routes.static_path(@conn, "/images/site.webmanifest")}>
+    />
+    <link rel="manifest" href={Routes.static_path(@conn, "/images/site.webmanifest")} />
 
     <script
       defer

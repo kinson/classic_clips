@@ -1,5 +1,5 @@
 defmodule PickEmWeb.PickEmLive.Emoji do
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
 
   alias PickEmWeb.PickEmLive.Theme
 

@@ -11,7 +11,7 @@ defmodule BigBeefWeb.BeefLive.StatsComponent do
           LATEST BIG BEEF [# <%= get_season_beef_count(@big_beefs) %>]
         </p>
         <div class="card">
-          <img id="player-pic" src={player_headshot_link(@latest.beef.player)}>
+          <img id="player-pic" src={player_headshot_link(@latest.beef.player)} />
           <div class="group info">
             <p class="date">
               <%= format_time(@latest.beef.date_time) %>

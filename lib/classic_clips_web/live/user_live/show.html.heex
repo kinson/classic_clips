@@ -12,13 +12,12 @@
     </div>
 
     <%= if @show_edit == true do %>
-      <.form let={f} for={@changeset} phx-change="validate" phx-submit="save">
+      <.form :let={f} for={@changeset} phx-change="validate" phx-submit="save">
         <%= text_input(f, :username, placeholder: "Username", phx_debounce: "250") %>
         <%= error_tag(f, :username) %>
         <%= submit("Save") %>
       </.form>
     <% else %>
-
       <div class="username-container">
         <%= if is_nil(@user.username) do %>
           <p class="big-username">
@@ -35,7 +34,6 @@
         </p>
       </div>
     <% end %>
-
   </div>
   <div class="user-clips-area">
     <div class="headers">

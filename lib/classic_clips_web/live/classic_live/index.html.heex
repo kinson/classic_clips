@@ -4,8 +4,8 @@
       <div id="search-area">
         <i class="fas fa-search"></i>
         <.form
+          :let={d}
           for={:search}
-          let={d}
           action={Routes.classic_index_path(@socket, :index)}
           phx-change="change_search"
           class="search-form"
@@ -18,8 +18,8 @@
       viewing:
     </p>
     <.form
+      :let={f}
       for={:filter}
-      let={f}
       action={Routes.classic_index_path(@socket, :index)}
       phx-change="change_filter"
       class="sort-form"
@@ -52,7 +52,9 @@
           </div>
           <%= if has_clips?(video) do %>
             <div class="clips">
-              <%= link(count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id)) %>
+              <%= link(count_clips(video),
+                to: Routes.clip_index_path(@socket, :index, video_id: video.id)
+              ) %>
             </div>
           <% end %>
         </div>
@@ -81,7 +83,9 @@
           </div>
           <%= if has_clips?(video) do %>
             <div class="clips">
-              <%= link(count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id)) %>
+              <%= link(count_clips(video),
+                to: Routes.clip_index_path(@socket, :index, video_id: video.id)
+              ) %>
             </div>
           <% end %>
         </div>
@@ -110,7 +114,9 @@
           </div>
           <%= if has_clips?(video) do %>
             <div class="clips">
-              <%= link(count_clips(video), to: Routes.clip_index_path(@socket, :index, video_id: video.id)) %>
+              <%= link(count_clips(video),
+                to: Routes.clip_index_path(@socket, :index, video_id: video.id)
+              ) %>
             </div>
           <% end %>
         </div>

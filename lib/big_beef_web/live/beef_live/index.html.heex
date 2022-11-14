@@ -25,7 +25,10 @@
       page_type: @page_type,
       big_beefs: @big_beefs
     ) %>
-    <%= live_component(BigBeefWeb.BeefLive.PledgeComponent, id: "pledge-component", page_type: @page_type) %>
+    <%= live_component(BigBeefWeb.BeefLive.PledgeComponent,
+      id: "pledge-component",
+      page_type: @page_type
+    ) %>
     <footer class="beef-footer">
       <a href="https://twitter.com/BigBeefTracker">
         Twitter

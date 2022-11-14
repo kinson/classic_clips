@@ -1,6 +1,5 @@
 defmodule BigBeefWeb.Router do
   use BigBeefWeb, :router
-  import Plug.BasicAuth
   import BigBeefWeb.ReqReferer
 
   pipeline :browser do

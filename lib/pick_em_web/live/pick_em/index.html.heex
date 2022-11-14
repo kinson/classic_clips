@@ -47,10 +47,12 @@
       </div>
     <% else %>
       <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-6">
-        TIP @ <%= get_time_for_game(@matchup) %> EST &bull; <%= get_pick_spread_string(@pick_spread, @matchup) %>
+        TIP @ <%= get_time_for_game(@matchup) %> EST &bull; <%= get_pick_spread_string(
+          @pick_spread,
+          @matchup
+        ) %>
       </p>
     <% end %>
-
   </div>
 
   <div class="h-0 border-t-2 w-full border-nd-yellow my-10"></div>
@@ -128,7 +130,13 @@
           id="away-team-button"
           phx-click={handle_team_click("away", @matchup.away_team.abbreviation, @can_save_pick?)}
           phx-value-enabled={"#{@can_save_pick?}"}
-          class={get_initial_team_button_class(@existing_user_pick, @matchup.away_team, @can_save_pick?)}
+          class={
+            get_initial_team_button_class(
+              @existing_user_pick,
+              @matchup.away_team,
+              @can_save_pick?
+            )
+          }
         >
           <%= render_team_name(@matchup.away_team, @theme, "mx-auto") %>
         </button>
@@ -137,7 +145,13 @@
           id="home-team-button"
           phx-click={handle_team_click("home", @matchup.home_team.abbreviation, @can_save_pick?)}
           phx-value-enabled={"#{@can_save_pick?}"}
-          class={get_initial_team_button_class(@existing_user_pick, @matchup.home_team, @can_save_pick?)}
+          class={
+            get_initial_team_button_class(
+              @existing_user_pick,
+              @matchup.home_team,
+              @can_save_pick?
+            )
+          }
         >
           <%= render_team_name(@matchup.home_team, @theme) %>
         </button>
@@ -149,7 +163,12 @@
           phx-click="save-click"
           value="none"
           phx-value-enabled={"#{@can_save_pick?}"}
-          class={maybe_disable("text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink", @can_save_pick?)}
+          class={
+            maybe_disable(
+              "text-white rounded-lg bg-nd-pink w-max rounded-none font-open-sans font-bold text-2xl border-0 shadow-lg my-6 hover:bg-nd-pink focus:bg-nd-pink",
+              @can_save_pick?
+            )
+          }
         >
           <%= get_save_button_text(@existing_user_pick, @can_save_pick?) %>
         </button>

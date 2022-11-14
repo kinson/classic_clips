@@ -10,7 +10,6 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
         Raising Money to End Food Insecurity
       </p>
       <div class="pledge-card">
-
         <div class="raised">
           <p class="amount">
             $130
@@ -20,7 +19,8 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
           </p>
         </div>
 
-        <p>For the third season, Big Beef Tracker is giving back by donating to
+        <p>
+          For the third season, Big Beef Tracker is giving back by donating to
           <a href="https://www.feedingamerica.org/">
             Feeding America
           </a>

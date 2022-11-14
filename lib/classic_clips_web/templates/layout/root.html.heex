@@ -10,7 +10,10 @@
       name="description"
       content="Search, share, and save your favorite clips from No Dunks classics"
     />
-    <meta name="og:description" content="Search, share, and save your favorite clips from No Dunks" />
+    <meta
+      name="og:description"
+      content="Search, share, and save your favorite clips from No Dunks"
+    />
     <meta name="url" content="http://www.classicclipsinc.com" />
     <meta name="og:url" content="http://www.classicclipsinc.com" />
     <meta name="title" content="Classic Clips" />
@@ -25,14 +28,16 @@
     />
     <meta name="twitter:card" content="summary_large_image" />
     <%= csrf_meta_tag() %>
-    <%= live_title_tag(assigns[:page_title] || "Classic Clips") %>
+    <.live_title>
+      <%= assigns[:metadata_title] || "Classic Clips" %>
+    </.live_title>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/lib.css")} />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
       rel="stylesheet"
-    >
+    />
     <script
       defer
       phx-track-static

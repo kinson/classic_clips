@@ -42,7 +42,8 @@
       <div class="flex flex-row gap-4 flex-wrap">
         <%= for month <- months do %>
           <%= live_patch(String.capitalize(month),
-            to: Routes.pick_em_leaders_path(@socket, :leaders, month: month, season: season.year_end),
+            to:
+              Routes.pick_em_leaders_path(@socket, :leaders, month: month, season: season.year_end),
             class: "ml-2 text-white font-open-sans font-light underline"
           ) %>
         <% end %>

@@ -6,31 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="keywords" content="Big, Beef, No Dunks, Classics, Clips, Classic" />
     <meta name="author" content="Sam H" />
-    <meta name="url" content={ assigns[:metadata_url] || ""} />
-    <meta name="og:url" content={ assigns[:metadata_url] || ""} />
-    <meta name="title" content={ assigns[:metadata_title] || ""} />
-    <meta name="og:title" content={ assigns[:metadata_title] || ""} />
-    <meta name="description" content={ assigns[:metadata_description] || ""} />
-    <meta name="og:description" content={ assigns[:metadata_description] || ""} />
-    <meta name="og:image" content={ assigns[:metadata_image] || ""} />
-    <meta name="image" content={ assigns[:metadata_image] || ""} />
+    <meta name="url" content={assigns[:metadata_url] || ""} />
+    <meta name="og:url" content={assigns[:metadata_url] || ""} />
+    <meta name="title" content={assigns[:metadata_title] || ""} />
+    <meta name="og:title" content={assigns[:metadata_title] || ""} />
+    <meta name="description" content={assigns[:metadata_description] || ""} />
+    <meta name="og:description" content={assigns[:metadata_description] || ""} />
+    <meta name="og:image" content={assigns[:metadata_image] || ""} />
+    <meta name="image" content={assigns[:metadata_image] || ""} />
     <meta name="twitter:card" content="summary_large_image" />
     <%= csrf_meta_tag() %>
-    <%= live_title_tag(assigns[:metadata_title] || "Classic Clips") %>
-    <link phx-track-static rel="stylesheet" href={ Routes.static_path(@conn, "/assets/lib.css")} />
-    <link phx-track-static rel="stylesheet" href={ Routes.static_path(@conn, "/assets/app.css")} />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <.live_title>
+      <%= assigns[:metadata_title] || "Classic Clips" %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/lib.css")} />
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
       rel="stylesheet"
-    >
+    />
     <script defer data-domain="classicclipsinc.com" src="https://plausible.io/js/plausible.js">
     </script>
     <script
       defer
       phx-track-static
       type="text/javascript"
-      src={ Routes.static_path(@conn, "/assets/app.js")}
+      src={Routes.static_path(@conn, "/assets/app.js")}
     >
     </script>
     <script defer src="https://kit.fontawesome.com/52e2b7ce67.js" crossorigin="anonymous">
