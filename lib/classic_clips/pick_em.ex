@@ -719,7 +719,7 @@ defmodule ClassicClips.PickEm do
   end
 
   @trace :notify_sickos
-  def notify_sickos(matchup) do
+  def notify_sickos(%MatchUp{status: :published} = matchup) do
     NewRelic.Instrumented.Task.Supervisor.start_child(
       ClassicClips.TaskSupervisor,
       fn ->
@@ -736,7 +736,15 @@ defmodule ClassicClips.PickEm do
     {:ok, true}
   end
 
-  def post_matchup_on_twitter(matchup) do
+  def notify_sickos(%MatchUp{status: status, id: id}) do
+    Logger.info("Skipping emails until matchup is published, currently in: #{status} status",
+      matchup_id: id
+    )
+
+    {:ok, true}
+  end
+
+  def post_matchup_on_twitter(%MatchUp{status: :published} = matchup) do
     NewRelic.Instrumented.Task.Supervisor.start_child(
       ClassicClips.TaskSupervisor,
       fn ->
@@ -762,6 +770,14 @@ defmodule ClassicClips.PickEm do
         ClassicClips.Twitter.post_tweet(tweet_string)
       end,
       shutdown: 10_000
+    )
+
+    {:ok, true}
+  end
+
+  def post_matchup_on_twitter(%MatchUp{status: status, id: id}) do
+    Logger.info("Skipping Twitter post until matchup is published, currently in #{status} status",
+      matchup_id: id
     )
 
     {:ok, true}
