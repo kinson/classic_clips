@@ -281,7 +281,7 @@ defmodule ClassicClips.PickEm do
     end)
     |> Enum.map(&Repo.update/1)
 
-    season = Repo.get_by!(ClassicClips.BigBeef.Season, current: true)
+    season = ClassicClips.PickEm.get_current_season_cached()
 
     user_picks
     |> Enum.map(fn pick ->
@@ -325,7 +325,7 @@ defmodule ClassicClips.PickEm do
 
   @trace :create_ndc_record_for_month
   defp create_ndc_record_for_month(current_month, spread_winning_team_id, %NdcPick{} = ndc_pick) do
-    current_season = Repo.get_by!(Season, current: true)
+    current_season = get_current_season_cached()
 
     ndc_record = %NdcRecord{
       month: current_month,
@@ -591,7 +591,7 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_current_season_cached
   def get_current_season_cached do
-    Fiat.CacheServer.fetch_object(:current_season, &get_current_season/0, 600)
+    Fiat.CacheServer.fetch_object(:current_season, &get_current_season/0, 1200)
   end
 
   @trace :get_current_season
@@ -858,7 +858,7 @@ defmodule ClassicClips.PickEm do
           |> Repo.insert()
       end)
 
-    season = Repo.get_by!(ClassicClips.BigBeef.Season, current: true)
+    season = get_current_season_cached()
 
     create_or_update_user_record(user_id, season.id, 0, Enum.count(new_picks))
 

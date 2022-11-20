@@ -424,7 +424,7 @@ defmodule ClassicClips.BigBeef do
         %Player{} = p -> {:ok, p}
       end
 
-    current_season = Repo.get_by!(Season, current: true)
+    current_season = ClassicClips.PickEm.get_current_season_cached()
 
     beef_data =
       Map.merge(player_data, %{
