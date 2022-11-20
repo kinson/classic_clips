@@ -15,7 +15,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     current_matchup = PickEm.get_todays_matchup()
 
-    current_season = PickEm.get_current_season()
+    current_season = PickEm.get_current_season_cached()
 
     current_ndc_picks = PickEm.get_ndc_pick_for_matchup(current_matchup)
 
