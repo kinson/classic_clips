@@ -98,6 +98,11 @@ defmodule ClassicClips.PickEm do
 
   def get_ndc_pick_for_matchup(nil), do: nil
 
+  @trace :get_current_ndc_record_cached
+  def get_current_ndc_record_cached() do
+    Fiat.CacheServer.fetch_object(:current_ndc_record, &get_current_ndc_record/0, 300)
+  end
+
   @trace :get_current_ndc_record
   def get_current_ndc_record() do
     from(n in NdcRecord,

@@ -14,7 +14,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     ndc_pick = PickEm.get_cached_ndc_pick_for_matchup(matchup)
 
-    ndc_record = PickEm.get_current_ndc_record()
+    ndc_record = PickEm.get_current_ndc_record_cached()
 
     matchup_pick_spread = PickEm.get_cached_pick_spread(matchup)
 
