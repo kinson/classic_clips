@@ -835,7 +835,7 @@ defmodule ClassicClips.PickEm do
     new_picks =
       from(m in MatchUp,
         where: m.month == ^current_month,
-        where: m.season_id in subquery(current_season),
+        where: m.season_id == ^current_season,
         where: m.id not in subquery(user_picks),
         where: not is_nil(m.winning_team_id),
         select: {m.id, m.winning_team_id, m.away_team_id, m.home_team_id}
