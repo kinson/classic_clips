@@ -48,7 +48,7 @@ defmodule BigBeefWeb.BeefLive.Helpers do
     "#{month} #{day}#{day_th}, #{year}"
   end
 
-  def name(%Player{first_name: first_name, last_name: last_name}) do
+  def name(%{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"
   end
 
@@ -58,32 +58,32 @@ defmodule BigBeefWeb.BeefLive.Helpers do
 
   def count(%Beef{beef_count: count}), do: count
 
-  def bs_link(%BigBeefEvent{box_score_url: url}) do
+  def bs_link(%{box_score_url: url}) do
     case String.contains?(url, "https://") do
       true -> url
       false -> "#"
     end
   end
 
-  def yt_link(%BigBeefEvent{yt_highlight_video_url: url}) do
+  def yt_link(%{yt_highlight_video_url: url}) do
     case String.contains?(url, "https://") do
       true -> url
       false -> "#"
     end
   end
 
-  def yt_text(%BigBeefEvent{yt_highlight_video_url: "none"}), do: "No Beef Highlights"
+  def yt_text(%{yt_highlight_video_url: "none"}), do: "No Beef Highlights"
 
-  def yt_text(%BigBeefEvent{yt_highlight_video_url: "notyet"}), do: "Highlights Coming Soon..."
+  def yt_text(%{yt_highlight_video_url: "notyet"}), do: "Highlights Coming Soon..."
 
-  def yt_text(%BigBeefEvent{yt_highlight_video_url: url}) do
+  def yt_text(%{yt_highlight_video_url: url}) do
     case String.contains?(url, "https://") do
       true -> "Big Beef Highlights"
       false -> "Highlights Not Available"
     end
   end
 
-  def bs_text(%BigBeefEvent{box_score_url: url}) do
+  def bs_text(%{box_score_url: url}) do
     case String.contains?(url, "https://") do
       true -> "Box Score"
       false -> "Box Score Coming Soon..."

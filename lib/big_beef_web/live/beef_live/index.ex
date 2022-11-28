@@ -18,10 +18,27 @@ defmodule BigBeefWeb.BeefLive.Index do
     total_big_beef_leaders = ClassicClips.BigBeef.get_big_beef_count_leaders()
     season_single_game_leaders = ClassicClips.BigBeef.get_season_single_game_leaders()
     season_total_big_beef_leaders = ClassicClips.BigBeef.get_season_big_beef_count_leaders()
+    beefs = BigBeef.get_recent_beefs_cached(active_game_count)
+
+    IO.inspect(:erlang.external_size(beefs), label: "beefs size")
+    IO.inspect(:erlang.external_size(active_game_count), label: "active_game_count size")
+    IO.inspect(:erlang.external_size(big_beefs), label: "big_beefs size")
+    IO.inspect(:erlang.external_size(latest), label: "latest size")
+    IO.inspect(:erlang.external_size(single_game_leaders), label: "single_game_leaders size")
+
+    IO.inspect(:erlang.external_size(total_big_beef_leaders), label: "total_big_beef_leaders size")
+
+    IO.inspect(:erlang.external_size(season_single_game_leaders),
+      label: "season_single_game_leaders size"
+    )
+
+    IO.inspect(:erlang.external_size(season_total_big_beef_leaders),
+      label: "season_total_big_beef_leaders size"
+    )
 
     modified_socket =
       socket
-      |> assign(:beefs, BigBeef.get_recent_beefs_cached(active_game_count))
+      |> assign(:beefs, beefs)
       |> assign(:last_updated, current_datetime())
       |> assign(:active_game_count, active_game_count)
       |> assign(:big_beefs, big_beefs)
@@ -146,7 +163,7 @@ defmodule BigBeefWeb.BeefLive.Index do
     "#{month} #{day}#{day_th}, #{year}"
   end
 
-  def name(%Player{first_name: first_name, last_name: last_name}) do
+  def name(%{first_name: first_name, last_name: last_name}) do
     "#{first_name} #{last_name}"
   end
 

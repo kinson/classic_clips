@@ -21,7 +21,7 @@ defmodule BigBeefWeb.BeefLive.PreviousBeefComponent do
                   [ <%= format_time(beef.beef.date_time) %> ]
                 </p>
                 <p class="name">
-                  <%= name(beef.beef.player) %>
+                  <%= name(beef.player) %>
                 </p>
                 <p class="count">
                   <%= count(beef.beef) %> 🥩

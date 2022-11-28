@@ -470,8 +470,23 @@ defmodule ClassicClips.BigBeef do
 
   @trace :get_big_beefs_by_season
   def get_big_beefs_by_season() do
-    list_big_beef_events()
-    |> Enum.group_by(& &1.beef.season.year_start)
+    from(bbe in BigBeefEvent,
+      join: b in assoc(bbe, :beef),
+      join: s in assoc(b, :season),
+      join: p in assoc(b, :player),
+      select: %{big_beef: bbe},
+      select_merge: %{player: %{first_name: p.first_name, last_name: p.last_name}},
+      select_merge: %{season: %{year_start: s.year_start, year_end: s.year_end}},
+      select_merge: %{beef: b}
+    )
+    |> Repo.all()
+    |> Enum.map(fn row ->
+      Map.from_struct(row.big_beef)
+      |> Map.put(:player, row.player)
+      |> Map.put(:season, row.season)
+      |> Map.put(:beef, row.beef)
+    end)
+    |> Enum.group_by(& &1.season.year_start)
     |> Enum.sort(fn {year_a, _}, {year_b, _} -> year_a >= year_b end)
   end
 
