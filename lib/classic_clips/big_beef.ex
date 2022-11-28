@@ -477,7 +477,8 @@ defmodule ClassicClips.BigBeef do
       select: %{big_beef: bbe},
       select_merge: %{player: %{first_name: p.first_name, last_name: p.last_name}},
       select_merge: %{season: %{year_start: s.year_start, year_end: s.year_end}},
-      select_merge: %{beef: b}
+      select_merge: %{beef: b},
+      order_by: [desc: bbe.inserted_at]
     )
     |> Repo.all()
     |> Enum.map(fn row ->
