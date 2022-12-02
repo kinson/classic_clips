@@ -511,7 +511,11 @@ defmodule ClassicClips.PickEm do
   defp create_or_update_user_record(user_id, season_id, win_increment, loss_increment) do
     current_month = get_current_month_name()
 
-    case Repo.get_by(UserRecord, user_id: user_id, month: current_month) do
+    case Repo.get_by(UserRecord,
+           user_id: user_id,
+           month: current_month,
+           season_id: season_id
+         ) do
       nil ->
         UserRecord.changeset(%UserRecord{}, %{
           wins: 0 + win_increment,
