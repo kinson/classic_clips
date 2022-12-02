@@ -200,6 +200,7 @@ defmodule ClassicClips.PickEm do
       from(up in UserPick,
         left_join: m in assoc(up, :matchup),
         where: m.month == ^month,
+        where: m.season_id == ^season_id,
         where: not is_nil(up.result),
         # where: is_nil(up.forfeited_at),
         group_by: up.user_id,
@@ -304,9 +305,14 @@ defmodule ClassicClips.PickEm do
   def update_ndc_records_with_matchup_result(game_data, matchup) do
     spread_winning_team_id = get_spread_winning_team_id(game_data, matchup)
     current_month = get_current_month_name()
+    current_season = get_current_season_cached()
     ndc_pick = get_ndc_pick_for_matchup(matchup)
 
-    ndc_record = Repo.get_by(ClassicClips.PickEm.NdcRecord, month: current_month)
+    ndc_record =
+      Repo.get_by(ClassicClips.PickEm.NdcRecord,
+        month: current_month,
+        season_id: current_season.id
+      )
 
     case ndc_record do
       nil -> create_ndc_record_for_month(current_month, spread_winning_team_id, ndc_pick)
