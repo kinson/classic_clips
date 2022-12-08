@@ -1,0 +1,93 @@
+<div class="mx-auto w-full flex flex-col items-center">
+  <div class="flex flex-row w-full items-end justify-around mt-14 mb-0">
+    <img
+      class="h-44 invisible"
+      src="https://external-preview.redd.it/JSCXDo3DC8--DOVmkzm0hjxU0QKohhxOUdYqcKgcdng.jpg?width=640&crop=smart&auto=webp&s=c5104bffb627d914c3de618e80c0015d2c77a21e"
+    />
+    <h2 class="text-nd-yellow font-open-sans mb-0 font-black text-9xl tracking-tightest">
+      PICK 'EM PAYOFF
+    </h2>
+    <img class="h-44" src={Routes.static_path(@socket, "/images/NDC_LOGO_2.png")} />
+  </div>
+  <div class="flex flex-row gap-x-4">
+    <%= render_team_abbreviation(
+      @matchup.away_team,
+      @theme,
+      "text-nd-pink mb-6 mt-2 font-open-sans font-extrabold text-7xl tracking-tightest"
+    ) %>
+    <p class="text-nd-pink mb-6 mt-2 font-open-sans font-extrabold text-7xl tracking-tightest" ) %>
+      @
+    </p>
+    <%= render_team_abbreviation(
+      @matchup.home_team,
+      @theme,
+      "text-nd-pink mb-6 mt-2 font-open-sans font-extrabold text-7xl tracking-tightest"
+    ) %>
+
+    <p class="text-nd-pink mb-6 mt-2 font-open-sans font-extrabold text-7xl tracking-tightest">
+      <%= render_game_spread(@matchup) %>
+    </p>
+  </div>
+
+  <div class="flex flex-row mt-20 gap-5">
+    <div class="flex flex-col items-center">
+      <div class="bg-white p-5 mb-2 border-nd-pink border-2 h-110 w-110 flex flex-col justify-center">
+        <img
+          class="object-contain max-h-100 max-w-100"
+          src={
+            Routes.static_path(
+              @socket,
+              render_ndc_pick_image(@matchup, @matchup.ndc_pick.skeets_pick_team_id)
+            )
+          }
+        />
+      </div>
+      <h2 class="text-nd-pink font-open-sans text-8xl tracking-tightest my-1 font-extrabold">
+        SKEETS
+      </h2>
+      <h3 class="text-nd-yellow text-6xl tracking-tightest my-1 font-bold">
+        (<%= get_ndc_record_string(:skeets, @ndc_record) %>)
+      </h3>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div class="bg-white p-5 mb-2 border-nd-pink border-2 h-110 w-110 flex flex-col justify-center">
+        <img
+          class="object-contain max-h-100 max-w-100"
+          src={
+            Routes.static_path(
+              @socket,
+              render_ndc_pick_image(@matchup, @matchup.ndc_pick.tas_pick_team_id)
+            )
+          }
+        />
+      </div>
+      <h2 class="text-nd-pink font-open-sans text-8xl tracking-tightest my-1 font-extrabold">
+        TAS
+      </h2>
+      <h3 class="text-nd-yellow text-6xl tracking-tightest my-1 font-bold">
+        (<%= get_ndc_record_string(:tas, @ndc_record) %>)
+      </h3>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div class="bg-white p-5 mb-2 border-nd-pink border-2 h-110 w-110 flex flex-col justify-center">
+        <img
+          class="object-contain max-h-100 max-w-100"
+          src={
+            Routes.static_path(
+              @socket,
+              render_ndc_pick_image(@matchup, @matchup.ndc_pick.trey_pick_team_id)
+            )
+          }
+        />
+      </div>
+      <h2 class="text-nd-pink font-open-sans text-8xl tracking-tightest my-1 font-extrabold">
+        TREY
+      </h2>
+      <h3 class="text-nd-yellow text-6xl tracking-tightest my-1 font-bold">
+        (<%= get_ndc_record_string(:trey, @ndc_record) %>)
+      </h3>
+    </div>
+  </div>
+</div>

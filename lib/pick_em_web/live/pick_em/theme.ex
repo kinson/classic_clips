@@ -1,9 +1,13 @@
 defmodule PickEmWeb.PickEmLive.Theme do
   def get_theme_from_session(session) do
-    default_session = %{"emojis_enabled" => false, "emojis_only" => false, "custom_emojis" => %{}}
+    default_session = default_theme()
     session_variables = Map.take(session, ["emojis_enabled", "emojis_only", "custom_emojis"])
 
     Map.merge(default_session, session_variables)
+  end
+
+  def default_theme do
+    %{"emojis_enabled" => false, "emojis_only" => false, "custom_emojis" => %{}}
   end
 
   def get_emoji_for_team(team, nil), do: team.default_emoji

@@ -810,6 +810,10 @@ defmodule ClassicClips.PickEm do
     |> Repo.one()
   end
 
+  def get_matchup_by_id(id) do
+    Repo.get(MatchUp, id) |> Repo.preload([:home_team, :away_team, :ndc_pick])
+  end
+
   def publish_matchup(matchup) do
     with {:ok, updated_matchup} <-
            MatchUp.changeset(matchup, %{status: :published})

@@ -28,6 +28,7 @@ defmodule PickEmWeb.Router do
     live "/profile", PickEmLive.Profile, :profile
     live "/settings", PickEmLive.Settings, :settings
     live "/secaucus", PickEmLive.Secaucus, :secaucus
+    live "/matchup-hero", PickEmLive.MatchupHero, :matchup_hero
   end
 
   if Mix.env() == :dev do

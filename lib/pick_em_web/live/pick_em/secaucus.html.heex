@@ -198,6 +198,14 @@
       <% end %>
     </.form>
 
+    <%= if @current_matchup do %>
+      <%= link to: "/matchup-hero?matchup_id=#{@current_matchup.id}" do %>
+        <button class="rounded-none bg-nd-pink shadow-lg mt-6 w-full hover:bg-nd-yellow hover:text-nd-pink">
+          View Matchup Preview
+        </button>
+      <% end %>
+    <% end %>
+
     <%= if show_notification_buttons(@current_matchup) do %>
       <button
         data-confirm="Are you sure you want to resend email?"
