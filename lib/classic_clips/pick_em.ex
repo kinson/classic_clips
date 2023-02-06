@@ -174,7 +174,7 @@ defmodule ClassicClips.PickEm do
       fn ->
         get_pick_spread(matchup)
       end,
-      30
+      2
     )
   end
 

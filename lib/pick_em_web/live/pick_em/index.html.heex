@@ -46,12 +46,27 @@
         </p>
       </div>
     <% else %>
-      <p class="font-open-sans font-bold text-white text-2xl opacity-90 mt-6">
-        TIP @ <%= get_time_for_game(@matchup) %> EST &bull; <%= get_pick_spread_string(
+      <p class="font-open-sans font-bold text-white text-2xl opacity-80 mt-6 mb-5">
+        TIP @ <%= get_time_for_game(@matchup) %> EST
+      </p>
+
+      <p class="font-open-sans font-bold text-white text-2xl mt-5 mb-3">
+        <%= get_pick_spread_total(@pick_spread) %> &bull; <%= get_pick_spread_string(
           @pick_spread,
           @matchup
         ) %>
       </p>
+
+      <div class="flex flex-row">
+        <div
+          class="h-10 w-full border-white border border-r-0"
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :home)}
+        />
+        <div
+          class="h-10 w-full border-white border border-l-0"
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :away)}
+        />
+      </div>
     <% end %>
   </div>
 

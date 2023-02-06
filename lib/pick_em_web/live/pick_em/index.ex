@@ -8,6 +8,8 @@ defmodule PickEmWeb.PickEmLive.Index do
   alias ClassicClips.PickEm.{MatchUp, NdcPick, UserPick, UserRecord, Team, NdcRecord}
   alias PickEmWeb.PickEmLive.{NotificationComponent, Theme, User}
 
+  @user_picks_results_topic "pick_spread"
+
   @impl true
   def mount(_params, session, socket) do
     matchup = PickEm.get_cached_most_recent_matchup()
@@ -27,6 +29,10 @@ defmodule PickEmWeb.PickEmLive.Index do
     can_save_pick? = can_save_pick?(matchup)
 
     theme = Theme.get_theme_from_session(session)
+
+    if connected?(socket) do
+      PickEmWeb.Endpoint.subscribe(@user_picks_results_topic)
+    end
 
     {:ok,
      socket
@@ -63,6 +69,14 @@ defmodule PickEmWeb.PickEmLive.Index do
       if can_save_pick?(socket.assigns.matchup) do
         case ClassicClips.PickEm.save_user_pick(existing_user_pick, selected_team, user, matchup) do
           {:ok, up} ->
+            fresh_pick_spread = PickEm.get_pick_spread(matchup)
+
+            PickEmWeb.Endpoint.broadcast(
+              @user_picks_results_topic,
+              "picks_updated",
+              fresh_pick_spread
+            )
+
             socket
             |> assign(:existing_user_pick, up)
             |> NotificationComponent.show("Saved your pick", :success)
@@ -83,6 +97,11 @@ defmodule PickEmWeb.PickEmLive.Index do
       end
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(%{event: "picks_updated", payload: fresh_pick_spread} = event, socket) do
+    {:noreply, assign(socket, :pick_spread, fresh_pick_spread)}
   end
 
   defp generate_oauth_url do
@@ -228,11 +247,16 @@ defmodule PickEmWeb.PickEmLive.Index do
     "#{ndc_record.skeets_wins} - #{ndc_record.skeets_losses}"
   end
 
-  defp get_pick_spread_string(pick_spread, %MatchUp{
-         away_team_id: away_team_id,
-         home_team_id: home_team_id
-       })
-       when is_map_key(pick_spread, away_team_id) and is_map_key(pick_spread, home_team_id) do
+  defp get_pick_spread_total(pick_spread), do: "PICKS: #{Map.values(pick_spread) |> Enum.sum()}"
+
+  defp get_pick_spread_string(
+         pick_spread,
+         %MatchUp{
+           away_team_id: away_team_id,
+           home_team_id: home_team_id
+         } = matchup
+       )
+       when is_map_key(pick_spread, away_team_id) or is_map_key(pick_spread, home_team_id) do
     away_picks = Map.get(pick_spread, away_team_id, 0)
     home_picks = Map.get(pick_spread, home_team_id, 0)
     total = away_picks + home_picks
@@ -240,8 +264,103 @@ defmodule PickEmWeb.PickEmLive.Index do
     away_percent = round(away_picks / total * 100)
     home_percent = round(home_picks / total * 100)
 
-    "PICK SPREAD #{away_percent}% @ #{home_percent}%"
+    home_percent = get_rounded_percent(away_percent + home_percent, home_percent)
+
+    away_name = matchup.away_team.abbreviation
+    home_name = matchup.home_team.abbreviation
+
+    "#{away_percent}% #{away_name} @ #{home_percent}% #{home_name}"
   end
 
+  defp get_rounded_percent(100, percent), do: percent
+  defp get_rounded_percent(99, percent), do: percent + 1
+  defp get_rounded_percent(101, percent), do: percent - 1
+
   defp get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
+
+  defp get_pick_spread_gradient(
+         pick_spread,
+         %MatchUp{
+           away_team_id: away_team_id,
+           home_team_id: home_team_id
+         } = matchup,
+         away_or_home
+       )
+       when is_map_key(pick_spread, away_team_id) or is_map_key(pick_spread, home_team_id) do
+    away_picks = Map.get(pick_spread, away_team_id, 0)
+    home_picks = Map.get(pick_spread, home_team_id, 0)
+    total = away_picks + home_picks
+
+    [away_color, home_color] =
+      get_team_colors(
+        String.to_atom(matchup.away_team.abbreviation),
+        String.to_atom(matchup.home_team.abbreviation)
+      )
+
+    away_percent = away_picks / total * 100
+    home_percent = home_picks / total * 100
+
+    width_percent = if away_or_home == :away, do: away_percent, else: home_percent
+    background_color = if away_or_home == :away, do: away_color, else: home_color
+
+    width_percent = width_percent |> max(1) |> min(99)
+
+    "transition: all 0.5s ease; max-width: #{width_percent * 0.95}%;background: #{background_color};"
+  end
+
+  defp get_pick_spread_gradient(_, _) do
+    "background:linear-gradient(to right, blue 49%, black 49% 51%, red 51%)"
+  end
+
+  defp get_team_colors(away, home) do
+    home_colors = get_team_color_codes(home)
+    away_colors = get_team_color_codes(away)
+
+    cond do
+      colors_contrast_enough?(away_colors.primary_l, home_colors.primary_l) ->
+        [away_colors.primary, home_colors.primary]
+
+      colors_contrast_enough?(away_colors.primary_l, home_colors.secondary_l) ->
+        [away_colors.primary, home_colors.secondary]
+
+      colors_contrast_enough?(away_colors.secondary_l, home_colors.primary_l) ->
+        [away_colors.secondary, home_colors.primary]
+
+      true ->
+        [away_colors.secondary, home_colors.secondary]
+    end
+  end
+
+  defp colors_contrast_enough?(l1, l2) when l1 > l2 do
+    (l1 + 0.05) / (l2 + 0.05) > 2.5
+  end
+
+  defp colors_contrast_enough?(l1, l2) do
+    (l2 + 0.05) / (l1 + 0.05) > 2.5
+  end
+
+  defp get_team_color_codes(team) do
+    colors = %{
+      BKN: %{primary: "#000000", primary_l: 0, secondary: "#FFFFFF", secondary_l: 255},
+      BOS: %{primary: "#007A33", primary_l: 90.9, secondary: "#BA9653", secondary_l: 114.6},
+      CHI: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 0},
+      CLE: %{primary: "#860038", primary_l: 32.5, secondary: "#FDBB30", secondary_l: 191.0},
+      DAL: %{primary: "#00538C", primary_l: 72.9, secondary: "#002B5E", secondary_l: 37.4},
+      DEN: %{primary: "#0E2240", primary_l: 31.7, secondary: "#FEC524", secondary_l: 198.6},
+      DET: %{primary: "#C8102E", primary_l: 64.5, secondary: "#1D42BA", secondary_l: 63.3},
+      GSW: %{primary: "#1D428A", primary_l: 63.3, secondary: "#FFC72C", secondary_l: 199.7},
+      HOU: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 21.6},
+      WAS: %{primary: "#002B5C", primary_l: 37.4, secondary: "#E31837", secondary_l: 69.4},
+      LAC: %{primary: "#C8102E", primary_l: 57.3, secondary: "#1D428A", secondary_l: 64.1},
+      MIL: %{primary: "#00471B", primary_l: 52.7, secondary: "#EEE1C6", secondary_l: 234.3},
+      MIN: %{primary: "#0C2340", primary_l: 32.2, secondary: "#236192", secondary_l: 87.4},
+      OKC: %{primary: "#007AC1", primary_l: 103.5, secondary: "#EF3B24", secondary_l: 95.6},
+      POR: %{primary: "#E03A3E", primary_l: 93.6, secondary: "#000000", secondary_l: 21.6},
+      SAC: %{primary: "#5A2D81", primary_l: 59.5, secondary: "#63727A", secondary_l: 110.7},
+      SAS: %{primary: "#C4CED4", primary_l: 204.2, secondary: "#000000", secondary_l: 0},
+      UTA: %{primary: "#002B5C", primary_l: 37.4, secondary: "#00471B", secondary_l: 52.7}
+    }
+
+    Map.get(colors, team)
+  end
 end
