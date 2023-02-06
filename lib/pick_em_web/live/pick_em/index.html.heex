@@ -18,11 +18,7 @@
         "text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0"
       ) %>
       <div class="text-3xl md:text-4xl text-nd-yellow font-open-sans font-bold mb-0 flex flex-row">
-        ( <%= render_team_abbreviation(@matchup.favorite_team, @theme) %>
-        <p class="ml-4 my-0">
-          <%= @matchup.spread %>
-        </p>
-        )
+        <%= render_game_spread(@matchup) %>
       </div>
     </div>
     <%= if @matchup.score do %>

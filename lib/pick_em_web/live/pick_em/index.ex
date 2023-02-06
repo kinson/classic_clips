@@ -363,4 +363,20 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     Map.get(colors, team)
   end
+
+  defp render_game_spread(%MatchUp{
+         spread: "-" <> spread,
+         away_team_id: team_id,
+         favorite_team_id: team_id
+       }) do
+    "(+#{spread})"
+  end
+
+  defp render_game_spread(%MatchUp{
+         spread: "-" <> spread,
+         home_team_id: team_id,
+         favorite_team_id: team_id
+       }) do
+    "(-#{spread})"
+  end
 end
