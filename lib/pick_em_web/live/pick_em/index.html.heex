@@ -57,11 +57,11 @@
       <div class="flex flex-row">
         <div
           class="h-10 w-full border-white border border-r-0"
-          style={get_pick_spread_gradient(@pick_spread, @matchup, :home)}
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :away)}
         />
         <div
           class="h-10 w-full border-white border border-l-0"
-          style={get_pick_spread_gradient(@pick_spread, @matchup, :away)}
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :home)}
         />
       </div>
     <% end %>
