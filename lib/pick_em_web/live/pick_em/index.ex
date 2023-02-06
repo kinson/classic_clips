@@ -100,7 +100,7 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   @impl true
-  def handle_info(%{event: "picks_updated", payload: fresh_pick_spread} = event, socket) do
+  def handle_info(%{event: "picks_updated", payload: fresh_pick_spread}, socket) do
     {:noreply, assign(socket, :pick_spread, fresh_pick_spread)}
   end
 
@@ -272,11 +272,11 @@ defmodule PickEmWeb.PickEmLive.Index do
     "#{away_percent}% #{away_name} @ #{home_percent}% #{home_name}"
   end
 
+  defp get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
+
   defp get_rounded_percent(100, percent), do: percent
   defp get_rounded_percent(99, percent), do: percent + 1
   defp get_rounded_percent(101, percent), do: percent - 1
-
-  defp get_pick_spread_string(_, _), do: "NO PICK SPREAD YET"
 
   defp get_pick_spread_gradient(
          pick_spread,
@@ -308,8 +308,20 @@ defmodule PickEmWeb.PickEmLive.Index do
     "transition: all 0.5s ease; max-width: #{width_percent * 0.95}%;background: #{background_color};"
   end
 
-  defp get_pick_spread_gradient(_, _) do
-    "background:linear-gradient(to right, blue 49%, black 49% 51%, red 51%)"
+  defp get_pick_spread_gradient(
+         _,
+         matchup,
+         away_or_home
+       ) do
+    [away_color, home_color] =
+      get_team_colors(
+        String.to_atom(matchup.away_team.abbreviation),
+        String.to_atom(matchup.home_team.abbreviation)
+      )
+
+    background_color = if away_or_home == :away, do: away_color, else: home_color
+
+    "transition: all 0.5s ease; max-width: #{50 * 0.95}%;background: #{background_color};"
   end
 
   defp get_team_colors(away, home) do
