@@ -90,4 +90,26 @@
       </h3>
     </div>
   </div>
+
+  <%= if show_pick_spread?(@pick_spread) do %>
+    <div class="w-2/3 mt-12">
+      <p class="font-open-sans text-center font-bold text-white text-4xl mt-5 mb-6">
+        <%= get_pick_spread_total(@pick_spread) %> &bull; <%= get_pick_spread_string(
+          @pick_spread,
+          @matchup
+        ) %>
+      </p>
+
+      <div class="flex flex-row">
+        <div
+          class="ml-auto h-20 w-full border-white border-2 border-r-0"
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :away)}
+        />
+        <div
+          class="mr-auto h-20 w-full border-white border-2 border-l-0"
+          style={get_pick_spread_gradient(@pick_spread, @matchup, :home)}
+        />
+      </div>
+    </div>
+  <% end %>
 </div>

@@ -305,7 +305,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     width_percent = width_percent |> max(1) |> min(99)
 
-    "transition: all 0.5s ease; max-width: #{width_percent * 0.95}%;background: #{background_color};"
+    "transition: all 0.28s ease-in; max-width: #{width_percent * 0.95}%;background: #{background_color};"
   end
 
   defp get_pick_spread_gradient(
@@ -321,7 +321,7 @@ defmodule PickEmWeb.PickEmLive.Index do
 
     background_color = if away_or_home == :away, do: away_color, else: home_color
 
-    "transition: all 0.5s ease; max-width: #{50 * 0.95}%;background: #{background_color};"
+    "transition: all 0.28s ease-in; max-width: #{50 * 0.95}%;background: #{background_color};"
   end
 
   defp get_team_colors(away, home) do
