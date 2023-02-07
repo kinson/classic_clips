@@ -34,16 +34,9 @@
         <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
           <%= @matchup.score %>
         </p>
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
-          &bull;
-        </p>
-        <!---TODO FIX? MMMEE jjllkklkl -->
-        <p class="text-white font-open-sans text-2xl font-bold my-0 opacity-90 whitespace-nowrap">
-          <%= get_pick_spread_string(@pick_spread, @matchup) %>
-        </p>
       </div>
     <% else %>
-      <p class="font-open-sans font-bold text-white text-2xl opacity-80 mt-6 mb-5">
+      <p class="font-open-sans font-bold text-white text-2xl mt-4 mb-8">
         TIP @ <%= get_time_for_game(@matchup) %> EST
       </p>
 
@@ -56,11 +49,11 @@
 
       <div class="flex flex-row">
         <div
-          class="h-10 w-full border-white border border-r-0"
+          class="h-12 w-full border-white border-2 border-r-0"
           style={get_pick_spread_gradient(@pick_spread, @matchup, :away)}
         />
         <div
-          class="h-10 w-full border-white border border-l-0"
+          class="h-12 w-full border-white border-2 border-l-0"
           style={get_pick_spread_gradient(@pick_spread, @matchup, :home)}
         />
       </div>

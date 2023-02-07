@@ -344,43 +344,43 @@ defmodule PickEmWeb.PickEmLive.Index do
   end
 
   defp colors_contrast_enough?(l1, l2) when l1 > l2 do
-    (l1 + 0.05) / (l2 + 0.05) > 2.5
+    (l1 + 0.05) / (l2 + 0.05) > 1.9
   end
 
   defp colors_contrast_enough?(l1, l2) do
-    (l2 + 0.05) / (l1 + 0.05) > 2.5
+    (l2 + 0.05) / (l1 + 0.05) > 1.9
   end
 
   defp get_team_color_codes(team) do
     colors = %{
       ATL: %{primary: "#C8102E", primary_l: 57.3, secondary: "#FDB927", secondary_l: 188.9},
-      BKN: %{primary: "#000000", primary_l: 0, secondary: "#FFFFFF", secondary_l: 255},
+      BKN: %{primary: "#000000", primary_l: 21.6, secondary: "#FFFFFF", secondary_l: 255},
       BOS: %{primary: "#007A33", primary_l: 90.9, secondary: "#BA9653", secondary_l: 114.6},
-      # CHA:,
-      CHI: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 0},
+      CHA: %{primary: "#1D1160", primary_l: 25.3, secondary: "#00788C", secondary_l: 95.9},
+      CHI: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 21.6},
       CLE: %{primary: "#860038", primary_l: 32.5, secondary: "#FDBB30", secondary_l: 191.0},
       DAL: %{primary: "#00538C", primary_l: 72.9, secondary: "#002B5E", secondary_l: 37.4},
       DEN: %{primary: "#0E2240", primary_l: 31.7, secondary: "#FEC524", secondary_l: 198.6},
       DET: %{primary: "#C8102E", primary_l: 64.5, secondary: "#1D42BA", secondary_l: 63.3},
       GSW: %{primary: "#1D428A", primary_l: 63.3, secondary: "#FFC72C", secondary_l: 199.7},
       HOU: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 21.6},
-      # IND:,
+      IND: %{primary: "#002D62", primary_l: 39.3, secondary: "#FDBB30", secondary_l: 191.0},
       LAC: %{primary: "#C8102E", primary_l: 57.3, secondary: "#1D428A", secondary_l: 64.1},
       LAL: %{primary: "#552583", primary_l: 53.9, secondary: "#FDB927", secondary_l: 188.9},
-      # MEM:,
-      # MIA:,
+      MEM: %{primary: "#5D76A9", primary_l: 116.4, secondary: "#12173F", secondary_l: 24.8},
+      MIA: %{primary: "#98002E", primary_l: 35.6, secondary: "#F9A01B", secondary_l: 169.3},
       MIL: %{primary: "#00471B", primary_l: 52.7, secondary: "#EEE1C6", secondary_l: 234.3},
       MIN: %{primary: "#0C2340", primary_l: 32.2, secondary: "#236192", secondary_l: 87.4},
-      # NOP:,
-      # NYK:,
+      NOP: %{primary: "#0C2340", primary_l: 32.2, secondary: "#C8102E", secondary_l: 57.3},
+      NYK: %{primary: "#006BB6", primary_l: 89.7, secondary: "#F58426", secondary_l: 149.2},
       OKC: %{primary: "#007AC1", primary_l: 103.5, secondary: "#EF3B24", secondary_l: 95.6},
-      # ORL:,
-      # PHI:,
-      # PHO:,
+      ORL: %{primary: "#0077C0", primary_l: 103.6, secondary: "#C4CED4", secondary_l: 204.2},
+      PHI: %{primary: "#006BB6", primary_l: 89.7, secondary: "#ED174C", secondary_l: 72.3},
+      PHX: %{primary: "#1D1160", primary_l: 25.3, secondary: "#E56020", secondary_l: 118.9},
       POR: %{primary: "#E03A3E", primary_l: 93.6, secondary: "#000000", secondary_l: 21.6},
       SAC: %{primary: "#5A2D81", primary_l: 59.5, secondary: "#63727A", secondary_l: 110.7},
-      SAS: %{primary: "#C4CED4", primary_l: 204.2, secondary: "#000000", secondary_l: 0},
-      # TOR:,
+      SAS: %{primary: "#C4CED4", primary_l: 204.2, secondary: "#000000", secondary_l: 21.6},
+      TOR: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 21.6},
       UTA: %{primary: "#002B5C", primary_l: 37.4, secondary: "#00471B", secondary_l: 52.7},
       WAS: %{primary: "#002B5C", primary_l: 37.4, secondary: "#E31837", secondary_l: 69.4}
     }
