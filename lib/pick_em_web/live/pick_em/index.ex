@@ -353,8 +353,10 @@ defmodule PickEmWeb.PickEmLive.Index do
 
   defp get_team_color_codes(team) do
     colors = %{
+      ATL: %{primary: "#C8102E", primary_l: 57.3, secondary: "#FDB927", secondary_l: 188.9},
       BKN: %{primary: "#000000", primary_l: 0, secondary: "#FFFFFF", secondary_l: 255},
       BOS: %{primary: "#007A33", primary_l: 90.9, secondary: "#BA9653", secondary_l: 114.6},
+      # CHA:,
       CHI: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 0},
       CLE: %{primary: "#860038", primary_l: 32.5, secondary: "#FDBB30", secondary_l: 191.0},
       DAL: %{primary: "#00538C", primary_l: 72.9, secondary: "#002B5E", secondary_l: 37.4},
@@ -362,15 +364,25 @@ defmodule PickEmWeb.PickEmLive.Index do
       DET: %{primary: "#C8102E", primary_l: 64.5, secondary: "#1D42BA", secondary_l: 63.3},
       GSW: %{primary: "#1D428A", primary_l: 63.3, secondary: "#FFC72C", secondary_l: 199.7},
       HOU: %{primary: "#CE1141", primary_l: 60.6, secondary: "#000000", secondary_l: 21.6},
-      WAS: %{primary: "#002B5C", primary_l: 37.4, secondary: "#E31837", secondary_l: 69.4},
+      # IND:,
       LAC: %{primary: "#C8102E", primary_l: 57.3, secondary: "#1D428A", secondary_l: 64.1},
+      LAL: %{primary: "#552583", primary_l: 53.9, secondary: "#FDB927", secondary_l: 188.9},
+      # MEM:,
+      # MIA:,
       MIL: %{primary: "#00471B", primary_l: 52.7, secondary: "#EEE1C6", secondary_l: 234.3},
       MIN: %{primary: "#0C2340", primary_l: 32.2, secondary: "#236192", secondary_l: 87.4},
+      # NOP:,
+      # NYK:,
       OKC: %{primary: "#007AC1", primary_l: 103.5, secondary: "#EF3B24", secondary_l: 95.6},
+      # ORL:,
+      # PHI:,
+      # PHO:,
       POR: %{primary: "#E03A3E", primary_l: 93.6, secondary: "#000000", secondary_l: 21.6},
       SAC: %{primary: "#5A2D81", primary_l: 59.5, secondary: "#63727A", secondary_l: 110.7},
       SAS: %{primary: "#C4CED4", primary_l: 204.2, secondary: "#000000", secondary_l: 0},
-      UTA: %{primary: "#002B5C", primary_l: 37.4, secondary: "#00471B", secondary_l: 52.7}
+      # TOR:,
+      UTA: %{primary: "#002B5C", primary_l: 37.4, secondary: "#00471B", secondary_l: 52.7},
+      WAS: %{primary: "#002B5C", primary_l: 37.4, secondary: "#E31837", secondary_l: 69.4}
     }
 
     Map.get(colors, team)
