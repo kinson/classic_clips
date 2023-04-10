@@ -12,10 +12,10 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
       <div class="pledge-card">
         <div class="raised">
           <p class="amount">
-            $706
+            $850
           </p>
           <p class="description">
-            donated as of March 7th, 2023 ❄️
+            donated as of April 9th, 2023
           </p>
         </div>
 
