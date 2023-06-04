@@ -12,10 +12,10 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
       <div class="pledge-card">
         <div class="raised">
           <p class="amount">
-            $892
+            $1,230
           </p>
           <p class="description">
-            donated as of April 12th, 2023
+            donated as of June 1st, 2023
           </p>
         </div>
 
@@ -27,7 +27,7 @@ defmodule BigBeefWeb.BeefLive.PledgeComponent do
           , an organization trying to put an end to food insecurity across the United States.
         </p>
         <p>
-          Big Beef Tracker is pledging $1 for each rebound in a big beef performance through the end of the season (including the playoffs).
+          Big Beef Tracker is pledging $1 for each rebound in a big beef performance through the end of the regular season. For the 2023 playoffs, we are doubling the donations for each big beef!
         </p>
 
         <p class="cta">

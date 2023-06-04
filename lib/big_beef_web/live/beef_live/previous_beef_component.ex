@@ -26,9 +26,11 @@ defmodule BigBeefWeb.BeefLive.PreviousBeefComponent do
                 <p class="count">
                   <%= count(beef.beef) %> 🥩
                 </p>
-                <a class="highlights" href={yt_link(beef)} target="_blank">
-                  <%= yt_text(beef) %>
-                </a>
+                <%= if beef.yt_highlight_video_url != "notyet" do %>
+                  <a class="highlights" href={yt_link(beef)} target="_blank">
+                    <%= yt_text(beef) %>
+                  </a>
+                <% end %>
                 <a class="box-score" href={bs_link(beef)} target="_blank">
                   <%= bs_text(beef) %>
                 </a>

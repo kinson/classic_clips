@@ -382,6 +382,16 @@ footer.beef-footer {
   }
 }
 
+div#beef-deprecation {
+  background-color: $saucy-red;
+  color: white;
+  padding: 1rem 2rem 1rem 2rem;
+
+  & > p {
+    margin: 0;
+  }
+}
+
 div.previous-beef {
   background-color: #111;
   display: none;
