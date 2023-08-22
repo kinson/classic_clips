@@ -4,7 +4,7 @@ defmodule ClassicClips.PickEm.NdcRecord do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "ndc_records" do
-    field :month, :string, null: false
+    field :month, :string
     field :skeets_wins, :integer, default: 0
     field :skeets_losses, :integer, default: 0
     field :tas_wins, :integer, default: 0

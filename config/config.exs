@@ -1,11 +1,11 @@
 # This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
+# and its dependencies with the aid of the Config module.
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
 
 # General application configuration
-import Mix.Config
+import Config
 
 config :classic_clips,
   ecto_repos: [ClassicClips.Repo]
@@ -58,7 +58,7 @@ config :esbuild,
   ]
 
 config :dart_sass,
-  version: "1.39.0",
+  version: "1.66.0",
   default: [
     args: ~w(css/app.scss ../priv/static/assets/lib.css),
     cd: Path.expand("../assets", __DIR__)
