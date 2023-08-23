@@ -21,7 +21,7 @@ defmodule ClassicClipsWeb.Router do
 
     get "/auth/google/callback", GoogleAuthController, :index
     get "/about", AboutController, :index
-    get "/beef", RedirectPlug, external: Application.fetch_env!(:classic_clips, :big_beef_url)
+    get "/beef", RedirectPlug, external: Application.compile_env!(:classic_clips, :big_beef_url)
 
     get "/short/:slug", ShortLinkController, :index
     get "/short", ShortLinkController, :index

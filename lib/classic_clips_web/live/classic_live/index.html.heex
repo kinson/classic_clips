@@ -10,7 +10,11 @@
           phx-change="change_search"
           class="search-form"
         >
-          <%= text_input(d, :term, phx_debounce: "250", placeholder: "Search", value: @search_term) %>
+          <%= text_input(d, :term,
+            phx_debounce: "250",
+            placeholder: "Search",
+            value: @search_term
+          ) %>
         </.form>
       </div>
     </div>

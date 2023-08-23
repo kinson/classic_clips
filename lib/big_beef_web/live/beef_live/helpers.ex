@@ -1,6 +1,6 @@
 defmodule BigBeefWeb.BeefLive.Helpers do
   alias ClassicClips.BigBeef.Beef
-  alias ClassicClips.BigBeef.{Player, BigBeefEvent}
+  alias ClassicClips.BigBeef.Player
 
   def is_active(page, name) do
     case page == name do

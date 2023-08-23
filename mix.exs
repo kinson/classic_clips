@@ -45,7 +45,7 @@ defmodule ClassicClips.MixProject do
       {:ecto_psql_extras, "~> 0.7"},
       {:logger_file_backend, "~> 0.0.11"},
       {:postgrex, "~> 0.17"},
-      {:phoenix_live_view, "~> 0.18"},
+      {:phoenix_live_view, "~> 0.19"},
       {:floki, ">= 0.27.0", only: :test},
       {:new_relic_agent, "~> 1.27"},
       {:phoenix_html, "~> 3.3"},

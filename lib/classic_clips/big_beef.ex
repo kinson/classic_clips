@@ -10,7 +10,7 @@ defmodule ClassicClips.BigBeef do
   import Ecto.Query, warn: false
   alias ClassicClips.Repo
 
-  alias ClassicClips.BigBeef.{Beef, Season}
+  alias ClassicClips.BigBeef.Beef
   alias ClassicClips.GameData
 
   @doc """

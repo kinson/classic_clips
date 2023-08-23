@@ -3,15 +3,14 @@ defmodule PickEmWeb.PickEmLive.MatchupHero do
   import PickEmWeb.PickEmLive.Emoji
 
   alias ClassicClips.PickEm
-  alias PickEmWeb.PickEmLive.{Theme, User}
+  alias PickEmWeb.PickEmLive.Theme
   alias ClassicClips.PickEm.MatchUp
   alias ClassicClips.PickEm.NdcRecord
-  alias ClassicClips.BigBeef.Season
 
   @user_picks_results_topic "pick_spread"
 
   @impl true
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     theme = Theme.default_theme()
     ndc_record = PickEm.get_current_ndc_record_cached()
 

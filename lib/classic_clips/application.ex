@@ -24,7 +24,7 @@ defmodule ClassicClips.Application do
 
     services_to_start = Application.fetch_env!(:classic_clips, :service)
 
-    Logger.warn("Starting application service: #{services_to_start}")
+    Logger.warning("Starting application service: #{services_to_start}")
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
