@@ -280,7 +280,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     if is_nil(Map.get(socket.assigns, :games)) or
          Date.compare(form_matchup_date, current_matchup_date) != :eq do
-      games = get_games_for_date(form_matchup_date, socket.assigns.current_season)
+      games = get_games_for_date(form_matchup_date)
 
       matchup = PickEm.get_matchup_for_day(form_matchup_date)
 
@@ -343,8 +343,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     |> String.trim_trailing(":00Z")
   end
 
-  defp get_games_for_date(date, current_season) do
-    ClassicClips.SeasonSchedule.get_games_for_day(current_season.schedule, date)
+  defp get_games_for_date(date) do
+    PickEm.get_days_game_cached(date)
   end
 
   def load_games do

@@ -5,6 +5,7 @@ defmodule ClassicClips.PickEm do
 
   use NewRelic.Tracer
 
+  alias ClassicClips.PickEm.ScheduledGame
   alias ClassicClips.Repo
   alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
   alias ClassicClips.Timeline.User
@@ -612,6 +613,16 @@ defmodule ClassicClips.PickEm do
   @trace :get_current_season
   def get_current_season do
     from(s in Season, where: s.current) |> Repo.one!()
+  end
+
+  @trace :get_days_game_cached
+  def get_days_game_cached(date) do
+    Fiat.CacheServer.fetch_object({:days_schedule, date}, fn -> get_days_game(date) end)
+  end
+
+  @trace :get_days_game
+  def get_days_game(date) do
+    from(sg in ScheduledGame, where: sg.date == ^date, order_by: [asc: sg.dt_utc]) |> Repo.all()
   end
 
   @trace :get_season_by_year_end_cached
