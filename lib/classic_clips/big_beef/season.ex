@@ -11,6 +11,7 @@ defmodule ClassicClips.BigBeef.Season do
     field :schedule, :map
 
     has_many :beefs, ClassicClips.BigBeef.Beef
+    has_many :scheduled_games, ClassicClips.PickEm.ScheduledGame
 
     timestamps(type: :utc_datetime)
   end
