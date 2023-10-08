@@ -27,8 +27,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_id, nil)
       |> assign(:selected_game_line, nil)
       |> assign(:selected_game_tip_datetime, nil)
-      |> assign(:selected_game_away_code, nil)
-      |> assign(:selected_game_home_code, nil)
+      |> assign(:selected_game_away_id, nil)
+      |> assign(:selected_game_home_id, nil)
       |> assign(:selected_game_favorite_code, nil)
       |> assign(:current_season, current_season)
       |> assign(:current_matchup, current_matchup)
@@ -53,8 +53,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   def handle_event(
         "select-game",
         %{
-          "away-team" => away_team_code,
-          "home-team" => home_team_code,
+          "away-team" => away_team_id,
+          "home-team" => home_team_id,
           "tip-datetime" => tip_datetime,
           "id" => game_id
         },
@@ -64,8 +64,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       socket
       |> assign(:selected_game_id, game_id)
       |> assign(:selected_game_tip_datetime, tip_datetime)
-      |> assign(:selected_game_away_code, away_team_code)
-      |> assign(:selected_game_home_code, home_team_code)
+      |> assign(:selected_game_away_id, away_team_id)
+      |> assign(:selected_game_home_id, home_team_id)
 
     {:noreply, socket}
   end
@@ -125,8 +125,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         status: new_status,
         tip_datetime: form_matchup["tip_datetime"],
         spread: form_matchup["game_line"],
-        away_team_id: team_id_for_abbreviation(form_matchup["away_team_code"]),
-        home_team_id: team_id_for_abbreviation(form_matchup["home_team_code"]),
+        away_team_id: form_matchup["away_team_id"],
+        home_team_id: form_matchup["home_team_id"],
         favorite_team_id: team_id_for_abbreviation(form_matchup["favorite_team_code"])
       }
       |> Enum.filter(fn {_key, value} ->
@@ -182,8 +182,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
             "game_id" => game_id,
             "tip_datetime" => tip_datetime,
             "favorite_team_code" => favorite_team,
-            "away_team_code" => away_team_code,
-            "home_team_code" => home_team_code,
+            "away_team_id" => away_team_id,
+            "home_team_id" => home_team_id,
             "game_line" => spread,
             "publish_at" => publish_at,
             "publish_now" => publish_now
@@ -214,8 +214,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         else: :unpublished
 
     case ClassicClips.PickEm.create_matchup(
-           away_team_code,
-           home_team_code,
+           away_team_id,
+           home_team_id,
            favorite_team,
            spread,
            game_id,
@@ -299,8 +299,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         |> assign(:selected_game_id, matchup.nba_game_id)
         |> assign(:selected_game_favorite_code, matchup.favorite_team.abbreviation)
         |> assign(:selected_game_tip_datetime, matchup.tip_datetime)
-        |> assign(:selected_game_away_code, matchup.away_team.abbreviation)
-        |> assign(:selected_game_home_code, matchup.home_team.abbreviation)
+        |> assign(:selected_game_away_id, matchup.away_team.abbreviation)
+        |> assign(:selected_game_home_id, matchup.home_team.abbreviation)
         |> assign(:selected_game_line, matchup.spread)
         |> assign(:current_ndc_picks, ndc_picks)
         |> assign(:ndc_picks, %{})
@@ -313,8 +313,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         |> assign(:selected_game_id, nil)
         |> assign(:selected_game_line, nil)
         |> assign(:selected_game_tip_datetime, nil)
-        |> assign(:selected_game_away_code, nil)
-        |> assign(:selected_game_home_code, nil)
+        |> assign(:selected_game_away_id, nil)
+        |> assign(:selected_game_home_id, nil)
         |> assign(:selected_game_favorite_code, nil)
       end
     else
@@ -423,13 +423,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def home_team_id_value(team_id, _), do: team_id
 
-  def away_team_code_value(nil, %{away_team: %{abbreviation: abbreviation}}), do: abbreviation
+  def away_team_id_value(nil, %{away_team: %{id: id}}), do: id
 
-  def away_team_code_value(abbreviation, _), do: abbreviation
+  def away_team_id_value(id, _), do: id
 
-  def home_team_code_value(nil, %{home_team: %{abbreviation: abbrevioation}}), do: abbrevioation
+  def home_team_id_value(nil, %{home_team: %{id: id}}), do: id
 
-  def home_team_code_value(abbreviation, _), do: abbreviation
+  def home_team_id_value(id, _), do: id
 
   def game_line_value(nil, %{spread: spread}), do: spread
 

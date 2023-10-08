@@ -684,8 +684,8 @@ defmodule ClassicClips.PickEm do
 
   @trace :create_matchup
   def create_matchup(
-        away_abbreviation,
-        home_abbreviation,
+        away_id,
+        home_id,
         favorite_abbreviation,
         spread,
         game_id,
@@ -697,9 +697,9 @@ defmodule ClassicClips.PickEm do
         trey_pick_team
       ) do
     # get away team
-    away_team = Repo.get_by!(Team, abbreviation: away_abbreviation)
+    away_team = Repo.get_by!(Team, id: away_id)
     # get home team
-    home_team = Repo.get_by!(Team, abbreviation: home_abbreviation)
+    home_team = Repo.get_by!(Team, id: home_id)
     # get favorite team
     favorite_team = Repo.get_by!(Team, abbreviation: favorite_abbreviation)
 
