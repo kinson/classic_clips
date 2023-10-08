@@ -37,12 +37,12 @@
             <div
               class={
                 game_button_class(
-                  game.game_id,
+                  game.external_id,
                   game_id_value(@selected_game_id, @current_matchup)
                 )
               }
               phx-click="select-game"
-              phx-value-id={game.game_id}
+              phx-value-id={game.external_id}
               phx-value-away-team={game.away_team_code}
               phx-value-home-team={game.home_team_code}
               phx-value-tip-datetime={game.game_time_utc}
