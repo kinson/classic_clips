@@ -31,6 +31,12 @@ defmodule Mix.Tasks.ConvertScheduleJson do
       |> Enum.flat_map(fn %{"mscd" => month} ->
         Map.get(month, "g")
       end)
+      |> Enum.filter(fn %{"v" => away_team, "h" => home_team} ->
+        has_away_team_id? = Map.has_key?(teams_by_abbreviation, away_team["ta"])
+        has_home_team_id? = Map.has_key?(teams_by_abbreviation, home_team["ta"])
+
+        has_away_team_id? and has_home_team_id?
+      end)
       |> Enum.map(fn game ->
         %{
           "gid" => external_id,
