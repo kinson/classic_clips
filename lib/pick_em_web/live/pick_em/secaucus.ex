@@ -28,8 +28,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_line, nil)
       |> assign(:selected_game_tip_datetime, nil)
       |> assign(:selected_game_away_id, nil)
+      |> assign(:selected_game_away_code, nil)
       |> assign(:selected_game_home_id, nil)
-      |> assign(:selected_game_favorite_code, nil)
+      |> assign(:selected_game_home_code, nil)
+      |> assign(:selected_game_favorite_id, nil)
       |> assign(:current_season, current_season)
       |> assign(:current_matchup, current_matchup)
       |> assign(:ndc_picks, %{})
@@ -54,7 +56,9 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         "select-game",
         %{
           "away-team" => away_team_id,
+          "away-team-code" => away_team_code,
           "home-team" => home_team_id,
+          "home-team-code" => home_team_code,
           "tip-datetime" => tip_datetime,
           "id" => game_id
         },
@@ -65,29 +69,31 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> assign(:selected_game_id, game_id)
       |> assign(:selected_game_tip_datetime, tip_datetime)
       |> assign(:selected_game_away_id, away_team_id)
+      |> assign(:selected_game_away_code, away_team_code)
       |> assign(:selected_game_home_id, home_team_id)
+      |> assign(:selected_game_home_code, home_team_code)
 
     {:noreply, socket}
   end
 
-  def handle_event("select-favorite-team", %{"favorite-code" => favorite_team_code}, socket) do
+  def handle_event("select-favorite-team", %{"favorite-id" => favorite_team_id}, socket) do
     socket =
       socket
-      |> assign(:selected_game_favorite_code, favorite_team_code)
+      |> assign(:selected_game_favorite_id, favorite_team_id)
 
     {:noreply, socket}
   end
 
   def handle_event(
         "select-ndc-member-pick",
-        %{"member" => ndc_member, "team-code" => team_code},
+        %{"member" => ndc_member, "team-id" => team_id},
         socket
       ) do
     person = String.to_existing_atom(ndc_member)
 
     socket =
       socket
-      |> assign(:ndc_picks, Map.put(socket.assigns.ndc_picks, person, team_code))
+      |> assign(:ndc_picks, Map.put(socket.assigns.ndc_picks, person, team_id))
 
     {:noreply, socket}
   end
@@ -127,7 +133,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         spread: form_matchup["game_line"],
         away_team_id: form_matchup["away_team_id"],
         home_team_id: form_matchup["home_team_id"],
-        favorite_team_id: team_id_for_abbreviation(form_matchup["favorite_team_code"])
+        favorite_team_id: form_matchup["favorite_team_id"]
       }
       |> Enum.filter(fn {_key, value} ->
         value !== "" and not is_nil(value)
@@ -144,7 +150,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     ndc_pick_or_nil = fn name ->
       case Map.get(ndc_picks, name) do
         nil -> nil
-        team_abbreviation -> team_id_for_abbreviation(team_abbreviation)
+        team_id -> team_id
       end
     end
 
@@ -181,7 +187,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
           "matchup" => %{
             "game_id" => game_id,
             "tip_datetime" => tip_datetime,
-            "favorite_team_code" => favorite_team,
+            "favorite_team_id" => favorite_team_id,
             "away_team_id" => away_team_id,
             "home_team_id" => home_team_id,
             "game_line" => spread,
@@ -216,7 +222,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
     case ClassicClips.PickEm.create_matchup(
            away_team_id,
            home_team_id,
-           favorite_team,
+           favorite_team_id,
            spread,
            game_id,
            tip_datetime,
@@ -297,10 +303,12 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
         socket
         |> assign(:selected_game_id, matchup.nba_game_id)
-        |> assign(:selected_game_favorite_code, matchup.favorite_team.abbreviation)
+        |> assign(:selected_game_favorite_id, matchup.favorite_team.id)
         |> assign(:selected_game_tip_datetime, matchup.tip_datetime)
-        |> assign(:selected_game_away_id, matchup.away_team.abbreviation)
-        |> assign(:selected_game_home_id, matchup.home_team.abbreviation)
+        |> assign(:selected_game_away_id, matchup.away_team.id)
+        |> assign(:selected_game_away_code, matchup.away_team.abbreviation)
+        |> assign(:selected_game_home_id, matchup.home_team.id)
+        |> assign(:selected_game_home_code, matchup.home_team.abbreviation)
         |> assign(:selected_game_line, matchup.spread)
         |> assign(:current_ndc_picks, ndc_picks)
         |> assign(:ndc_picks, %{})
@@ -314,8 +322,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         |> assign(:selected_game_line, nil)
         |> assign(:selected_game_tip_datetime, nil)
         |> assign(:selected_game_away_id, nil)
+        |> assign(:selected_game_away_code, nil)
         |> assign(:selected_game_home_id, nil)
-        |> assign(:selected_game_favorite_code, nil)
+        |> assign(:selected_game_home_code, nil)
+        |> assign(:selected_game_favorite_id, nil)
       end
     else
       socket
@@ -411,9 +421,9 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   def tip_datetime_value(tip_datetime, _), do: tip_datetime
 
-  def favorite_team_code_value(nil, %{favorite_team: %{abbreviation: code}}), do: code
+  def favorite_team_id_value(nil, %{favorite_team: %{id: id}}), do: id
 
-  def favorite_team_code_value(team_code, _), do: team_code
+  def favorite_team_id_value(team_id, _), do: team_id
 
   def away_team_id_value(nil, %{away_team_id: away_team_id}), do: away_team_id
 
@@ -422,14 +432,6 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   def home_team_id_value(nil, %{home_team_id: home_team_id}), do: home_team_id
 
   def home_team_id_value(team_id, _), do: team_id
-
-  def away_team_id_value(nil, %{away_team: %{id: id}}), do: id
-
-  def away_team_id_value(id, _), do: id
-
-  def home_team_id_value(nil, %{home_team: %{id: id}}), do: id
-
-  def home_team_id_value(id, _), do: id
 
   def game_line_value(nil, %{spread: spread}), do: spread
 
@@ -446,7 +448,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       |> String.to_atom()
 
     case Map.get(form_ndc_picks, person) do
-      nil -> Map.get(todays_ndc_picks, key, %{}) |> Map.get(:abbreviation)
+      nil -> Map.get(todays_ndc_picks, key, %{}) |> Map.get(:id)
       pick -> pick
     end
   end

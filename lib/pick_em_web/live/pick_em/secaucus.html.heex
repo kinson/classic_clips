@@ -9,7 +9,8 @@
     </p>
     <.form
       :let={f}
-      for={:matchup}
+      for={%{}}
+      as={:matchup}
       phx-submit="create-matchup"
       phx-change="matchup-change-form"
       class="mb-0"
@@ -20,8 +21,8 @@
       <div class="flex flex-row items-center mb-10">
         <%= date_input(f, :matchup_date,
           value: get_matchup_date(@matchup_date),
-          min: "2022-10-11",
-          max: "2023-04-09",
+          min: "2023-10-11",
+          max: "2024-04-09",
           class: "my-0 text-3xl p-1 rounded"
         ) %>
         <p class={get_status_text_class(@current_matchup)}>
@@ -44,11 +45,13 @@
               phx-click="select-game"
               phx-value-id={game.external_id}
               phx-value-away-team={game.away_team_id}
+              phx-value-away-team-code={game.away_team.abbreviation}
               phx-value-home-team={game.home_team_id}
+              phx-value-home-team-code={game.home_team.abbreviation}
               phx-value-tip-datetime={game.dt_utc}
             >
               <p class="my-0 font-bold">
-                <%= game.away_team_id %> @ <%= game.home_team_id %>
+                <%= game.away_team.abbreviation %> @ <%= game.home_team.abbreviation %>
               </p>
               <p class="my-0">
                 <%= get_time_for_game(game.dt_utc) %>
@@ -61,8 +64,8 @@
         <%= hidden_input(f, :tip_datetime,
           value: tip_datetime_value(@selected_game_tip_datetime, @current_matchup)
         ) %>
-        <%= hidden_input(f, :favorite_team_code,
-          value: favorite_team_code_value(@selected_game_favorite_code, @current_matchup)
+        <%= hidden_input(f, :favorite_team_id,
+          value: favorite_team_id_value(@selected_game_favorite_id, @current_matchup)
         ) %>
         <%= hidden_input(f, :away_team_id,
           value: away_team_id_value(@selected_game_away_id, @current_matchup)
@@ -81,34 +84,36 @@
             </p>
             <div
               phx-click="select-favorite-team"
-              phx-value-favorite-code={
-                away_team_id_value(@selected_game_away_id, @current_matchup)
-              }
+              phx-value-favorite-id={away_team_id_value(@selected_game_away_id, @current_matchup)}
               class={
                 team_button_class(
-                  away_team_id_value(@selected_game_away_id, @current_matchup),
-                  favorite_team_code_value(@selected_game_favorite_code, @current_matchup)
+                  away_team_id_value(
+                    @selected_game_away_id,
+                    @current_matchup
+                  ),
+                  favorite_team_id_value(
+                    @selected_game_favorite_id,
+                    @current_matchup
+                  )
                 )
               }
             >
               <p class="my-0 bg-nd-pink text-white">
-                <%= away_team_id_value(@selected_game_away_id, @current_matchup) %>
+                <%= @selected_game_away_code %>
               </p>
             </div>
             <div
               phx-click="select-favorite-team"
-              phx-value-favorite-code={
-                home_team_id_value(@selected_game_home_id, @current_matchup)
-              }
+              phx-value-favorite-id={home_team_id_value(@selected_game_home_id, @current_matchup)}
               class={
                 team_button_class(
                   home_team_id_value(@selected_game_home_id, @current_matchup),
-                  favorite_team_code_value(@selected_game_favorite_code, @current_matchup)
+                  favorite_team_id_value(@selected_game_favorite_id, @current_matchup)
                 )
               }
             >
               <p class="my-0 bg-nd-pink text-white">
-                <%= home_team_id_value(@selected_game_home_id, @current_matchup) %>
+                <%= @selected_game_home_code %>
               </p>
             </div>
             <%= text_input(f, :game_line,
@@ -126,7 +131,7 @@
               <div
                 phx-click="select-ndc-member-pick"
                 phx-value-member={ndc_member}
-                phx-value-team-code={away_team_id_value(@selected_game_away_id, @current_matchup)}
+                phx-value-team-id={away_team_id_value(@selected_game_away_id, @current_matchup)}
                 class={
                   team_button_class(
                     away_team_id_value(@selected_game_away_id, @current_matchup),
@@ -135,7 +140,7 @@
                 }
               >
                 <p class="my-0 bg-nd-pink text-white">
-                  <%= away_team_id_value(@selected_game_away_id, @current_matchup) %>
+                  <%= @selected_game_away_code %>
                 </p>
               </div>
               <div
@@ -147,10 +152,10 @@
                 }
                 phx-click="select-ndc-member-pick"
                 phx-value-member={ndc_member}
-                phx-value-team-code={home_team_id_value(@selected_game_home_id, @current_matchup)}
+                phx-value-team-id={home_team_id_value(@selected_game_home_id, @current_matchup)}
               >
                 <p class="my-0 bg-nd-pink text-white">
-                  <%= home_team_id_value(@selected_game_home_id, @current_matchup) %>
+                  <%= @selected_game_home_code %>
                 </p>
               </div>
             </div>

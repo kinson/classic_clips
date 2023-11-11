@@ -622,7 +622,12 @@ defmodule ClassicClips.PickEm do
 
   @trace :get_days_game
   def get_days_game(date) do
-    from(sg in ScheduledGame, where: sg.date == ^date, order_by: [asc: sg.dt_utc]) |> Repo.all()
+    from(sg in ScheduledGame,
+      where: sg.date == ^date,
+      order_by: [asc: sg.dt_utc],
+      preload: [:away_team, :home_team]
+    )
+    |> Repo.all()
   end
 
   @trace :get_season_by_year_end_cached
@@ -686,22 +691,22 @@ defmodule ClassicClips.PickEm do
   def create_matchup(
         away_id,
         home_id,
-        favorite_abbreviation,
+        favorite_id,
         spread,
         game_id,
         game_tip_time,
         publish_at,
         status,
-        skeets_pick_team,
-        tas_pick_team,
-        trey_pick_team
+        skeets_pick_team_id,
+        tas_pick_team_id,
+        trey_pick_team_id
       ) do
     # get away team
     away_team = Repo.get_by!(Team, id: away_id)
     # get home team
     home_team = Repo.get_by!(Team, id: home_id)
     # get favorite team
-    favorite_team = Repo.get_by!(Team, abbreviation: favorite_abbreviation)
+    favorite_team = Repo.get_by!(Team, id: favorite_id)
 
     {:ok, tip_datetime_utc, _} = DateTime.from_iso8601(game_tip_time)
     tip_datetime_est = DateTime.add(tip_datetime_utc, -1 * get_est_offset_seconds())
@@ -725,9 +730,9 @@ defmodule ClassicClips.PickEm do
       })
 
     ndc_attrs = %{
-      skeets_pick_team_id: get_ndc_team_id(away_team, home_team, skeets_pick_team),
-      tas_pick_team_id: get_ndc_team_id(away_team, home_team, tas_pick_team),
-      trey_pick_team_id: get_ndc_team_id(away_team, home_team, trey_pick_team)
+      skeets_pick_team_id: skeets_pick_team_id,
+      tas_pick_team_id: tas_pick_team_id,
+      trey_pick_team_id: trey_pick_team_id
     }
 
     with {:ok, matchup} <-
@@ -836,12 +841,6 @@ defmodule ClassicClips.PickEm do
       Logger.notice("Published matchup starting at: #{inspect(preloaded_matchup.tip_datetime)}")
     end
   end
-
-  defp get_ndc_team_id(%Team{abbreviation: away_team_abbrev} = away_team, _, away_team_abbrev),
-    do: away_team.id
-
-  defp get_ndc_team_id(_, %Team{abbreviation: home_team_abbrev} = home_team, home_team_abbrev),
-    do: home_team.id
 
   @trace :forfeit_missed_games
   def forfeit_missed_games(%User{id: user_id} = user) do
