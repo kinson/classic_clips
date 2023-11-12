@@ -9,6 +9,7 @@ defmodule PickEmWeb.PickEmLive.Index do
   alias PickEmWeb.PickEmLive.{NotificationComponent, Theme, User}
 
   @user_picks_results_topic "pick_spread"
+  @show_no_dunks_picks false
 
   @impl true
   def mount(_params, session, socket) do
@@ -38,6 +39,7 @@ defmodule PickEmWeb.PickEmLive.Index do
      socket
      |> assign(:page, "home")
      |> assign(:theme, theme)
+     |> assign(:show_no_dunks_picks, @show_no_dunks_picks)
      |> assign(:matchup, matchup)
      |> assign(:ndc_pick, ndc_pick)
      |> assign(:pick_spread, matchup_pick_spread)

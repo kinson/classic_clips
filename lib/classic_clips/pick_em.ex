@@ -11,7 +11,7 @@ defmodule ClassicClips.PickEm do
   alias ClassicClips.Timeline.User
   alias ClassicClips.BigBeef.Season
 
-  @new_york_offset 4 * 60 * 60
+  @new_york_offset 5 * 60 * 60
 
   def get_matchup_for_day(%Date{} = date) do
     lower_date = DateTime.new!(date, Time.from_iso8601!("03:59:59.00"))
@@ -307,17 +307,18 @@ defmodule ClassicClips.PickEm do
     spread_winning_team_id = get_spread_winning_team_id(game_data, matchup)
     current_month = get_current_month_name()
     current_season = get_current_season_cached()
-    ndc_pick = get_ndc_pick_for_matchup(matchup)
 
-    ndc_record =
-      Repo.get_by(ClassicClips.PickEm.NdcRecord,
-        month: current_month,
-        season_id: current_season.id
-      )
+    with %NdcPick{} = ndc_pick <- get_ndc_pick_for_matchup(matchup) do
+      ndc_record =
+        Repo.get_by(ClassicClips.PickEm.NdcRecord,
+          month: current_month,
+          season_id: current_season.id
+        )
 
-    case ndc_record do
-      nil -> create_ndc_record_for_month(current_month, spread_winning_team_id, ndc_pick)
-      record -> update_ndc_record(record, spread_winning_team_id, ndc_pick)
+      case ndc_record do
+        nil -> create_ndc_record_for_month(current_month, spread_winning_team_id, ndc_pick)
+        record -> update_ndc_record(record, spread_winning_team_id, ndc_pick)
+      end
     end
   end
 
@@ -729,24 +730,36 @@ defmodule ClassicClips.PickEm do
         season_id: current_season.id
       })
 
-    ndc_attrs = %{
-      skeets_pick_team_id: skeets_pick_team_id,
-      tas_pick_team_id: tas_pick_team_id,
-      trey_pick_team_id: trey_pick_team_id
-    }
+    ndc_attrs =
+      %{
+        skeets_pick_team_id: skeets_pick_team_id,
+        tas_pick_team_id: tas_pick_team_id,
+        trey_pick_team_id: trey_pick_team_id
+      }
+      |> Enum.reject(fn {_key, pick} ->
+        is_nil(pick)
+      end)
+      |> Enum.into(%{})
 
     with {:ok, matchup} <-
            Repo.insert(matchup_changeset, returning: true),
          matchup <-
            Repo.preload(matchup, [:away_team, :home_team, :favorite_team]),
-         ndc_attrs <- Map.put(ndc_attrs, :matchup_id, matchup.id),
-         ndc_pick_changeset <- NdcPick.changeset(%NdcPick{}, ndc_attrs),
-         {:ok, _} <- Repo.insert(ndc_pick_changeset),
+         {:ok, _} <- save_ndc_picks(ndc_attrs, matchup),
          true <- Fiat.CacheServer.remove_key(:most_recent_matchup),
          {:ok, _} <- notify_sickos(matchup),
          {:ok, _} <- post_matchup_on_twitter(matchup) do
       {:ok, matchup}
     end
+  end
+
+  defp save_ndc_picks(ndc_pick_attrs, _) when map_size(ndc_pick_attrs) == 0, do: {:ok, %{}}
+
+  defp save_ndc_picks(ndc_picks_attrs, matchup) do
+    ndc_attrs = Map.put(ndc_picks_attrs, :matchup_id, matchup.id)
+    ndc_pick_changeset = NdcPick.changeset(%NdcPick{}, ndc_attrs)
+
+    Repo.insert(ndc_pick_changeset)
   end
 
   @trace :notify_sickos

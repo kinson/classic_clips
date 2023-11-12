@@ -76,7 +76,10 @@
 
         <%= if away_team_id_value(@selected_game_away_id, @current_matchup) do %>
           <p class="text-white font-open-sans font-bold mb-4">
-            3. Set the Line and No Dunks Crew Picks
+            3. Set the Line
+            <%= if @show_no_dunks_picks do %>
+              and No Dunks Crew Picks
+            <% end %>
           </p>
           <div class="flex flex-row my-4 gap-x-4">
             <p class="text-white w-24 my-0">
@@ -122,43 +125,44 @@
               value: game_line_value(@selected_game_line, @current_matchup)
             ) %>
           </div>
-
-          <%= for ndc_member <- [:skeets, :tas, :trey] do %>
-            <div class="flex flex-row my-4 gap-x-4">
-              <p class="text-white w-24 my-0">
-                <%= Atom.to_string(ndc_member) |> String.capitalize() %>
-              </p>
-              <div
-                phx-click="select-ndc-member-pick"
-                phx-value-member={ndc_member}
-                phx-value-team-id={away_team_id_value(@selected_game_away_id, @current_matchup)}
-                class={
-                  team_button_class(
-                    away_team_id_value(@selected_game_away_id, @current_matchup),
-                    ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks)
-                  )
-                }
-              >
-                <p class="my-0 bg-nd-pink text-white">
-                  <%= @selected_game_away_code %>
+          <%= if @show_no_dunks_picks do %>
+            <%= for ndc_member <- [:skeets, :tas, :trey] do %>
+              <div class="flex flex-row my-4 gap-x-4">
+                <p class="text-white w-24 my-0">
+                  <%= Atom.to_string(ndc_member) |> String.capitalize() %>
                 </p>
+                <div
+                  phx-click="select-ndc-member-pick"
+                  phx-value-member={ndc_member}
+                  phx-value-team-id={away_team_id_value(@selected_game_away_id, @current_matchup)}
+                  class={
+                    team_button_class(
+                      away_team_id_value(@selected_game_away_id, @current_matchup),
+                      ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks)
+                    )
+                  }
+                >
+                  <p class="my-0 bg-nd-pink text-white">
+                    <%= @selected_game_away_code %>
+                  </p>
+                </div>
+                <div
+                  class={
+                    team_button_class(
+                      home_team_id_value(@selected_game_home_id, @current_matchup),
+                      ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks)
+                    )
+                  }
+                  phx-click="select-ndc-member-pick"
+                  phx-value-member={ndc_member}
+                  phx-value-team-id={home_team_id_value(@selected_game_home_id, @current_matchup)}
+                >
+                  <p class="my-0 bg-nd-pink text-white">
+                    <%= @selected_game_home_code %>
+                  </p>
+                </div>
               </div>
-              <div
-                class={
-                  team_button_class(
-                    home_team_id_value(@selected_game_home_id, @current_matchup),
-                    ndc_pick_value(ndc_member, @ndc_picks, @current_ndc_picks)
-                  )
-                }
-                phx-click="select-ndc-member-pick"
-                phx-value-member={ndc_member}
-                phx-value-team-id={home_team_id_value(@selected_game_home_id, @current_matchup)}
-              >
-                <p class="my-0 bg-nd-pink text-white">
-                  <%= @selected_game_home_code %>
-                </p>
-              </div>
-            </div>
+            <% end %>
           <% end %>
           <%= if show_publish_form(@current_matchup) do %>
             <p class="text-white font-open-sans font-bold mt-10 mb-4">

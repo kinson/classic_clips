@@ -7,6 +7,8 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
   require Logger
 
+  @show_no_dunks_picks false
+
   @impl true
   def mount(_params, session, socket) do
     {:ok, user} = User.get_or_create_user(session)
@@ -17,13 +19,15 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
 
     current_season = PickEm.get_current_season_cached()
 
-    current_ndc_picks = PickEm.get_ndc_pick_for_matchup(current_matchup)
+    current_ndc_picks =
+      PickEm.get_ndc_pick_for_matchup(current_matchup)
 
     socket =
       socket
       |> assign(:page, "secaucus")
       |> assign(:user, user)
       |> assign(:theme, theme)
+      |> assign(:show_no_dunks_picks, @show_no_dunks_picks)
       |> assign(:selected_game_id, nil)
       |> assign(:selected_game_line, nil)
       |> assign(:selected_game_tip_datetime, nil)
@@ -165,8 +169,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end)
       |> Enum.into(%{})
 
-    NdcPick.changeset(current_ndc_picks, ndc_changes)
-    |> Repo.update()
+    update_ndc_picks(current_ndc_picks, ndc_changes)
 
     # reset picks if different game
     if(form_matchup["game_id"] != current_matchup.nba_game_id) do
@@ -197,11 +200,7 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
         },
         %{
           assigns: %{
-            ndc_picks: %{
-              :tas => tas_pick,
-              :skeets => skeets_pick,
-              :trey => trey_pick
-            }
+            ndc_picks: ndc_picks
           }
         } = socket
       ) do
@@ -218,6 +217,10 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       if publish_now == "true",
         do: :published,
         else: :unpublished
+
+    tas_pick = Map.get(ndc_picks, :tas)
+    skeets_pick = Map.get(ndc_picks, :skeets)
+    trey_pick = Map.get(ndc_picks, :trey)
 
     case ClassicClips.PickEm.create_matchup(
            away_team_id,
@@ -365,6 +368,13 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
       end,
       600
     )
+  end
+
+  defp update_ndc_picks(nil, _), do: {:ok, nil}
+
+  defp update_ndc_picks(ndc_picks, ndc_changes) do
+    NdcPick.changeset(ndc_picks, ndc_changes)
+    |> Repo.update()
   end
 
   def team_button_class(team_id, team_id) do
