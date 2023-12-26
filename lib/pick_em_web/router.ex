@@ -19,6 +19,7 @@ defmodule PickEmWeb.Router do
   scope "/", PickEmWeb do
     pipe_through :browser
     get "/auth/google/callback", GoogleAuthController, :index
+    get "/auth/discord/callback", DiscordAuthController, :index
     get "/auth/twitter/callback", TwitterAuthController, :index
     post "/auth/logout", GoogleAuthController, :logout
     post "/theme", ThemeController, :create

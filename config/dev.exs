@@ -135,6 +135,10 @@ config :classic_clips, :big_beef_url, "http://localhost:4001"
 
 config :classic_clips, :service, :all
 
+config :classic_clips,
+  discord_posts_enabled: false,
+  discord_redirect_uri: "http://localhost:4002/auth/discord/callback"
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

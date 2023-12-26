@@ -1,7 +1,7 @@
 defmodule PickEmWeb.PickEmLive.Secaucus do
   use PickEmWeb, :live_view
 
-  alias ClassicClips.{PickEm, Repo}
+  alias ClassicClips.{Discord, PickEm, Repo}
   alias ClassicClips.PickEm.{MatchUp, NdcPick}
   alias PickEmWeb.PickEmLive.{Theme, User, NotificationComponent}
 
@@ -281,6 +281,11 @@ defmodule PickEmWeb.PickEmLive.Secaucus do
   def handle_event("repost-matchup-tweet", _, socket) do
     PickEm.post_matchup_on_twitter(socket.assigns.current_matchup)
     {:noreply, NotificationComponent.show(socket, "Reposted matchup tweet")}
+  end
+
+  def handle_event("repost-matchup-discord", _, socket) do
+    Discord.post_matchup(socket.assigns.current_matchup)
+    {:noreply, NotificationComponent.show(socket, "Reposted matchup to discord")}
   end
 
   defp assign_games(socket, form_matchup_date) do

@@ -7,9 +7,20 @@ defmodule ClassicClips.PickEm do
 
   alias ClassicClips.PickEm.ScheduledGame
   alias ClassicClips.Repo
-  alias ClassicClips.PickEm.{MatchUp, UserPick, NdcPick, UserRecord, Team, NdcRecord}
+
+  alias ClassicClips.PickEm.{
+    DiscordToken,
+    MatchUp,
+    UserPick,
+    NdcPick,
+    UserRecord,
+    Team,
+    NdcRecord
+  }
+
   alias ClassicClips.Timeline.User
   alias ClassicClips.BigBeef.Season
+  alias ClassicClips.Discord
 
   @new_york_offset 5 * 60 * 60
 
@@ -748,7 +759,8 @@ defmodule ClassicClips.PickEm do
          {:ok, _} <- save_ndc_picks(ndc_attrs, matchup),
          true <- Fiat.CacheServer.remove_key(:most_recent_matchup),
          {:ok, _} <- notify_sickos(matchup),
-         {:ok, _} <- post_matchup_on_twitter(matchup) do
+         {:ok, _} <- post_matchup_on_twitter(matchup),
+         :ok <- Discord.post_matchup(matchup) do
       {:ok, matchup}
     end
   end
@@ -850,7 +862,8 @@ defmodule ClassicClips.PickEm do
          preloaded_matchup <-
            Repo.preload(updated_matchup, [:home_team, :away_team, :favorite_team]),
          {:ok, _} <- notify_sickos(preloaded_matchup),
-         {:ok, _} <- post_matchup_on_twitter(preloaded_matchup) do
+         {:ok, _} <- post_matchup_on_twitter(preloaded_matchup),
+         :ok <- Discord.post_matchup(preloaded_matchup) do
       Logger.notice("Published matchup starting at: #{inspect(preloaded_matchup.tip_datetime)}")
     end
   end
@@ -963,5 +976,17 @@ defmodule ClassicClips.PickEm do
       fn -> Repo.get_by!(Team, abbreviation: abbreviation) end,
       3600
     )
+  end
+
+  def get_discord_token_for_server(server_id) do
+    Repo.get_by(DiscordToken, webhook_server_id: server_id)
+  end
+
+  def create_discord_token(attrs) do
+    %DiscordToken{} |> DiscordToken.changeset(attrs) |> Repo.insert()
+  end
+
+  def update_discord_token(dt, attrs) do
+    dt |> DiscordToken.changeset(attrs) |> Repo.update()
   end
 end

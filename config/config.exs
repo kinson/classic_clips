@@ -39,6 +39,10 @@ config :sentry,
   tags: %{env: "prod"},
   included_environments: [:prod]
 
+config :classic_clips,
+  discord_posts_enabled: true,
+  discord_redirect_uri: "https://nodunkspickem.com/auth/discord/callback"
+
 config :classic_clips, ClassicClips.Mailer, adapter: Swoosh.Adapters.Local
 # config :classic_clips, ClassicClips.Mailer,
 #  adapter: Swoosh.Adapters.Sendgrid,
