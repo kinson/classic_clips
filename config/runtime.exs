@@ -75,11 +75,11 @@ if config_env() == :prod do
     twitter_api_oauth_2_client_secret: System.fetch_env!("TWITTER_API_OAUTH_2_CLIENT_SECRET"),
     twitter_auth_callback_url: "https://nodunkspickem.com/auth/twitter/callback",
     twitter_posts_enabled: true
-
-  config :classic_clips,
-    discord_client_id: System.fetch_env!("DISCORD_CLIENT_ID"),
-    discord_client_secret: System.fetch_env!("DISCORD_CLIENT_SECRET")
 end
+
+config :classic_clips,
+  discord_client_id: System.get_env("DISCORD_CLIENT_ID"),
+  discord_client_secret: System.get_env("DISCORD_CLIENT_SECRET")
 
 config :classic_clips, ClassicClipsWeb.Endpoint, server: true
 config :classic_clips, BigBeefWeb.Endpoint, server: true

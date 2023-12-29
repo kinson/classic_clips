@@ -24,7 +24,9 @@ defmodule PickEmWeb.DiscordAuthController do
       dt -> PickEm.update_discord_token(dt, access_token_response)
     end
 
-    redirect(conn, to: "/")
+    conn
+    |> put_flash(:info, "Discord application added!")
+    |> redirect(to: "/")
   end
 
   def index(conn, _params) do

@@ -4,7 +4,7 @@ defmodule ClassicClips.Discord do
   import Ecto.Query
 
   alias ClassicClips.PickEm
-  alias ClassicClips.PickEm.DiscordToken
+  alias ClassicClips.PickEm.{DiscordToken, MatchUp}
   alias ClassicClips.Repo
 
   def get_post_string(matchup) do
@@ -29,7 +29,7 @@ defmodule ClassicClips.Discord do
     """
   end
 
-  def post_matchup(matchup) do
+  def post_matchup(%MatchUp{status: :published} = matchup) do
     text = get_post_string(matchup)
 
     if Application.get_env(:classic_clips, :discord_posts_enabled, false) == true do
@@ -38,6 +38,10 @@ defmodule ClassicClips.Discord do
     else
       Logger.info("Not posting discord message: #{text}")
     end
+  end
+
+  def post_matchup(matchup) do
+    Logger.info("Not posting matchup to Discord because it is in #{matchup.status} status")
   end
 
   defp send_request(text) do
