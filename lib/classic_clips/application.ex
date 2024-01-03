@@ -19,7 +19,8 @@ defmodule ClassicClips.Application do
       # Start Fiat cache
       Fiat.CacheServer,
       # Start Task Supervisor
-      {Task.Supervisor, name: ClassicClips.TaskSupervisor}
+      {Task.Supervisor, name: ClassicClips.TaskSupervisor},
+      ClassicClips.DiscordTokenServer
     ]
 
     services_to_start = Application.fetch_env!(:classic_clips, :service)

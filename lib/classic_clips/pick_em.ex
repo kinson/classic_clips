@@ -249,6 +249,20 @@ defmodule ClassicClips.PickEm do
     )
   end
 
+  def get_discord_tokens_near_expiration() do
+    date_comparison =
+      DateTime.utc_now() |> DateTime.add(60 * 100, :second)
+
+    from(dt in DiscordToken, where: dt.expires_at < ^date_comparison)
+    |> Repo.all()
+  end
+
+  def upsert_discord_tokens(dt, new_token) do
+    dt
+    |> DiscordToken.changeset(new_token)
+    |> Repo.update(returning: true)
+  end
+
   def get_months_seasons_for_leaders do
     seasons_months =
       from(ur in UserRecord,
