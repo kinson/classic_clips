@@ -14,9 +14,9 @@ defmodule ClassicClips.Discord do
   def get_post_string(matchup) do
     %{away_team: away, home_team: home, favorite_team: favorite} = matchup
 
-    away_string = ":#{away.abbreviation}: #{away.name}"
-    home_string = ":#{home.abbreviation}: #{home.name}"
-    favorite_string = ":#{favorite.abbreviation}: #{matchup.spread}"
+    away_string = "#{get_team_emoji(away.abbreviation)} #{away.name}"
+    home_string = "#{get_team_emoji(home.abbreviation)} #{home.name}"
+    favorite_string = "#{get_team_emoji(favorite.abbreviation)} #{matchup.spread}"
 
     est_time =
       matchup.tip_datetime
@@ -27,7 +27,7 @@ defmodule ClassicClips.Discord do
     # 923235180137812028 is the user role id for the Daily Pick'Em role
 
     """
-    <@&923235180137812028> Today's matchup is live:
+    <@&923235180137812028> Today's [matchup](<https://nodunkspickem.com>) is live:
     #{away_string} @ #{home_string} (#{favorite_string})
     Make your pick before #{est_time} ET!
     """
@@ -155,5 +155,44 @@ defmodule ClassicClips.Discord do
 
   defp get_discord_client_secret do
     Application.fetch_env!(:classic_clips, :discord_client_secret)
+  end
+
+  def get_team_emoji(abbreviation) do
+    emojis = %{
+      "ATL" => "814162354899910656",
+      "BKN" => "814162359194222632",
+      "BOS" => "814162362759774208",
+      "CHA" => "814162361329123358",
+      "CHI" => "814162360460771419",
+      "CLE" => "814162359651139616",
+      "DAL" => "814162362629750816",
+      "DEN" => "814162362801848340",
+      "DET" => "814162361370804224",
+      "GSW" => "814162361677643841",
+      "HOU" => "814162362286211112",
+      "IND" => "814162362047135744",
+      "LAC" => "814162359990878238",
+      "LAL" => "814162360977588275",
+      "MEM" => "814162360486330440",
+      "MIA" => "814162360369414184",
+      "MIL" => "814162362806173726",
+      "MIN" => "814162362260783104",
+      "NOP" => "814162362809581638",
+      "NYK" => "814162362327498752",
+      "OKC" => "814162361874513962",
+      "ORL" => "814162362281623563",
+      "PHI" => "814162363179728916",
+      "PHX" => "814162362281361438",
+      "POR" => "814238791614857246",
+      "SAC" => "814162360951898132",
+      "SAS" => "814162360188928001",
+      "TOR" => "814162361988153395",
+      "UTA" => "814162361300418590",
+      "WAS" => "814162362940522556"
+    }
+
+    team_code = Map.get(emojis, abbreviation)
+
+    "<:#{abbreviation}:#{team_code}>"
   end
 end
