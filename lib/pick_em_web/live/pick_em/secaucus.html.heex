@@ -21,8 +21,8 @@
       <div class="flex flex-row items-center mb-10">
         <%= date_input(f, :matchup_date,
           value: get_matchup_date(@matchup_date),
-          min: "2023-10-11",
-          max: "2024-04-09",
+          min: "2024-10-21",
+          max: "2025-04-20",
           class: "my-0 text-3xl p-1 rounded"
         ) %>
         <p class={get_status_text_class(@current_matchup)}>
@@ -184,7 +184,7 @@
               <%= datetime_local_input(f, :publish_at,
                 value: get_publish_at_date(@current_matchup),
                 min: PickEm.get_current_est_date(),
-                max: "2023-04-09",
+                max: "2025-04-20",
                 class: "my-0 text-3xl rounded"
               ) %>
 
